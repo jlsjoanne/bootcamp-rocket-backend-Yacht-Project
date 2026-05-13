@@ -27,7 +27,7 @@ namespace TayanaYachts.Models
 
         public bool IsPublished { get; set; } = false;
 
-        public virtual ICollection<UploadedFile> Images { get; set; }
-        public virtual ICollection<UploadedFile> Files { get; set; }
+        public virtual ICollection<NewsImage> Images { get; set; }
+        public virtual ICollection<NewsFile> Files { get; set; }
     }
 }

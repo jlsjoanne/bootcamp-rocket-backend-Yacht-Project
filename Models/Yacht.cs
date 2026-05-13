@@ -39,10 +39,10 @@ namespace TayanaYachts.Models
         public string Specification { get; set; }
 
         [Display(Name= "Layout & deck plan")]
-        public virtual ICollection<UploadedFile> Images { get; set; }
+        public virtual ICollection<YachtImage> Images { get; set; }
 
-        public virtual ICollection<UploadedFile> Interiors { get; set; }
+        public virtual ICollection<YachtInterior> Interiors { get; set; }
 
-        public virtual ICollection<UploadedFile> Downloads { get; set; }
+        public virtual ICollection<YachtDownload> Downloads { get; set; }
     }
 }

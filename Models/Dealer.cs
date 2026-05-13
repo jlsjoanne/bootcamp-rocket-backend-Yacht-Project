@@ -19,7 +19,7 @@ namespace TayanaYachts.Models
         [AllowHtml]
         public string Content { get; set; }
 
-        public UploadedFile Image { get;set; }
+        public virtual UploadedFile Image { get;set; }
 
         public virtual Area Area { get; set; }
         

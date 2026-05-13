@@ -10,6 +10,8 @@ namespace TayanaYachts.Models
 {
     public class UploadedFile
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
         
         [NotMapped]

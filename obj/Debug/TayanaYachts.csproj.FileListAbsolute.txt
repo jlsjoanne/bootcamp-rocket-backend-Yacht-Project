@@ -63,3 +63,5 @@ C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYachts.c
 C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYa.284032D0.Up2Date
 C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYachts.dll
 C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYachts.pdb
+C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYachts.Migrations.InitialDbMigration.resources
+C:\Users\jlsjo\Documents\RocketCamp\Tayana\TayanaYachts\obj\Debug\TayanaYachts.csproj.GenerateResource.cache

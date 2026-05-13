@@ -125,9 +125,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202605120848100_InitialDb Migration.cs" />
-    <Compile Include="Migrations\202605120848100_InitialDb Migration.Designer.cs">
-      <DependentUpon>202605120848100_InitialDb Migration.cs</DependentUpon>
+    <Compile Include="Migrations\202605130157570_InitialDb Migration.cs" />
+    <Compile Include="Migrations\202605130157570_InitialDb Migration.Designer.cs">
+      <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
@@ -135,8 +135,13 @@
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Dealer.cs" />
     <Compile Include="Models\News.cs" />
+    <Compile Include="Models\NewsFile.cs" />
+    <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\Yacht.cs" />
+    <Compile Include="Models\YachtDownload.cs" />
+    <Compile Include="Models\YachtImage.cs" />
+    <Compile Include="Models\YachtInterior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -223,8 +228,8 @@
     <Content Include="Scripts\jquery-3.7.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202605120848100_InitialDb Migration.resx">
-      <DependentUpon>202605120848100_InitialDb Migration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202605130157570_InitialDb Migration.resx">
+      <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

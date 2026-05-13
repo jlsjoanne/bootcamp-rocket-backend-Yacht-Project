@@ -13,7 +13,7 @@ namespace TayanaYachts.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202605120848100_InitialDb Migration"; }
+            get { return "202605130157570_InitialDb Migration"; }
         }
         
         string IMigrationMetadata.Source
