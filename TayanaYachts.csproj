@@ -120,6 +120,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -145,6 +147,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\adminlte\css\adminlte.css" />
+    <Content Include="Content\adminlte\css\adminlte.min.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css" />
+    <Content Include="Content\adminlte\js\adminlte.js" />
+    <Content Include="Content\adminlte\js\adminlte.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -161,22 +169,59 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\csshover.htc" />
+    <Content Include="Content\css\reset.css" />
+    <Content Include="Content\css\style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\bg1.jpg" />
+    <Content Include="images\changbg.gif" />
+    <Content Include="images\changbg1.gif" />
+    <Content Include="images\footer.jpg" />
+    <Content Include="images\icon001.gif" />
+    <Content Include="images\icon002.gif" />
+    <Content Include="images\menu.gif" />
+    <Content Include="images\menu1_03.gif" />
+    <Content Include="images\menu1_04.gif" />
+    <Content Include="images\menu1_05.gif" />
+    <Content Include="images\menu1_06.gif" />
+    <Content Include="images\menu1_07.gif" />
+    <Content Include="images\menu2_03.gif" />
+    <Content Include="images\menu2_04.gif" />
+    <Content Include="images\menu2_05.gif" />
+    <Content Include="images\menu2_06.gif" />
+    <Content Include="images\menu2_07.gif" />
+    <Content Include="images\mmmmeeeee.gif" />
+    <Content Include="images\sub_bg.gif" />
+    <Content Include="images\tog.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminLTELayout.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Navbar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Footer.cshtml" />
     <None Include="connections.config" />
+    <Content Include="Content\adminlte\css\adminlte.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.min.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css.map" />
+    <Content Include="Content\adminlte\js\adminlte.js.map" />
+    <Content Include="Content\adminlte\js\adminlte.min.js.map" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.cycle.all.2.74.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -196,9 +241,11 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\_TayanaLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
