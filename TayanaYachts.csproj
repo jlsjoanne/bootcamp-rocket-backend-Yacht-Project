@@ -121,6 +121,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AreaController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -213,6 +214,11 @@
     <Content Include="Areas\Admin\Views\Country\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Index.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />

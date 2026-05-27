@@ -11,108 +11,112 @@ using TayanaYachts.Models;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
-    public class CountryController : Controller
+    public class AreaController : Controller
     {
         private TayanaContext db = new TayanaContext();
 
-        // GET: Admin/Country
+        // GET: Admin/Area
         public ActionResult Index()
         {
-            var Countries = db.Countries;
-            return View(Countries.ToList());
+            var areas = db.Areas.Include(a => a.Country);
+            return View(areas.ToList());
         }
 
-        // GET: Admin/Country/Details/5
+        // GET: Admin/Area/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var country = db.Countries.Where(c => c.Id == id).Include(c => c.Areas);
-            if (country == null)
+            Area area = db.Areas.Find(id);
+            if (area == null)
             {
                 return HttpNotFound();
             }
-            return View(country);
+            return View(area);
         }
 
-        // GET: Admin/Country/Create
+        // GET: Admin/Area/Create
         public ActionResult Create()
         {
+            ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name");
             return View();
         }
 
-        // POST: Admin/Country/Create
+        // POST: Admin/Area/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Country country)
+        public ActionResult Create(Area area)
         {
             if (ModelState.IsValid)
             {
-                db.Countries.Add(country);
+                db.Areas.Add(area);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(country);
+            ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
+            return View(area);
         }
 
-        // GET: Admin/Country/Edit/5
+        // GET: Admin/Area/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Country country = db.Countries.Find(id);
-            if (country == null)
+            Area area = db.Areas.Find(id);
+            if (area == null)
             {
                 return HttpNotFound();
             }
-            return View(country);
+            ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
+            return View(area);
         }
 
-        // POST: Admin/Country/Edit/5
+        // POST: Admin/Area/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Country country)
+        public ActionResult Edit(Area area)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(country).State = EntityState.Modified;
+                db.Entry(area).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(country);
+            ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
+            return View(area);
         }
 
-        // GET: Admin/Country/Delete/5
+        // GET: Admin/Area/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Country country = db.Countries.Find(id);
-            if (country == null)
+            Area area = db.Areas.Find(id);
+            if (area == null)
             {
                 return HttpNotFound();
             }
-            return View(country);
+            return View(area);
         }
 
-        // POST: Admin/Country/Delete/5
+        // POST: Admin/Area/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Country country = db.Countries.Find(id);
-            db.Countries.Remove(country);
+            Area area = db.Areas.Find(id);
+            db.Areas.Remove(area);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

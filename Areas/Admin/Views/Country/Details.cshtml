@@ -2,6 +2,7 @@
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_AdminLTELayout.cshtml";
+    ViewBag.Title = "Country";
 }
 
 <!DOCTYPE html>
@@ -9,7 +10,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
+    <title>@ViewBag.Title Details | Tayana Admin</title>
 </head>
 <body>
     <div>
@@ -26,6 +27,24 @@
     
         </dl>
     </div>
+    @if(Model.Areas != null)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Area Name
+                </th>
+            </tr>
+        @foreach(var item in Model.Areas)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+        }
+        </table>
+    }
     <p>
         @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
         @Html.ActionLink("Back to List", "Index")

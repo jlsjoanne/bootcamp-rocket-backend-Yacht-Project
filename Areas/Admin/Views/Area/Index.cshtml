@@ -1,8 +1,7 @@
-﻿@model IEnumerable<TayanaYachts.Models.Country>
+﻿@model IEnumerable<TayanaYachts.Models.Area>
 
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLTELayout.cshtml";
-    ViewBag.Title = "Country";
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,7 +9,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title | Tayana Admin</title>
+    <title>Index</title>
 </head>
 <body>
     <p>
@@ -19,6 +18,9 @@
     <table class="table">
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Country.Name)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th></th>
@@ -26,6 +28,9 @@
     
     @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country.Name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
