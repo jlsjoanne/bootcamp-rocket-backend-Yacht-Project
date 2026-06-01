@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         // GET: Admin/Home

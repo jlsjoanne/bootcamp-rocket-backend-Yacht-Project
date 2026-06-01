@@ -29,6 +29,8 @@ namespace TayanaYachts.DAL
         public DbSet<YachtDownload> YachtDownloads { get; set; }
         public DbSet<YachtImage> YachtImages { get; set; }
         public DbSet<YachtInterior> YachtInteriors { get; set; }
+
+        public DbSet<Member> Members { get; set; }
         
         
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

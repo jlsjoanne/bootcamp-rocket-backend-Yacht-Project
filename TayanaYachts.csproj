@@ -121,27 +121,40 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AreaController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Methods\Utility.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.Designer.cs">
       <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010142026_AddMemberTable.cs" />
+    <Compile Include="Migrations\202606010142026_AddMemberTable.Designer.cs">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.cs" />
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.Designer.cs">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Dealer.cs" />
+    <Compile Include="Models\Member.cs" />
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\NewsFile.cs" />
     <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
+    <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
     <Compile Include="Models\YachtImage.cs" />
@@ -219,6 +232,12 @@
     <Content Include="Areas\Admin\Views\Area\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Area\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Area\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />
@@ -289,6 +308,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202605130157570_InitialDb Migration.resx">
       <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010142026_AddMemberTable.resx">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010345263_UpdateMemberTable.resx">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
