@@ -18,7 +18,8 @@ namespace TayanaYachts.DAL
         public DbSet<Area> Areas { get; set; }
         public DbSet<Dealer> Dealers { get; set; }
 
-        public DbSet<UploadedFile> UploadedFiles { get; set; }
+        public DbSet<DealerImage> DealerImages { get; set; }
+
         public DbSet<Contact> Contacts { get; set; }
 
         public DbSet<News> News { get; set; }
@@ -30,17 +31,13 @@ namespace TayanaYachts.DAL
         public DbSet<YachtImage> YachtImages { get; set; }
         public DbSet<YachtInterior> YachtInteriors { get; set; }
 
+        public DbSet<YachtEditorImage> YachtEditorImages { get; set; }
+
         public DbSet<Member> Members { get; set; }
         
         
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UploadedFile>()
-                .Map(m =>
-                {
-                    m.ToTable("UploadedFiles");
-                });
-
             modelBuilder.Entity<NewsFile>()
                 .Map(m =>
                 {
@@ -71,6 +68,7 @@ namespace TayanaYachts.DAL
                     m.MapInheritedProperties();
                     m.ToTable("YachtInteriors");
                 });
+            
         }
     }
 }

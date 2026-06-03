@@ -149,14 +149,17 @@
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Dealer.cs" />
+    <Compile Include="Models\DealerImage.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\NewsFile.cs" />
     <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
+    <Compile Include="Models\InEditorImage.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
+    <Compile Include="Models\YachtEditorImage.cs" />
     <Compile Include="Models\YachtImage.cs" />
     <Compile Include="Models\YachtInterior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

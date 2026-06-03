@@ -19,9 +19,14 @@ namespace TayanaYachts.Models
         [AllowHtml]
         public string Content { get; set; }
 
-        public virtual UploadedFile Image { get;set; }
+        public virtual ICollection<InEditorImage> Images { get; set; }
 
         public virtual Area Area { get; set; }
+
+        public Dealer()
+        {
+            Images = new HashSet<InEditorImage>();
+        }
         
     }
 }
