@@ -47,6 +47,12 @@ namespace TayanaYachts.Models
 
         public virtual ICollection<YachtEditorImage> EditorImgs { get; set; }
 
-
+        public Yacht()
+        {
+            DeckImgs = new HashSet<YachtImage>();
+            Interiors = new HashSet<YachtInterior>();
+            Downloads = new HashSet<YachtDownload>();
+            EditorImgs = new HashSet<YachtEditorImage>();
+        }
     }
 }

@@ -29,5 +29,11 @@ namespace TayanaYachts.Models
 
         public virtual ICollection<NewsImage> Images { get; set; }
         public virtual ICollection<NewsFile> Files { get; set; }
+
+        public News()
+        {
+            Images = new HashSet<NewsImage>();
+            Files = new HashSet<NewsFile>();
+        }
     }
 }

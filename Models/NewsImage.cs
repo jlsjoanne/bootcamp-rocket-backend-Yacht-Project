@@ -9,9 +9,8 @@ namespace TayanaYachts.Models
 {
     public class NewsImage : UploadedFile
     {
-        [Required]
         [ForeignKey("News")]
-        public int NewsId { get; set; }
+        public int? NewsId { get; set; }
         public virtual News News { get; set; }
     }
 }

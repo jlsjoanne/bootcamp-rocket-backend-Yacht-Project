@@ -17,7 +17,6 @@ namespace TayanaYachts.DAL
         public DbSet<Country> Countries { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Dealer> Dealers { get; set; }
-
         public DbSet<DealerImage> DealerImages { get; set; }
 
         public DbSet<Contact> Contacts { get; set; }
@@ -30,7 +29,6 @@ namespace TayanaYachts.DAL
         public DbSet<YachtDownload> YachtDownloads { get; set; }
         public DbSet<YachtImage> YachtImages { get; set; }
         public DbSet<YachtInterior> YachtInteriors { get; set; }
-
         public DbSet<YachtEditorImage> YachtEditorImages { get; set; }
 
         public DbSet<Member> Members { get; set; }
@@ -68,7 +66,18 @@ namespace TayanaYachts.DAL
                     m.MapInheritedProperties();
                     m.ToTable("YachtInteriors");
                 });
-            
+            modelBuilder.Entity<YachtEditorImage>()
+                .Map(m =>
+                {
+                    m.MapInheritedProperties();
+                    m.ToTable("YachtEditorImages");
+                });
+            modelBuilder.Entity<DealerImage>()
+                .Map(m =>
+                {
+                    m.MapInheritedProperties();
+                    m.ToTable("DealerImages");
+                });
         }
     }
 }
