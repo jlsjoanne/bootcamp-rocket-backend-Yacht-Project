@@ -1,16 +1,16 @@
 @charset "utf-8";
 
-@import url("js.css");
+@import url(js.css);
 
 img, div, input { 
-	behavior: url("css/iepngfix.htc"); 
+	behavior: url(iepngfix.htc); 
 
 }
 
 body {
 	margin-top: 0px;
-	background-image: url(../../images/bg1.jpg);
-	behavior: url("Content/css/csshover.htc");
+	background-image: url(../images/bg1.jpg);
+	behavior: url("csshover.htc");
 	height: 100%;
 	background-repeat: repeat-x;
 	background-color: #f3f3f3;
@@ -28,7 +28,7 @@ body {
 	float: left;
 	height: 23px;
 	width: 100%;
-	background-image: url(../../images/sub_bg.gif);
+	background-image: url(../images/sub_bg.gif);
 	background-repeat: repeat-x;
 }
 .sub a {
@@ -41,16 +41,16 @@ body {
 }
 
 .sub p {
-	float: right;
-	padding-right: 18px;
-	padding-top: 3px;
-	background-image: url(../../images/icon001.gif);
-	background-repeat: no-repeat;
-	background-position: 1px 6px;
-	padding-left: 18px;
+		float: right;
+		padding-right: 18px;
+		padding-top: 3px;
+		background-image: url(../images/icon001.gif);
+		background-repeat: no-repeat;
+		background-position: 1px 6px;
+		padding-left: 18px;
 }
 .menu {
-	background-image: url(../../images/menu.gif);
+	background-image: url(../images/menu.gif);
 	background-repeat: no-repeat;
 	float: left;
 	height: 71px;
@@ -74,47 +74,47 @@ body {
 }
 
 .menuli01 {
-	background-image: url(../../images/menu1_03.gif);
+	background-image: url(../images/menu1_03.gif);
 	width: 80px;
 	float: left;
 	display: block;
 }
-	.menuli01:hover {
-		background-image: url(../../images/menu2_03.gif);
-	}
+.menuli01:hover {
+		background-image: url(../images/menu2_03.gif);
+}
 .menuli02 {
-	background-image: url(../../images/menu1_04.gif);
+	background-image: url(../images/menu1_04.gif);
 	width: 79px;
 	float: left;
 	display: block;
 }
-	.menuli02:hover {
-		background-image: url(../../images/menu2_04.gif);
-	}
+.menuli02:hover {
+		background-image: url(../images/menu2_04.gif);
+}
 .menuli03 {
-	background-image: url(../../images/menu1_05.gif);
+	background-image: url(../images/menu1_05.gif);
 	width: 99px;
 	float: left;
 }
-	.menuli03:hover {
-		background-image: url(../../images/menu2_05.gif);
-	}
+.menuli03:hover {
+		background-image: url(../images/menu2_05.gif);
+}
 .menuli04 {
-	background-image: url(../../images/menu1_06.gif);
+	background-image: url(../images/menu1_06.gif);
 	width: 89px;
 	float: left;
 }
-	.menuli04:hover {
-		background-image: url(../../images/menu2_06.gif);
-	}
+.menuli04:hover {
+		background-image: url(../images/menu2_06.gif);
+}
 .menuli05 {
-	background-image: url(../../images/menu1_07.gif);
+	background-image: url(../images/menu1_07.gif);
 	width: 95px;
 	float: left;
 }
-	.menuli05:hover {
-		background-image: url(../../images/menu2_07.gif);
-	}
+.menuli05:hover {
+		background-image: url(../images/menu2_07.gif);
+}
 .banner {
 	float: left;
 	width: 966px;
@@ -218,7 +218,7 @@ body {
 .footer {
 	clear: both;
 	width: 1002px;
-	background-image: url(../../images/footer.jpg);
+	background-image: url(../images/footer.jpg);
 	background-repeat: no-repeat;
 	height: 71px;
 	background-position: left bottom;
@@ -261,14 +261,14 @@ body {
 .footer01 a:hover {
 	color: #009BB2;
 }
-	.footer01 span {
-		background-image: url(../../images/icon002.gif);
+.footer01 span {
+		background-image: url(../images/icon002.gif);
 		background-repeat: no-repeat;
 		background-position: 2px 7px;
 		padding-left: 11px;
 		padding-right: 10px;
 		display: inline-block;
-	}
+}
 
 /*換圖*/
 .banner {
@@ -318,7 +318,7 @@ body {
 	overflow: hidden;
 }
 .bannerimg li a {
-	background-image: url(../../images/changbg1.gif);
+	background-image: url(../images/changbg1.gif);
 	background-repeat: no-repeat;
 	float: left;
 	width: 103px;
@@ -326,16 +326,16 @@ body {
 	height: 70px;
 	display: block;
 }
-	.bannerimg li a:hover {
-		background-image: url(../../images/changbg.gif);
+.bannerimg li a:hover {
+		background-image: url(../images/changbg.gif);
 		background-repeat: no-repeat;
 		background-position: left bottom;
 		float: left;
 		height: 70px;
 		width: 103px;
-	}
+}
 .on {
-	background-image: url(../../images/changbg.gif);
+	background-image: url(../images/changbg.gif);
 	background-repeat: no-repeat;
 	background-position: left bottom;
 	width: 103px;

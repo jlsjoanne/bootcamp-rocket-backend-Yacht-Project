@@ -11,6 +11,7 @@ using TayanaYachts.Models;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
+    [Authorize]
     public class AreaController : Controller
     {
         private TayanaContext db = new TayanaContext();

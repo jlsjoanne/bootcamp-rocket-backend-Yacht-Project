@@ -11,6 +11,7 @@ using TayanaYachts.Models;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
+    [Authorize]
     public class CountryController : Controller
     {
         private TayanaContext db = new TayanaContext();
@@ -29,7 +30,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var country = db.Countries.Where(c => c.Id == id).Include(c => c.Areas);
+            var country = db.Countries.Find(id);
             if (country == null)
             {
                 return HttpNotFound();
