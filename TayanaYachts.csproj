@@ -124,6 +124,7 @@
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AreaController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DealerController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -148,6 +149,26 @@
     <Compile Include="Migrations\202606080333434_AddEditorImg.Designer.cs">
       <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606090212541_UpdateDealer.cs" />
+    <Compile Include="Migrations\202606090212541_UpdateDealer.Designer.cs">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.cs" />
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.Designer.cs">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.cs" />
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.Designer.cs">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.cs" />
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.Designer.cs">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.cs" />
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.Designer.cs">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -160,6 +181,7 @@
     <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\InEditorImage.cs" />
+    <Compile Include="Models\ViewModels\DealerVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
@@ -196,6 +218,7 @@
     <Content Include="Content\css\js.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\summernote\summernote-bs5.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -247,6 +270,12 @@
     <Content Include="Areas\Admin\Views\Member\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Member\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Index.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />
@@ -254,6 +283,10 @@
     <Content Include="Content\adminlte\css\adminlte.rtl.min.css.map" />
     <Content Include="Content\adminlte\js\adminlte.js.map" />
     <Content Include="Content\adminlte\js\adminlte.min.js.map" />
+    <Content Include="Content\summernote\font\summernote.eot" />
+    <Content Include="Content\summernote\font\summernote.ttf" />
+    <Content Include="Content\summernote\font\summernote.woff" />
+    <Content Include="Content\summernote\font\summernote.woff2" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -267,6 +300,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\summernote\summernote-bs5.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -286,7 +320,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Content\summernote\" />
+    <Folder Include="Files\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -327,6 +362,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606080333434_AddEditorImg.resx">
       <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090212541_UpdateDealer.resx">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090320014_UpdateFileUpload.resx">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090344070_UpdateFileStringLength.resx">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090727156_DealerAddAreaId.resx">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606091002023_UpdateForeignKeySetting.resx">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

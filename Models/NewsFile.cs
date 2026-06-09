@@ -10,7 +10,8 @@ namespace TayanaYachts.Models
     public class NewsFile : UploadedFile
     {
         [ForeignKey("News")]
-        public int? NewsId { get; set; }
+        public int NewsId { get; set; }
         public virtual News News { get; set; }
+
     }
 }

@@ -19,14 +19,15 @@ namespace TayanaYachts.Models
         [AllowHtml]
         public string Content { get; set; }
 
-        public virtual ICollection<DealerImage> Images { get; set; }
+        [Required]
+        public virtual DealerImage Image { get; set; }
 
+        [Required]
+        [Display(Name = "Area")]
+        public int AreaId { get; set; }
+
+        [ForeignKey("AreaId")]
         public virtual Area Area { get; set; }
-
-        public Dealer()
-        {
-            Images = new HashSet<DealerImage>();
-        }
         
     }
 }

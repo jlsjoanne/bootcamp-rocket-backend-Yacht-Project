@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<TayanaYachts.Models.Country>
 
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLTELayout.cshtml";
     ViewBag.Title = "Country";
 }
 
@@ -14,7 +13,7 @@
 </head>
 <body>
     <p>
-        @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Create New", "Create", "Country", null, new { @class = "btn btn-outline-primary" })
     </p>
     <table class="table">
         <tr>

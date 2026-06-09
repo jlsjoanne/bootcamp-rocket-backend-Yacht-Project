@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<TayanaYachts.Models.Member>
 
-@{
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLTELayout.cshtml";
-}
+
 
 <!DOCTYPE html>
 
@@ -12,9 +10,7 @@
     <title>Index</title>
 </head>
 <body>
-    <p class="btn btn-outline-primary">
-        @Html.ActionLink("Create New", "Create")
-    </p>
+    @Html.ActionLink("Create New", "Create","Member",null, new { @class = "btn btn-outline-primary" })
     <table class="table">
         <tr>
             <th>

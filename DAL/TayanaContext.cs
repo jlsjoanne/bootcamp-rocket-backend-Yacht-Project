@@ -72,12 +72,11 @@ namespace TayanaYachts.DAL
                     m.MapInheritedProperties();
                     m.ToTable("YachtEditorImages");
                 });
-            modelBuilder.Entity<DealerImage>()
-                .Map(m =>
-                {
-                    m.MapInheritedProperties();
-                    m.ToTable("DealerImages");
-                });
+            modelBuilder.Entity<Dealer>()
+                .HasRequired(d => d.Image)
+                .WithRequiredPrincipal(i => i.Dealer)
+                .WillCascadeOnDelete(true);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
