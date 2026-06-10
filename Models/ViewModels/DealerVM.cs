@@ -23,8 +23,7 @@ namespace TayanaYachts.Models.ViewModels
         [Display(Name="Dealer Image")]
         public HttpPostedFileBase ImageFile { get; set; }
 
-        [Required]
-        [Display(Name="Original Image")]
+        [Display(Name="Image")]
         public string FilePath { get; set; }
 
         [Required]

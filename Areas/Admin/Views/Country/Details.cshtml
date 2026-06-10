@@ -1,40 +1,32 @@
 ﻿@model TayanaYachts.Models.Country
 
 @{
-    ViewBag.Title = "Country";
+    ViewBag.PageHeader = "Country";
 }
 
-<!DOCTYPE html>
+<div>
+    <h4>Country</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title Details | Tayana Admin</title>
-</head>
-<body>
-    <div>
-        <h4>Country</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-    
-        </dl>
-    </div>
-    @if(Model.Areas.Count() != 0)
-    {
-        <table class="table">
-            <tr>
-                <th>
-                    Area Name
-                </th>
-            </tr>
-        @foreach(var item in Model.Areas)
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+</div>
+@if (Model.Areas.Count() != 0)
+{
+    <table class="table">
+        <tr>
+            <th>
+                Area Name
+            </th>
+        </tr>
+        @foreach (var item in Model.Areas)
         {
             <tr>
                 <td>
@@ -42,11 +34,9 @@
                 </td>
             </tr>
         }
-        </table>
-    }
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-</body>
-</html>
+    </table>
+}
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
