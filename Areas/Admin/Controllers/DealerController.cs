@@ -14,6 +14,7 @@ using System.IO;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
+    [Authorize]
     public class DealerController : Controller
     {
         private TayanaContext db = new TayanaContext();

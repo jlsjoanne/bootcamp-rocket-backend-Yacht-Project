@@ -1,48 +1,37 @@
 ﻿@model TayanaYachts.Models.Dealer
 
+@{
+    ViewBag.PageHeader = "Dealer";
+}
 
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-    <div>
-        <h4>Dealer</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Image.FileName)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Image.FileName)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.Content)
-            </dt>
-    
-            <dd>
+<div>
+    <h4>Details</h4>
+    <hr />
+    <div class="list02">
+        <ul>
+            <li class="list02li">
+                <div>
+                    <p>
+                        <img src="@Url.Content(Model.Image.FilePath)" border="0"/>
+                    </p>
+                </div>
+            </li>
+            <li class="list02li02">
+                <span>
+                    @Html.DisplayFor(model => model.Area.Name)
+                </span>
                 @Html.DisplayFor(model => model.Content)
-            </dd>
-    
-        </dl>
+            </li>
+        </ul>
     </div>
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-</body>
-</html>
+    
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+@section styles{
+    <link href="~/Content/css/homestyle.css" rel="stylesheet" />
+}

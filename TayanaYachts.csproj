@@ -214,11 +214,13 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\csshover.htc" />
+    <Content Include="Content\css\homestyle.css" />
     <Content Include="Content\css\iepngfix.htc" />
     <Content Include="Content\css\js.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\summernote\summernote-bs5.min.css" />
+    <Content Include="Content\summernote\summernote-lite.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -301,6 +303,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\summernote\summernote-bs5.min.js" />
+    <Content Include="Scripts\summernote\summernote-lite.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
