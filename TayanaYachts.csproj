@@ -127,6 +127,7 @@
     <Compile Include="Areas\Admin\Controllers\DealerController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -308,6 +309,7 @@
     <Content Include="Areas\Admin\Views\Dealer\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Dealer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Dealer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Index.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />
