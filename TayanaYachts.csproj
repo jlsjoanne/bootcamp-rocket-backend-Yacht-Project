@@ -120,31 +120,83 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AreaController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DealerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Methods\Utility.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.Designer.cs">
       <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010142026_AddMemberTable.cs" />
+    <Compile Include="Migrations\202606010142026_AddMemberTable.Designer.cs">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.cs" />
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.Designer.cs">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606080333434_AddEditorImg.cs" />
+    <Compile Include="Migrations\202606080333434_AddEditorImg.Designer.cs">
+      <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090212541_UpdateDealer.cs" />
+    <Compile Include="Migrations\202606090212541_UpdateDealer.Designer.cs">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.cs" />
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.Designer.cs">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.cs" />
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.Designer.cs">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.cs" />
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.Designer.cs">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.cs" />
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.Designer.cs">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Dealer.cs" />
+    <Compile Include="Models\DealerImage.cs" />
+    <Compile Include="Models\Member.cs" />
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\NewsFile.cs" />
     <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
+    <Compile Include="Models\InEditorImage.cs" />
+    <Compile Include="Models\ViewModels\DealerVM.cs" />
+    <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
+    <Compile Include="Models\YachtEditorImage.cs" />
     <Compile Include="Models\YachtImage.cs" />
     <Compile Include="Models\YachtInterior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\adminlte\css\adminlte.css" />
+    <Content Include="Content\adminlte\css\adminlte.min.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css" />
+    <Content Include="Content\adminlte\js\adminlte.js" />
+    <Content Include="Content\adminlte\js\adminlte.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -161,27 +213,113 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\csshover.htc" />
+    <Content Include="Content\css\homestyle.css" />
+    <Content Include="Content\css\iepngfix.htc" />
+    <Content Include="Content\css\js.css" />
+    <Content Include="Content\css\reset.css" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Content\images\buttbg.gif" />
+    <Content Include="Content\images\con_bg.gif" />
+    <Content Include="Content\images\icon003.gif" />
+    <Content Include="Content\images\icon004.gif" />
+    <Content Include="Content\images\icon005.gif" />
+    <Content Include="Content\images\icon006.gif" />
+    <Content Include="Content\images\icon007.gif" />
+    <Content Include="Content\images\icon008.gif" />
+    <Content Include="Content\images\lefttop.gif" />
+    <Content Include="Content\images\menu_y1_03.jpg" />
+    <Content Include="Content\images\menu_y1_04.jpg" />
+    <Content Include="Content\images\menu_y1_05.jpg" />
+    <Content Include="Content\images\menu_y1_06.jpg" />
+    <Content Include="Content\images\menu_y2_04.jpg" />
+    <Content Include="Content\images\menu_y2_05.jpg" />
+    <Content Include="Content\images\menu_y2_06.jpg" />
+    <Content Include="Content\summernote\summernote-bs5.min.css" />
+    <Content Include="Content\summernote\summernote-lite.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\images\bg1.jpg" />
+    <Content Include="Content\images\changbg.gif" />
+    <Content Include="Content\images\changbg1.gif" />
+    <Content Include="Content\images\footer.jpg" />
+    <Content Include="Content\images\icon001.gif" />
+    <Content Include="Content\images\icon002.gif" />
+    <Content Include="Content\images\menu.gif" />
+    <Content Include="Content\images\menu1_03.gif" />
+    <Content Include="Content\images\menu1_04.gif" />
+    <Content Include="Content\images\menu1_05.gif" />
+    <Content Include="Content\images\menu1_06.gif" />
+    <Content Include="Content\images\menu1_07.gif" />
+    <Content Include="Content\images\menu2_03.gif" />
+    <Content Include="Content\images\menu2_04.gif" />
+    <Content Include="Content\images\menu2_05.gif" />
+    <Content Include="Content\images\menu2_06.gif" />
+    <Content Include="Content\images\menu2_07.gif" />
+    <Content Include="Content\images\mmmmeeeee.gif" />
+    <Content Include="Content\images\sub_bg.gif" />
+    <Content Include="Content\images\tog.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminLTELayout.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Navbar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Footer.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Index.cshtml" />
     <None Include="connections.config" />
+    <Content Include="Content\adminlte\css\adminlte.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.min.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css.map" />
+    <Content Include="Content\adminlte\js\adminlte.js.map" />
+    <Content Include="Content\adminlte\js\adminlte.min.js.map" />
+    <Content Include="Content\summernote\font\summernote.eot" />
+    <Content Include="Content\summernote\font\summernote.ttf" />
+    <Content Include="Content\summernote\font\summernote.woff" />
+    <Content Include="Content\summernote\font\summernote.woff2" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.cycle.all.2.74.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\summernote\summernote-bs5.min.js" />
+    <Content Include="Scripts\summernote\summernote-lite.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -196,9 +334,13 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\_TayanaLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Files\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -230,6 +372,30 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202605130157570_InitialDb Migration.resx">
       <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010142026_AddMemberTable.resx">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010345263_UpdateMemberTable.resx">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606080333434_AddEditorImg.resx">
+      <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090212541_UpdateDealer.resx">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090320014_UpdateFileUpload.resx">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090344070_UpdateFileStringLength.resx">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090727156_DealerAddAreaId.resx">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606091002023_UpdateForeignKeySetting.resx">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -13,19 +13,22 @@ namespace TayanaYachts.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
-        
-        [NotMapped]
-        public HttpPostedFileBase File { get;set; }
 
-        public string FileName { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string OriginalFileName { get; set; }
+
+        [Required]
+        [StringLength(20)]
         public string FileType { get; set; }
+
+        [Required]
+        [StringLength(100)]
         public string ContentType { get; set; }
 
-        public UploadedFile()
-        {
-            FileName = Path.GetFileNameWithoutExtension(File.FileName);
-            FileType = Path.GetExtension(File.FileName);
-            ContentType = File.ContentType;
-        }
+        [Required]
+        [StringLength(500)]
+        public string FilePath { get; set; }
+
     }
 }

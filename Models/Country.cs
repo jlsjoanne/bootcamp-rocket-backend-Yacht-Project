@@ -16,5 +16,10 @@ namespace TayanaYachts.Models
         public string Name { get; set; }
 
         public virtual ICollection<Area> Areas { get; set; }
+
+        public Country()
+        {
+            Areas = new HashSet<Area>();
+        }
     }
 }

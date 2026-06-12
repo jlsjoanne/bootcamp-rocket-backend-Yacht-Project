@@ -11,6 +11,7 @@ namespace TayanaYachts.Models
     
     public class Yacht
     {
+        
         public int Id { get; set; }
 
         [Required]
@@ -25,24 +26,33 @@ namespace TayanaYachts.Models
         [DataType(DataType.DateTime)]
         public DateTime PostDate { get; set; }
 
+        [AllowHtml]
         public string Overview { get; set; }
 
-        // 1圖1文編輯功能??
-        public virtual UploadedFile OverviewImage { get; set; }
+        //public virtual UploadedFile OverviewImage { get; set; }
 
         [AllowHtml]
         public string Dimensions { get; set; }
 
-        [Required]
         [AllowHtml]
         [Display(Name="DETAIL SPECIFICATION")]
         public string Specification { get; set; }
 
         [Display(Name= "Layout & deck plan")]
-        public virtual ICollection<YachtImage> Images { get; set; }
+        public virtual ICollection<YachtImage> DeckImgs { get; set; }
 
         public virtual ICollection<YachtInterior> Interiors { get; set; }
 
         public virtual ICollection<YachtDownload> Downloads { get; set; }
+
+        public virtual ICollection<YachtEditorImage> EditorImgs { get; set; }
+
+        public Yacht()
+        {
+            DeckImgs = new HashSet<YachtImage>();
+            Interiors = new HashSet<YachtInterior>();
+            Downloads = new HashSet<YachtDownload>();
+            EditorImgs = new HashSet<YachtEditorImage>();
+        }
     }
 }

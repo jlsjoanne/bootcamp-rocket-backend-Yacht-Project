@@ -21,5 +21,10 @@ namespace TayanaYachts.Models
         public int CountryId { get; set; }
         public virtual Country Country { get; set; }
         public virtual ICollection<Dealer> Dealers { get;set; }
+
+        public Area()
+        {
+            Dealers = new HashSet<Dealer>();
+        }
     }
 }

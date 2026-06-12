@@ -19,8 +19,14 @@ namespace TayanaYachts.Models
         [AllowHtml]
         public string Content { get; set; }
 
-        public virtual UploadedFile Image { get;set; }
+        [Required]
+        public virtual DealerImage Image { get; set; }
 
+        [Required]
+        [Display(Name = "Area")]
+        public int AreaId { get; set; }
+
+        [ForeignKey("AreaId")]
         public virtual Area Area { get; set; }
         
     }

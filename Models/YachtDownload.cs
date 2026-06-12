@@ -9,7 +9,6 @@ namespace TayanaYachts.Models
 {
     public class YachtDownload : UploadedFile
     {
-        [Required]
         [ForeignKey("Yacht")]
         public int YachtId { get; set; }
 

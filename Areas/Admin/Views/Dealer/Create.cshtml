@@ -1,0 +1,151 @@
+﻿@model TayanaYachts.Models.ViewModels.DealerVM
+
+
+@{
+    ViewBag.PageHeader = "Dealer";
+}
+
+@using (Html.BeginForm("Create", "Dealer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Create</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Content, new { htmlAttributes = new { @class = "form-control", rows = "10" } })
+                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group"> 
+            @Html.LabelFor(model => model.ImageFile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file"
+                       name="ImageFile"
+                       class="form-control"
+                       accept="image/*"
+                       required />
+                @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(
+                    model => model.CountryId,
+                    Model.CountryList,
+                    "-- Select Country --",
+                    new { @class = "form-select", id = "CountryId" })
+                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AreaId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(
+                    model => model.AreaId,
+                    Model.AreaList,
+                    "-- Select Area --",
+                    new { @class = "form-select", id = "AreaId" })
+                @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group pt-2">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section styles{
+    <link href="~/Content/summernote/summernote-lite.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/summernote/summernote-lite.min.js"></script>
+    <script>
+        $(function () {
+
+            // Summernote setup
+
+            var $content = $('#Content');
+
+            $content.summernote({
+                height: 300,
+                tooltip: false,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['codeview', 'help']]
+                ],
+                callbacks: {
+                    onPaste: function (e) {
+                        e.preventDefault();
+                        var bufferText = ((e.originalEvent || e).clipboardData || window.ClipboardData).getData('text/plain');
+
+                        var pastedText = $('<div>').text(bufferText).html();
+                        
+                        pastedText = pastedText.replace(/(?:\r\n|\r|\n)/g, '<br>');
+                        $(this).summernote('pasteHTML', pastedText);
+                    },
+                }
+            });
+
+            $content.closest('form').on('submit', function () {
+                $content.val($content.summernote('code'));
+            });
+
+            // Country, Area Dropdown
+
+            $("#CountryId").change(function () {
+                var countryId = $(this).val();
+                var areaDropdown = $("#AreaId");
+
+                areaDropdown.empty();
+                areaDropdown.append($("<option></option>").val("").text("-- Select Area --"));
+
+                if (countryId) {
+                    $.ajax({
+                        url: '@Url.Action("GetAreaByCountry", "Dealer")',
+                        type: 'GET',
+                        data: { countryId: countryId },
+                        success: function (areas) {
+                            $.each(areas, function (index, area) {
+                                areaDropdown.append(
+                                    $("<option></option>").val(area.id).text(area.name)
+                                );
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
