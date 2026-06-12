@@ -169,6 +169,18 @@
     <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.Designer.cs">
       <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.cs" />
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.Designer.cs">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.cs" />
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.Designer.cs">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs" />
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.Designer.cs">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -182,7 +194,9 @@
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\InEditorImage.cs" />
     <Compile Include="Models\ViewModels\DealerVM.cs" />
+    <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
+    <Compile Include="Models\ViewModels\NewsVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
     <Compile Include="Models\YachtEditorImage.cs" />
@@ -396,6 +410,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606091002023_UpdateForeignKeySetting.resx">
       <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120826403_UpdateNewsContentType.resx">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120859074_UpdateUploadedFileId.resx">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.resx">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
