@@ -19,7 +19,6 @@ namespace TayanaYachts.Models.ViewModels
         [AllowHtml]
         public string Content { get; set; }
 
-        [Required]
         [Display(Name="Dealer Image")]
         public HttpPostedFileBase ImageFile { get; set; }
 
@@ -36,7 +35,7 @@ namespace TayanaYachts.Models.ViewModels
 
         
 
-        public IEnumerable<SelectListItem> Countries { get; set; }
-        public IEnumerable<SelectListItem> Areas { get; set; }
+        public IEnumerable<SelectListItem> CountryList { get; set; }
+        public IEnumerable<SelectListItem> AreaList { get; set; }
     }
 }

@@ -13,23 +13,22 @@
 	#abgne-block-20110111 .title {
 
 	}
-	#abgne-block-20110111 .title li {
-	cursor: pointer;
-	float: left;
-	background-image: url(~/Content/images/changbg1.gif);
-	background-repeat: no-repeat;
-	background-position: 9px 0px;
-	height: 70px;
-	width: 103px;
-	}
-	#abgne-block-20110111 .title li.on, #abgne-block-20110111 .title li.over {
-	background-image: url(~/Content/images/changbg.gif);
-	background-repeat: no-repeat;
-	background-position: 9px 0px;
-	height: 70px;
-	width: 103px;
-
-	}
+		#abgne-block-20110111 .title li {
+			cursor: pointer;
+			float: left;
+			background-image: url('../images/changbg1.gif');
+			background-repeat: no-repeat;
+			background-position: 9px 0px;
+			height: 70px;
+			width: 103px;
+		}
+			#abgne-block-20110111 .title li.on, #abgne-block-20110111 .title li.over {
+				background-image: url('../images/changbg.gif');
+				background-repeat: no-repeat;
+				background-position: 9px 0px;
+				height: 70px;
+				width: 103px;
+			}
 	
 	
 	

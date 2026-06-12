@@ -8,12 +8,22 @@
 <div>
     <h4>Details</h4>
     <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Area.Country.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Area.Country.Name)
+        </dd>
+
+    </dl>
     <div class="list02">
         <ul>
             <li class="list02li">
                 <div>
                     <p>
-                        <img src="@Url.Content(Model.Image.FilePath)" border="0"/>
+                        <img src="@Url.Content(Model.Image.FilePath)" border="0" />
                     </p>
                 </div>
             </li>
@@ -21,11 +31,14 @@
                 <span>
                     @Html.DisplayFor(model => model.Area.Name)
                 </span>
-                @Html.DisplayFor(model => model.Content)
+                <br />
+                @Html.DisplayFor(model => model.Name)
+                <br />
+                @Html.Raw(Model.Content)
             </li>
         </ul>
     </div>
-    
+
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
@@ -33,5 +46,6 @@
 </p>
 
 @section styles{
+    <link href="~/Content/css/reset.css" rel="stylesheet" />
     <link href="~/Content/css/homestyle.css" rel="stylesheet" />
 }

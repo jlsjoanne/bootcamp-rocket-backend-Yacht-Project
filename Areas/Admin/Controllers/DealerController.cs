@@ -49,8 +49,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             var dealerVM = new DealerVM
             {
-                Countries = GetCountrySelectList(),
-                Areas = GetAreaSelectList()
+                CountryList = GetCountrySelectList(),
+                AreaList = GetAreaSelectList()
             };
             return View(dealerVM);
         }
@@ -75,8 +75,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             
             if (!ModelState.IsValid)
             {
-                dealerVM.Countries = GetCountrySelectList(dealerVM.CountryId);
-                dealerVM.Areas = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
+                dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
+                dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
 
                 return View(dealerVM);
             }
@@ -89,18 +89,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     var dealer = new Dealer
                     {
                         Name = dealerVM.Name,
-                        Content = dealerVM.Content,
+                        Content = RemoveWrappingPTag(dealerVM.Content),
                         AreaId = dealerVM.AreaId.Value
                     };
 
-                    db.Dealers.Add(dealer);
-                    db.SaveChanges();
-
-                    var dealerImage = DealerImgUpload(dealer.Id, dealerVM.ImageFile);
+                    var dealerImage = DealerImgUpload(dealerVM.ImageFile);
 
                     dealer.Image = dealerImage;
-
-                    db.DealerImages.Add(dealerImage);
+                    db.Dealers.Add(dealer);
 
                     db.SaveChanges();
 
@@ -112,7 +108,10 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     transaction.Rollback();
 
-                    ModelState.AddModelError("", "Unable to save dealer. Please tye again");
+                    ModelState.AddModelError("", "Unable to save dealer. Please try again");
+
+                    dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
+                    dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
                     return View(dealerVM);
                 }
             }
@@ -141,8 +140,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 FilePath = dealer.Image.FilePath,
                 CountryId = dealer.Area.CountryId,
                 AreaId = dealer.AreaId,
-                Countries = GetCountrySelectList(dealer.Area.CountryId),
-                Areas = GetAreaSelectList(dealer.Area.CountryId,dealer.AreaId)
+                CountryList = GetCountrySelectList(dealer.Area.CountryId),
+                AreaList = GetAreaSelectList(dealer.Area.CountryId,dealer.AreaId)
             };
             return View(dealerVM);
         }
@@ -156,8 +155,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                dealerVM.Countries = GetCountrySelectList(dealerVM.CountryId);
-                dealerVM.Areas = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
+                dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
+                dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
 
                 return View(dealerVM);
             }
@@ -170,7 +169,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
 
             dealer.Name = dealerVM.Name;
-            dealer.Content = dealerVM.Content;
+            dealer.Content = RemoveWrappingPTag(dealerVM.Content);
             dealer.AreaId = dealerVM.AreaId.Value;
 
             // Check if upload new Image, if uploaded => delete old and update new
@@ -185,7 +184,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                 DeleteImageFile(dealer.Image);
 
-                var newImageData = DealerImgUpload(dealer.Id, dealerVM.ImageFile);
+                var newImageData = DealerImgUpload(dealerVM.ImageFile);
 
                 dealer.Image.OriginalFileName = newImageData.OriginalFileName;
                 dealer.Image.StoredFileName = newImageData.StoredFileName;
@@ -247,7 +246,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name,
-                    Selected = selectedCountryId.HasValue && c.Id == selectedCountryId
+                    Selected = selectedCountryId.HasValue && c.Id == selectedCountryId.Value
                 })
                 .ToList();
         }
@@ -272,7 +271,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Selected = selectedAreaId.HasValue && a.Id == selectedAreaId
+                    Selected = selectedAreaId.HasValue && a.Id == selectedAreaId.Value
                 })
                 .ToList();
         }
@@ -309,7 +308,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             // image limitation for type and size
             var allowedContentType = new[]
             {
-                "image/jpg",
+                "image/jpeg",
                 "image/png",
                 "image/gif",
                 "image/webp"
@@ -349,7 +348,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         }
 
         // Image Upload
-        private DealerImage DealerImgUpload(int dealerId, HttpPostedFileBase file)
+        private DealerImage DealerImgUpload(HttpPostedFileBase file)
         {
             var originalFileName = Path.GetFileName(file.FileName);
             var extension = Path.GetExtension(originalFileName);
@@ -368,7 +367,6 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             return new DealerImage
             {
-                DealerId = dealerId,
                 OriginalFileName = originalFileName,
                 StoredFileName = storedFileName,
                 FileType = extension,
@@ -392,6 +390,40 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 System.IO.File.Delete(absolutePath);
             }
+        }
+
+        // Remove editor wrapping p tag
+        private string RemoveWrappingPTag(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return content;
+            }
+
+            content = content.Trim();
+
+            if(Regex.IsMatch(content, @"^<p[^>]*>\s*(<br\s*/?>)?\s*</p>$", RegexOptions.IgnoreCase))
+            {
+                return String.Empty;
+            }
+
+            var match = Regex.Match(content,
+                @"^<p[^>]*>([\s\S]*)</p>$",
+                RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+            {
+                return content;
+            }
+
+            var innerContent = match.Groups[1].Value;
+
+            if (Regex.IsMatch(innerContent, @"</?p\b", RegexOptions.IgnoreCase))
+            {
+                return content;
+            }
+
+            return innerContent.Trim();
         }
     }
 }
