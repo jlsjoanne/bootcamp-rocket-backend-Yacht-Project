@@ -1,0 +1,152 @@
+﻿@model TayanaYachts.Models.ViewModels.NewsVM
+
+@{
+    ViewBag.PageHeader = "News";
+}
+
+@using (Html.BeginForm("Create","News",FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Create</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Content, new { @class = "form-control", rows="10", style = "resize: both; width:600px; max-width: 100%; " } )
+                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PublishDate, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PublishDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsPinned, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsPinned)
+                    @Html.ValidationMessageFor(model => model.IsPinned, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsPublished, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsPublished)
+                    @Html.ValidationMessageFor(model => model.IsPublished, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageUploads, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div id="image-upload-list" class="pb-2">
+                    <div class="upload-row">
+                        <input type="file"
+                               name="ImageUploads"
+                               accept="image/*"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-image-upload" class="btn btn-outline-secondary pt-2">
+                    Add Image
+                </button>
+                @Html.ValidationMessageFor(model => model.ImageUploads, "", new { @class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FileUploads, htmlAttributes: new { @class = "form-label col-md-2"})
+            <div class="col-md-10">
+                <div id="file-upload-list" class="pb-2">
+                    <div class="upload-row">
+                        <input type="file"
+                               name="FileUploads"
+                               class="form-control" />
+                    </div>
+                </div>
+                <button type="button" id="add-file-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+
+                @Html.ValidationMessageFor(model => model.FileUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group pt-2">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section scripts{
+    <script>
+        (function () {
+            function createUploadRow(inputName, acceptValue) {
+                var row = document.createElement("div");
+                row.className = "upload-row";
+                row.style.marginBottom = "8px";
+
+                var input = document.createElement("input");
+                input.type = "file";
+                input.name = inputName;
+                input.className = "form-control";
+
+                if (acceptValue) {
+                    input.accept = acceptValue;
+                }
+
+                var removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "btn btn-danger btn-sm pt-2";
+                removeButton.style.marginTop = "4px";
+                removeButton.innerText = "Remove";
+
+                removeButton.addEventListener("click", function () {
+                    row.parentNode.removeChild(row);
+                });
+
+                row.appendChild(input);
+                row.appendChild(removeButton);
+
+                return row;
+            }
+
+            document.getElementById("add-image-upload").addEventListener("click", function () {
+                var list = document.getElementById("image-upload-list");
+                list.appendChild(createUploadRow("ImageUploads", "image/*"));
+            });
+
+            document.getElementById("add-file-upload").addEventListener("click", function () {
+                var list = document.getElementById("file-upload-list");
+                list.appendChild(createUploadRow("FileUploads", null));
+            });
+        })();
+    </script>
+}

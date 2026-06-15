@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\areas\\admin\\views\\news\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:areas\\admin\\views\\news\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\areas\\admin\\controllers\\newscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:areas\\admin\\controllers\\newscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\areas\\admin\\views\\news\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:areas\\admin\\views\\news\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\methods\\uploadhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:methods\\uploadhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\models\\viewmodels\\newsvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:models\\viewmodels\\newsvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|c:\\users\\jlsjo\\documents\\rocketcamp\\tayana\\tayanayachts\\areas\\admin\\views\\news\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1F2ED299-956F-4E8A-AC30-7DBEFA1792A9}|TayanaYachts.csproj|solutionrelative:areas\\admin\\views\\news\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +30,61 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 10,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "NewsVM.cs",
+              "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Models\\ViewModels\\NewsVM.cs",
+              "RelativeDocumentMoniker": "Models\\ViewModels\\NewsVM.cs",
+              "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Models\\ViewModels\\NewsVM.cs",
+              "RelativeToolTip": "Models\\ViewModels\\NewsVM.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAkwCEAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T06:25:59.516Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UploadHelper.cs",
+              "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Methods\\UploadHelper.cs",
+              "RelativeDocumentMoniker": "Methods\\UploadHelper.cs",
+              "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Methods\\UploadHelper.cs",
+              "RelativeToolTip": "Methods\\UploadHelper.cs",
+              "ViewState": "AgIAAG0AAAAAAAAAAAAkwHUAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:45:27.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Create.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Admin\\Views\\News\\Create.cshtml",
+              "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Create.cshtml",
+              "RelativeToolTip": "Areas\\Admin\\Views\\News\\Create.cshtml",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAAAFsAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-15T06:26:26.461Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Index.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Admin\\Views\\News\\Index.cshtml",
+              "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Index.cshtml",
+              "RelativeToolTip": "Areas\\Admin\\Views\\News\\Index.cshtml",
+              "ViewState": "AgIAACkAAAAAAAAAAAAAADUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-15T06:16:53.349Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
@@ -47,27 +112,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Index.cshtml",
-              "RelativeDocumentMoniker": "Areas\\Admin\\Views\\News\\Index.cshtml",
-              "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Views\\News\\Index.cshtml",
-              "RelativeToolTip": "Areas\\Admin\\Views\\News\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-12T09:55:12.036Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "NewsController.cs",
               "DocumentMoniker": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Controllers\\NewsController.cs",
               "RelativeDocumentMoniker": "Areas\\Admin\\Controllers\\NewsController.cs",
               "ToolTip": "C:\\Users\\jlsjo\\Documents\\RocketCamp\\Tayana\\TayanaYachts\\Areas\\Admin\\Controllers\\NewsController.cs",
               "RelativeToolTip": "Areas\\Admin\\Controllers\\NewsController.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAABQAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-12T09:41:55.038Z",
+              "WhenOpened": "2026-06-15T06:11:25.223Z",
               "EditorCaption": ""
             }
           ]

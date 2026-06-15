@@ -27,7 +27,7 @@ namespace TayanaYachts.Models.ViewModels
         [Display(Name="Pinned")]
         public bool IsPinned { get; set; }
 
-        [Display(Name="Published")]
+        [Display(Name="Publish to Website")]
         public bool IsPublished { get; set; }
 
         [Display(Name = "Upload Images")]
