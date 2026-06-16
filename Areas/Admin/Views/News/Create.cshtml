@@ -60,11 +60,21 @@
             @Html.LabelFor(model => model.ImageUploads, htmlAttributes: new { @class = "form-label col-md-2" })
             <div class="col-md-10">
                 <div id="image-upload-list" class="pb-2">
-                    <div class="upload-row">
+                    <div class="upload-row mb-2">
                         <input type="file"
-                               name="ImageUploads"
+                               name="ImageUploads[0]"
                                accept="image/*"
                                class="form-control" />
+                        <div class="form-check mt-1">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="ThumbnailImageUploadIndex"
+                                   value="0"
+                                   id="thumbnail-image-0" />
+                            <label class="form-check-label" for="thumbnail-image-0">
+                                Use as thumbnail
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -108,24 +118,66 @@
 @section scripts{
     <script>
         (function () {
-            function createUploadRow(inputName, acceptValue) {
+
+            var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']");
+
+            function createImageUploadRow(index) {
                 var row = document.createElement("div");
-                row.className = "upload-row";
-                row.style.marginBottom = "8px";
+                row.className = "upload-row mb-2";
 
                 var input = document.createElement("input");
                 input.type = "file";
-                input.name = inputName;
+                input.name = "ImageUploads[" + index + "]";
+                input.accept = "image/*";
                 input.className = "form-control";
 
-                if (acceptValue) {
-                    input.accept = acceptValue;
-                }
+                var thumbnailWrapper = document.createElement("div");
+                thumbnailWrapper.className = "form-check mt-1";
+
+                var thumbnailRadio = document.createElement("input");
+                thumbnailRadio.type = "radio";
+                thumbnailRadio.name = "ThumbnailImageUploadIndex";
+                thumbnailRadio.value = index;
+                thumbnailRadio.id = "thumbnail-image-" + index;
+                thumbnailRadio.className = "form-check-input";
+
+                var thumbnailLabel = document.createElement("label");
+                thumbnailLabel.className = "form-check-label";
+                thumbnailLabel.setAttribute("for", "thumbnail-image-" + index);
+                thumbnailLabel.innerText = "Use as thumbnail";
+
+                thumbnailWrapper.appendChild(thumbnailRadio);
+                thumbnailWrapper.appendChild(thumbnailLabel);
 
                 var removeButton = document.createElement("button");
                 removeButton.type = "button";
-                removeButton.className = "btn btn-danger btn-sm pt-2";
-                removeButton.style.marginTop = "4px";
+                removeButton.className = "btn btn-danger btn-sm mt-1";
+                removeButton.innerText = "Remove";
+
+                removeButton.addEventListener("click", function () {
+                    row.parentNode.removeChild(row);
+                });
+
+                row.appendChild(input);
+                row.appendChild(thumbnailWrapper);
+                row.appendChild(removeButton);
+
+                return row;
+
+            }
+
+            function createFileUploadRow() {
+                var row = document.createElement("div");
+                row.className = "upload-row mb-2";
+
+                var input = document.createElement("input");
+                input.type = "file";
+                input.name = "FileUploads";
+                input.className = "form-control";
+
+                var removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "btn btn-danger btn-sm mt-1";
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
@@ -140,12 +192,13 @@
 
             document.getElementById("add-image-upload").addEventListener("click", function () {
                 var list = document.getElementById("image-upload-list");
-                list.appendChild(createUploadRow("ImageUploads", "image/*"));
+                list.appendChild(createImageUploadRow(imageUploadIndex));
+                imageUploadIndex++;
             });
 
             document.getElementById("add-file-upload").addEventListener("click", function () {
                 var list = document.getElementById("file-upload-list");
-                list.appendChild(createUploadRow("FileUploads", null));
+                list.appendChild(createFileUploadRow());
             });
         })();
     </script>

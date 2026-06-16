@@ -36,10 +36,15 @@ namespace TayanaYachts.Models.ViewModels
         [Display(Name = "Upload Files")]
         public HttpPostedFileBase[] FileUploads { get; set; }
 
+        [Display(Name = "Existing Images")]
         public IList<ExistingUploadFileVM> ExistingImages { get; set; }
+
+        [Display(Name = "Existing Files")]
         public IList<ExistingUploadFileVM> ExistingFiles { get; set; }
 
         public Guid[] DeleteImageIds { get; set; }
         public Guid[] DeleteFileIds { get; set; }
+
+        public Guid? ThumbnailImageId { get; set; }
     }
 }

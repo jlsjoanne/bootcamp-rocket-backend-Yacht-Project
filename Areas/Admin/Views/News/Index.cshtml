@@ -1,28 +1,50 @@
-﻿@model IEnumerable<TayanaYachts.Models.News>
+﻿@model PagedList.IPagedList<TayanaYachts.Models.News>
+@using PagedList.Mvc;
 
 @{
     ViewBag.PageHeader = "News";
 }
 
-<p>
+<div class="mb-3">
     @Html.ActionLink("Create New", "Create", "News", null, new { @class = "btn btn-outline-primary" })
-</p>
+</div>
+
+<div class="mb-3">
+    @using (Html.BeginForm("Index", "News", FormMethod.Get))
+    {
+        <label for="searchString">Search Title and Content</label>
+
+        <div class="input-group" style="max-width: 420px;">
+            <input type="search"
+                   id="searchString"
+                   name="searchString"
+                   value="@ViewBag.CurrentFilter"
+                   class="form-control"
+                   placeholder="Search news..." />
+            <button type="submit" class="btn btn-outline-secondary">
+                Search
+            </button>
+        </div>
+    }
+</div>
+
+0
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Content)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Content)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PublishDate)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().PublishDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsPinned)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().IsPinned)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsPublished)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().IsPublished)
         </th>
         <th></th>
     </tr>
@@ -54,3 +76,13 @@
     }
 
 </table>
+
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new {page, currentFilter = ViewBag.CurrentFilter}))
+
+@section styles{
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+}

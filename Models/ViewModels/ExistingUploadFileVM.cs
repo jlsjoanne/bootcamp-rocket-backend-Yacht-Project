@@ -11,5 +11,6 @@ namespace TayanaYachts.Models.ViewModels
         public string OriginalFileName { get; set; }
         public string FilePath { get; set; }
         public string ContentType { get; set; }
+        public string FileType { get; set; }
     }
 }

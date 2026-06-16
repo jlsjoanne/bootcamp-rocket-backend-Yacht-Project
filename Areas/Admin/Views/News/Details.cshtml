@@ -5,7 +5,7 @@
 }
 
 <div>
-    <h4>News</h4>
+    <h4>Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -21,7 +21,9 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Content)
+            <div style="white-space: pre-line;">
+                @Html.DisplayFor(model => model.Content)
+            </div>
         </dd>
 
         <dt>
@@ -46,6 +48,61 @@
 
         <dd>
             @Html.DisplayFor(model => model.IsPublished)
+        </dd>
+
+        <dt>
+            Images
+        </dt>
+
+        <dd>
+            @if (Model.Images != null && Model.Images.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var image in Model.Images)
+                    {
+                        <div class="col-md-3">
+                            <figure class="mb-0">
+                                <a href="@Url.Content(image.FilePath)" target="_blank" rel="noopener noreferrer">
+                                    <img src="@Url.Content(image.FilePath)"
+                                         alt="@image.OriginalFileName"
+                                         class="img-fluid img-thumbnail" />
+                                </a>
+                                <figcaption class="small text-body-secondary mt-1">
+                                    @image.OriginalFileName
+                                </figcaption>
+                            </figure>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No images.</p>
+            }
+        </dd>
+
+        <dt>
+            Files
+        </dt>
+
+        <dd>
+            @if (Model.Files != null && Model.Files.Any())
+            {
+                <ul class="list-unstyled mb-0">
+                    @foreach (var file in Model.Files)
+                    {
+                        <li class="mb-2">
+                            <a href="@Url.Content(file.FilePath)" target="_blank" rel="noreferrer noopener">
+                                @file.OriginalFileName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No files.</p>
+            }
         </dd>
 
     </dl>
