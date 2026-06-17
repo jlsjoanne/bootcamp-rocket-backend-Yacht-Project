@@ -23,7 +23,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Index(string searchString, string currentFilter, int? page)
         {
 
-            if( searchString != null)
+            if (searchString != null)
             {
                 page = 1;
             }
@@ -35,9 +35,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
             ViewBag.CurrentFilter = searchString;
 
             var news = db.News.AsQueryable();
-            
 
-            if(!String.IsNullOrWhiteSpace(searchString))
+
+            if (!String.IsNullOrWhiteSpace(searchString))
             {
                 news = news.Where(n => n.Title.Contains(searchString) || n.Content.Contains(searchString));
             }
@@ -48,7 +48,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             int pageSize = 5;
             int pageNumber = (page ?? 1);
 
-            return View(news.ToPagedList(pageNumber,pageSize));
+            return View(news.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/News/Details/5
@@ -82,22 +82,20 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(NewsVM newsVM)
         {
-            var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0])
-                .Where(i => i != null && i.ContentLength > 0)
-                .ToList();
+            var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0]);
             var fileUploads = (newsVM.FileUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
 
-            foreach(var image in imageUploads)
+            foreach (var image in imageUploads.Where(i => i != null && i.ContentLength > 0))
             {
-                if(!UploadHelper.IsFileValid(image, 1))
+                if (!UploadHelper.IsFileValid(image, 1))
                 {
                     ModelState.AddModelError("ImageUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
                 }
             }
 
-            foreach(var file in fileUploads)
+            foreach (var file in fileUploads)
             {
                 if (!UploadHelper.IsFileValid(file, 0))
                 {
@@ -105,25 +103,57 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 }
             }
 
-            if(!ModelState.IsValid)
+            if (!newsVM.ThumbnailImageUploadIndex.HasValue)
+            {
+                ModelState.AddModelError("ThumbnailImageUploadIndex", "Please select one uploaded image as the thumbnail.");
+            }
+            else
+            {
+                var index = newsVM.ThumbnailImageUploadIndex.Value;
+
+                if (index < 0 || index >= imageUploads.Length || imageUploads[index] == null || imageUploads[index].ContentLength == 0)
+                {
+                    ModelState.AddModelError("ThumbnailImageUploadIndex", "The selected thumbnail must have an uploaded image.");
+                }
+            }
+
+            if (!ModelState.IsValid)
             {
                 return View(newsVM);
             }
 
-            using(var transaction = db.Database.BeginTransaction())
+            var savedUploads = new List<UploadedFile>();
+
+            using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
                     var news = ToNews(newsVM);
 
-                    foreach(var image in imageUploads)
+                    for (int i = 0; i < imageUploads.Length; i++)
                     {
-                        news.Images.Add(UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url));
+                        var image = imageUploads[i];
+
+                        if (image == null || image.ContentLength == 0)
+                        {
+                            continue;
+                        }
+
+                        var savedImage = UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url);
+                        savedUploads.Add(savedImage);
+                        news.Images.Add(savedImage);
+
+                        if (i == newsVM.ThumbnailImageUploadIndex.Value)
+                        {
+                            news.ThumbnailImageId = savedImage.Id;
+                        }
                     }
 
-                    foreach(var file in fileUploads)
+                    foreach (var file in fileUploads)
                     {
-                        news.Files.Add(UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url));
+                        var savedFile = UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
+                        savedUploads.Add(savedFile);
+                        news.Files.Add(savedFile);
                     }
 
                     db.News.Add(news);
@@ -135,6 +165,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 catch
                 {
                     transaction.Rollback();
+
+                    foreach (var upload in savedUploads)
+                    {
+                        UploadHelper.DeleteUploadedFile(upload, Server);
+                    }
+
                     ModelState.AddModelError("", "Unable to save news. Please try again.");
                     return View(newsVM);
                 }
@@ -169,24 +205,22 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Edit(NewsVM newsVM)
         {
             // Check upload new Images and Files
-            var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0])
-                .Where(i => i != null && i.ContentLength > 0)
-                .ToList();
+            var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0]);
             var fileUploads = (newsVM.FileUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
 
-            foreach(var image in imageUploads)
+            foreach (var image in imageUploads.Where(i => i != null && i.ContentLength > 0))
             {
-                if(!UploadHelper.IsFileValid(image, 1))
+                if (!UploadHelper.IsFileValid(image, 1))
                 {
                     ModelState.AddModelError("ImageUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
                 }
             }
 
-            foreach(var file in fileUploads)
+            foreach (var file in fileUploads)
             {
-                if(!UploadHelper.IsFileValid(file, 0))
+                if (!UploadHelper.IsFileValid(file, 0))
                 {
                     ModelState.AddModelError("FileUploads", "One or more uploaded files are not allowed.");
                 }
@@ -199,14 +233,81 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 .Include(n => n.Files)
                 .SingleOrDefault(n => n.Id == newsVM.Id);
 
-            if(news == null)
+            // Delete chosen uploaded images and files
+
+            var deleteImageIds = newsVM.DeleteImageIds ?? new Guid[0];
+            var deleteFileIds = newsVM.DeleteFileIds ?? new Guid[0];
+
+            if (news == null)
             {
                 return HttpNotFound();
             }
 
+            // ThumbnailSelect Validation
+            Guid? selectedExistingThumbnailId = null;
+            int? selectedUploadThumbnailIndex = null;
+
+            if (String.IsNullOrWhiteSpace(newsVM.ThumbnailSelection))
+            {
+                ModelState.AddModelError("ThumbnailSelection", "Please select one image as the thumbnail.");
+            }
+            else
+            {
+                var thumbnailValue = newsVM.ThumbnailSelection;
+
+
+                if (thumbnailValue.StartsWith("existing:"))
+                {
+                    var idText = thumbnailValue.Substring("existing:".Length);
+                    Guid parsedId;
+
+                    if (!Guid.TryParse(idText, out parsedId))
+                    {
+                        ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail image is invalid.");
+                    }
+                    else
+                    {
+                        selectedExistingThumbnailId = parsedId;
+                        if (!news.Images.Any(i => i.Id == parsedId))
+                        {
+                            ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail image is invalid.");
+                        }
+                        if (deleteImageIds.Contains(parsedId))
+                        {
+                            ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail image cannot be deleted.");
+                        }
+                    }
+                }
+                else if (thumbnailValue.StartsWith("upload:"))
+                {
+                    var indexText = thumbnailValue.Substring("upload:".Length);
+                    int index;
+                    if (!int.TryParse(indexText, out index))
+                    {
+                        ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail is invalid.");
+                    }
+                    else
+                    {
+                        selectedUploadThumbnailIndex = index;
+                        if (index < 0 ||
+                            index >= imageUploads.Length ||
+                            imageUploads[index] == null ||
+                            imageUploads[index].ContentLength == 0)
+                        {
+                            ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail must have an uploaded image.");
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail is invalid.");
+                }
+
+            }
+
             // Check ModelState
 
-            if( !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var reloadNewsVM = ToNewsVM(news);
                 reloadNewsVM.Title = newsVM.Title;
@@ -214,48 +315,119 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 reloadNewsVM.PublishDate = newsVM.PublishDate;
                 reloadNewsVM.IsPinned = newsVM.IsPinned;
                 reloadNewsVM.IsPublished = newsVM.IsPublished;
+                reloadNewsVM.ThumbnailSelection = newsVM.ThumbnailSelection;
                 return View(reloadNewsVM);
             }
 
             // Update News data
 
-            UpdateNewsFromVM(news, newsVM);
 
-            // Delete chosen uploaded images and files
+            var newSavedUploads = new List<UploadedFile>();
+            var deletedExistingUploads = new List<UploadedFile>();
 
-            var deleteImageIds = newsVM.DeleteImageIds ?? new Guid[0];
-            var deleteFileIds = newsVM.DeleteFileIds ?? new Guid[0];
-
-            foreach (var image in news.Images.Where(i => deleteImageIds.Contains(i.Id)).ToList())
+            using (var transaction = db.Database.BeginTransaction())
             {
-                UploadHelper.DeleteUploadedFile(image, Server);
-                db.NewsImages.Remove(image);
+                try
+                {
+                    UpdateNewsFromVM(news, newsVM);
+
+                    foreach (var image in news.Images.Where(i => deleteImageIds.Contains(i.Id)).ToList())
+                    {
+                        deletedExistingUploads.Add(image);
+                        db.NewsImages.Remove(image);
+                    }
+
+                    foreach (var file in news.Files.Where(i => deleteFileIds.Contains(i.Id)).ToList())
+                    {
+                        deletedExistingUploads.Add(file);
+                        db.NewsFiles.Remove(file);
+                    }
+
+                    // Upload added image and file to related folder
+                    for (int i = 0; i < imageUploads.Length; i++)
+                    {
+                        var image = imageUploads[i];
+
+                        if (image == null || image.ContentLength == 0)
+                        {
+                            continue;
+                        }
+
+                        var savedImage = UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url);
+                        newSavedUploads.Add(savedImage);
+                        news.Images.Add(savedImage);
+
+                        // Check Thumbnail
+                        if (selectedUploadThumbnailIndex.HasValue && i == selectedUploadThumbnailIndex.Value)
+                        {
+                            news.ThumbnailImageId = savedImage.Id;
+                        }
+                    }
+
+                    foreach (var file in fileUploads)
+                    {
+                        var savedFile = UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
+                        newSavedUploads.Add(savedFile);
+                        news.Files.Add(savedFile);
+                    }
+
+                    // if Thumbnail is Existing Image => assign news.ThumbnailImageId to that image
+                    if (selectedExistingThumbnailId.HasValue)
+                    {
+                        news.ThumbnailImageId = selectedExistingThumbnailId.Value;
+                    }
+
+                    // save to db and return to news page
+
+                    db.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    foreach (var upload in newSavedUploads)
+                    {
+                        UploadHelper.DeleteUploadedFile(upload, Server);
+                    }
+
+                    ModelState.AddModelError("", "Unable to save news. Please try again.");
+
+                    var reloadNews = db.News
+                        .Include(n => n.Images)
+                        .Include(n => n.Files)
+                        .SingleOrDefault(n => n.Id == newsVM.Id);
+
+                    if(reloadNews == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    var reloadNewsVM = ToNewsVM(reloadNews);
+                    reloadNewsVM.Title = newsVM.Title;
+                    reloadNewsVM.Content = newsVM.Content;
+                    reloadNewsVM.PublishDate = newsVM.PublishDate;
+                    reloadNewsVM.IsPinned = newsVM.IsPinned;
+                    reloadNewsVM.IsPublished = newsVM.IsPublished;
+                    reloadNewsVM.ThumbnailSelection = newsVM.ThumbnailSelection;
+                    return View(reloadNewsVM);
+                }
             }
 
-            foreach(var file in news.Files.Where(i => deleteFileIds.Contains(i.Id)).ToList())
+            try
             {
-                UploadHelper.DeleteUploadedFile(file, Server);
-                db.NewsFiles.Remove(file);
+                foreach (var upload in deletedExistingUploads)
+                {
+                    UploadHelper.DeleteUploadedFile(upload, Server);
+                }
             }
-
-            // Upload added image and file to related folder
-
-            foreach(var image in imageUploads)
+            catch(Exception ex)
             {
-                UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url);
+                System.Diagnostics.Trace.TraceError("Post-commit upload cleanup failed:" + ex);
             }
-
-            foreach(var file in fileUploads)
-            {
-                UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
-            }
-
-            // save to db and return to news page
-
-            db.SaveChanges();
+            
 
             return RedirectToAction("Details", news.Id);
-
         }
 
         // GET: Admin/News/Delete/5
@@ -279,11 +451,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             News news = db.News.Find(id);
-            foreach(var newsImage in news.Images)
+            foreach (var newsImage in news.Images)
             {
                 UploadHelper.DeleteUploadedFile(newsImage, Server);
             }
-            foreach(var newsFile in news.Files)
+            foreach (var newsFile in news.Files)
             {
                 UploadHelper.DeleteUploadedFile(newsFile, Server);
             }
@@ -333,7 +505,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 IsPinned = news.IsPinned,
                 IsPublished = news.IsPublished,
                 ExistingImages = news.Images.Select(i => i.ToExistingUploadFileVM()).ToList(),
-                ExistingFiles = news.Files.Select(f => f.ToExistingUploadFileVM()).ToList()
+                ExistingFiles = news.Files.Select(f => f.ToExistingUploadFileVM()).ToList(),
+                ThumbnailImageId = news.ThumbnailImageId
             };
         }
     }

@@ -46,5 +46,9 @@ namespace TayanaYachts.Models.ViewModels
         public Guid[] DeleteFileIds { get; set; }
 
         public Guid? ThumbnailImageId { get; set; }
+
+        public int? ThumbnailImageUploadIndex { get; set; }
+
+        public string ThumbnailSelection { get; set; }
     }
 }

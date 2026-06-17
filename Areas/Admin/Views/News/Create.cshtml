@@ -82,6 +82,7 @@
                     Add Image
                 </button>
                 @Html.ValidationMessageFor(model => model.ImageUploads, "", new { @class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.ThumbnailImageUploadIndex, "", new { @class = "text-danger"})
             </div>
         </div>
 
@@ -119,7 +120,7 @@
     <script>
         (function () {
 
-            var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']");
+            var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']").length;
 
             function createImageUploadRow(index) {
                 var row = document.createElement("div");

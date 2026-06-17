@@ -63,7 +63,7 @@
             <div class="col-md-10">
                 @if (Model.ExistingImages != null && Model.ExistingImages.Any())
                 {
-                    foreach (var image in Model.ExistingImages ?? new List<TayanaYachts.Models.ViewModels.ExistingUploadFileVM>())
+                    foreach (var image in Model.ExistingImages)
                     {
                         <div class="mb-3 existing-upload-item">
                             <figure>
@@ -77,8 +77,25 @@
                                 </figcaption>
                             </figure>
 
+                            <div class="form-check mt-1">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="ThumbnailSelection" 
+                                       value="existing:@image.Id" 
+                                       id="thumbnail-existing-@image.Id"
+                                       @(Model.ThumbnailImageId == image.Id ? "checked" : "") />
+
+                                <label class="form-check-label" for="thumbnail-existing-@image.Id">
+                                    Use as thumbnail
+                                </label>
+                            </div>
+
                             <label class="ms-2">
-                                <input type="checkbox" name="DeleteImageIds" value="@image.Id" />
+                                <input class="existing-image-delete" 
+                                       type="checkbox"
+                                       name="DeleteImageIds"
+                                       value="@image.Id"
+                                       data-thumbnail-radio-id="thumbnail-existing-@image.Id" />
                                 Delete
                             </label>
                         </div>
@@ -95,11 +112,21 @@
             <label class="form-label col-md-2">Upload New Images</label>
             <div class="col-md-10">
                 <div id="image-upload-list" class="pb-2">
-                    <div class="upload-row">
+                    <div class="upload-row mb-2">
                         <input type="file"
-                               name="ImageUploads"
+                               name="ImageUploads[0]"
                                accept="image/*"
                                class="form-control" />
+                        <div class="form-check mt-1">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="ThumbnailSelection"
+                                   value="upload:0"
+                                   id="thumbnail-upload-0" />
+                            <label class="form-check-label" for="thumbnail-upload-0">
+                                Use as thumbnail
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -107,6 +134,7 @@
                     Add Image
                 </button>
                 @Html.ValidationMessageFor(model => model.ImageUploads, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.ThumbnailSelection, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -115,7 +143,7 @@
             <div class="col-md-10">
                 @if (Model.ExistingFiles != null && Model.ExistingFiles.Any())
                 {
-                    foreach (var file in Model.ExistingFiles ?? new List<TayanaYachts.Models.ViewModels.ExistingUploadFileVM>())
+                    foreach (var file in Model.ExistingFiles)
                     {
                         <div class="mb-3 existing-upload-item">
                             <a href="@Url.Content(file.FilePath)" target="_blank" rel="noopener noreferrer">
@@ -173,24 +201,66 @@
 @section scripts{
     <script>
         (function () {
-            function createUploadRow(inputName, acceptValue) {
+
+            var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']").length;
+
+            function createImageUploadRow(index) {
                 var row = document.createElement("div");
-                row.className = "upload-row";
-                row.style.marginBottom = "8px";
+                row.className = "upload-row mb-2";
 
                 var input = document.createElement("input");
                 input.type = "file";
-                input.name = inputName;
+                input.name = "ImageUploads[" + index + "]";
+                input.accept = "image/*";
                 input.className = "form-control";
 
-                if (acceptValue) {
-                    input.accept = acceptValue;
-                }
+                var thumbnailWrapper = document.createElement("div");
+                thumbnailWrapper.className = "form-check mt-1";
+
+                var thumbnailRadio = document.createElement("input");
+                thumbnailRadio.type = "radio";
+                thumbnailRadio.name = "ThumbnailSelection";
+                thumbnailRadio.value = "upload:" + index;
+                thumbnailRadio.id = "thumbnail-upload-" + index;
+                thumbnailRadio.className = "form-check-input";
+
+                var thumbnailLabel = document.createElement("label");
+                thumbnailLabel.className = "form-check-label";
+                thumbnailLabel.setAttribute("for", "thumbnail-upload-" + index);
+                thumbnailLabel.innerText = "Use as thumbnail";
+
+                thumbnailWrapper.appendChild(thumbnailRadio);
+                thumbnailWrapper.appendChild(thumbnailLabel);
 
                 var removeButton = document.createElement("button");
                 removeButton.type = "button";
-                removeButton.className = "btn btn-danger btn-sm pt-2";
-                removeButton.style.marginTop = "4px";
+                removeButton.className = "btn btn-danger btn-sm mt-1";
+                removeButton.innerText = "Remove";
+
+                removeButton.addEventListener("click", function () {
+                    row.parentNode.removeChild(row);
+                });
+
+                row.appendChild(input);
+                row.appendChild(thumbnailWrapper);
+                row.appendChild(removeButton);
+
+                return row;
+
+            }
+
+            function createFileUploadRow() {
+                var row = document.createElement("div");
+                row.className = "upload-row mb-2";
+
+                var input = document.createElement("input");
+                input.type = "file";
+                input.name = "FileUploads";
+                input.className = "form-control";
+
+                var removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "btn btn-danger btn-sm mt-1";
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
@@ -203,14 +273,39 @@
                 return row;
             }
 
+            function syncDeletedImageThumbnailState(deleteCheckbox) {
+                var radioId = deleteCheckbox.getAttribute("data-thumbnail-radio-id");
+                var radio = document.getElementById(radioId);
+
+                if (!radio) {
+                    return;
+                }
+
+                if (deleteCheckbox.checked) {
+                    radio.checked = false;
+                    radio.disabled = true;
+                } else {
+                    radio.disabled = false;
+                }
+            }
+
             document.getElementById("add-image-upload").addEventListener("click", function () {
                 var list = document.getElementById("image-upload-list");
-                list.appendChild(createUploadRow("ImageUploads", "image/*"));
+                list.appendChild(createImageUploadRow(imageUploadIndex));
+                imageUploadIndex++;
             });
 
             document.getElementById("add-file-upload").addEventListener("click", function () {
                 var list = document.getElementById("file-upload-list");
-                list.appendChild(createUploadRow("FileUploads", null));
+                list.appendChild(createFileUploadRow());
+            });
+
+            document.querySelectorAll(".existing-image-delete").forEach(function (deleteCheckbox) {
+                syncDeletedImageThumbnailState(deleteCheckbox);
+
+                deleteCheckbox.addEventListener("change", function () {
+                    syncDeletedImageThumbnailState(deleteCheckbox);
+                });
             });
         })();
     </script>
