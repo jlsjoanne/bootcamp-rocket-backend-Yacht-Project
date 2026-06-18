@@ -194,6 +194,10 @@
     <Compile Include="Migrations\202606160923032_NewsAddThumbnailImg.Designer.cs">
       <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.cs" />
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.Designer.cs">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -441,6 +445,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606160923032_NewsAddThumbnailImg.resx">
       <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606180953495_RenameYachtNameIndex.resx">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
