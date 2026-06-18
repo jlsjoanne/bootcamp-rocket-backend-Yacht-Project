@@ -60,15 +60,25 @@
                 <div class="row g-3">
                     @foreach (var image in Model.Images)
                     {
+                        var isThumbnail = image.Id == Model.ThumbnailImageId;
+
                         <div class="col-md-3">
-                            <figure class="mb-0">
-                                <a href="@Url.Content(image.FilePath)" target="_blank" rel="noopener noreferrer">
+                            <figure class="image-figure mb-0 h-100">
+                                <a href="@Url.Content(image.FilePath)" target="_blank" rel="noopener noreferrer" class="d-block">
                                     <img src="@Url.Content(image.FilePath)"
                                          alt="@image.OriginalFileName"
-                                         class="img-fluid img-thumbnail" />
+                                         class="img-thumbnail image-thumb" />
                                 </a>
-                                <figcaption class="small text-body-secondary mt-1">
-                                    @image.OriginalFileName
+                                <figcaption class="image-caption small text-body-secondary mt-1">
+                                    <span class="d-inline-block text-truncate image-file-name">
+                                        @image.OriginalFileName
+                                    </span>
+                                    @if (isThumbnail)
+                                    {
+                                        <span class="badge bg-info ms-1">
+                                            Thumbnail
+                                        </span>
+                                    }
                                 </figcaption>
                             </figure>
                         </div>
@@ -111,3 +121,27 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+@section styles{
+    <style>
+        .image-figure {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-thumbnail.image-thumb {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+        }
+
+        .image-caption {
+            min-height: 2.5rem;
+        }
+
+        .image-file-name {
+            max-width: 100%;
+            vertical-align: middle;
+        }
+    </style>
+    }

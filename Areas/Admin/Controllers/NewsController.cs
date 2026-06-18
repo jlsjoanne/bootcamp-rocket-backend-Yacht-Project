@@ -11,6 +11,9 @@ using TayanaYachts.Models;
 using TayanaYachts.Models.ViewModels;
 using TayanaYachts.Methods;
 using PagedList;
+using System.Data.Entity.Validation;
+using System.Text;
+using System.Diagnostics;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
@@ -123,13 +126,17 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
 
             var savedUploads = new List<UploadedFile>();
+            string step = "starting";
 
             using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
+                    step = "mapping NewsVM to News";
                     var news = ToNews(newsVM);
+                    NewsImage thumbnailImage = null;
 
+                    step = "saving upload images";
                     for (int i = 0; i < imageUploads.Length; i++)
                     {
                         var image = imageUploads[i];
@@ -145,10 +152,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                         if (i == newsVM.ThumbnailImageUploadIndex.Value)
                         {
-                            news.ThumbnailImageId = savedImage.Id;
+                            thumbnailImage = savedImage;
                         }
                     }
 
+                    step = "saving upload files";
                     foreach (var file in fileUploads)
                     {
                         var savedFile = UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
@@ -156,13 +164,24 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         news.Files.Add(savedFile);
                     }
 
+                    step = "adding News entity";
                     db.News.Add(news);
+
+                    step = "saving news, images, and files to db before thumbnail";
                     db.SaveChanges();
 
+                    if(thumbnailImage != null)
+                    {
+                        step = "saving thumbnail image reference";
+                        news.ThumbnailImageId = thumbnailImage.Id;
+                        db.SaveChanges();
+                    }
+
+                    step = "commiting transaction";
                     transaction.Commit();
                     return RedirectToAction("Index");
                 }
-                catch
+                catch(DbEntityValidationException ex)
                 {
                     transaction.Rollback();
 
@@ -171,7 +190,35 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         UploadHelper.DeleteUploadedFile(upload, Server);
                     }
 
+                    var details = new StringBuilder();
+                    details.AppendLine("Create news fails at step:" + step);
+
+                    foreach(var entityErrors in ex.EntityValidationErrors)
+                    {
+                        foreach(var validationError in entityErrors.ValidationErrors)
+                        {
+                            details.AppendLine(validationError.PropertyName + ": " + validationError.ErrorMessage);
+                            ModelState.AddModelError(validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
+
+                    Trace.TraceError(details.ToString());
+
                     ModelState.AddModelError("", "Unable to save news. Please try again.");
+                    return View(newsVM);
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+
+                    foreach (var upload in savedUploads)
+                    {
+                        UploadHelper.DeleteUploadedFile(upload, Server);
+                    }
+
+                    Trace.TraceError("Create news failed at step: " + step + "\r\n" + ex);
+
+                    ModelState.AddModelError("", ex.GetBaseException().Message);
                     return View(newsVM);
                 }
             }
@@ -330,6 +377,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 try
                 {
                     UpdateNewsFromVM(news, newsVM);
+                    NewsImage newThumbnailImage = null;
 
                     foreach (var image in news.Images.Where(i => deleteImageIds.Contains(i.Id)).ToList())
                     {
@@ -360,7 +408,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         // Check Thumbnail
                         if (selectedUploadThumbnailIndex.HasValue && i == selectedUploadThumbnailIndex.Value)
                         {
-                            news.ThumbnailImageId = savedImage.Id;
+                            newThumbnailImage = savedImage;
                         }
                     }
 
@@ -381,17 +429,25 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     db.SaveChanges();
 
+                    if(newThumbnailImage != null)
+                    {
+                        news.ThumbnailImageId = newThumbnailImage.Id;
+                        db.SaveChanges();
+                    }
+
                     transaction.Commit();
                 }
-                catch
+                catch(Exception ex)
                 {
                     transaction.Rollback();
+                    Trace.TraceError("Edit news failed: " + ex);
+
                     foreach (var upload in newSavedUploads)
                     {
                         UploadHelper.DeleteUploadedFile(upload, Server);
                     }
 
-                    ModelState.AddModelError("", "Unable to save news. Please try again.");
+                    ModelState.AddModelError("", ex.GetBaseException().Message);
 
                     var reloadNews = db.News
                         .Include(n => n.Images)
@@ -427,7 +483,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
             
 
-            return RedirectToAction("Details", news.Id);
+            return RedirectToAction("Details", new {id = news.Id});
         }
 
         // GET: Admin/News/Delete/5
