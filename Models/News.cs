@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TayanaYachts.Models
 {
@@ -14,7 +16,7 @@ namespace TayanaYachts.Models
         [StringLength(255)]
         public string Title { get; set; }
 
-        [StringLength(1000)]
+        [AllowHtml]
         public string Content { get; set; }
 
         [Required]
@@ -29,6 +31,11 @@ namespace TayanaYachts.Models
 
         public virtual ICollection<NewsImage> Images { get; set; }
         public virtual ICollection<NewsFile> Files { get; set; }
+
+        public Guid? ThumbnailImageId { get; set; }
+
+        [ForeignKey("ThumbnailImageId")]
+        public virtual NewsImage ThumbnailImage { get; set; }
 
         public News()
         {

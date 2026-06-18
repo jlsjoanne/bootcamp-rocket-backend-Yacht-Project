@@ -58,6 +58,12 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -127,11 +133,14 @@
     <Compile Include="Areas\Admin\Controllers\DealerController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Methods\UploadedFileExtensions.cs" />
+    <Compile Include="Methods\UploadHelper.cs" />
     <Compile Include="Methods\Utility.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.cs" />
     <Compile Include="Migrations\202605130157570_InitialDb Migration.Designer.cs">
@@ -169,6 +178,26 @@
     <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.Designer.cs">
       <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.cs" />
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.Designer.cs">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.cs" />
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.Designer.cs">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs" />
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.Designer.cs">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606160923032_NewsAddThumbnailImg.cs" />
+    <Compile Include="Migrations\202606160923032_NewsAddThumbnailImg.Designer.cs">
+      <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.cs" />
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.Designer.cs">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -182,7 +211,9 @@
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\InEditorImage.cs" />
     <Compile Include="Models\ViewModels\DealerVM.cs" />
+    <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
+    <Compile Include="Models\ViewModels\NewsVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
     <Compile Include="Models\YachtEditorImage.cs" />
@@ -235,6 +266,7 @@
     <Content Include="Content\images\menu_y2_04.jpg" />
     <Content Include="Content\images\menu_y2_05.jpg" />
     <Content Include="Content\images\menu_y2_06.jpg" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="Content\summernote\summernote-bs5.min.css" />
     <Content Include="Content\summernote\summernote-lite.min.css" />
     <Content Include="favicon.ico" />
@@ -294,6 +326,11 @@
     <Content Include="Areas\Admin\Views\Dealer\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Dealer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Dealer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Index.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />
@@ -396,6 +433,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606091002023_UpdateForeignKeySetting.resx">
       <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120826403_UpdateNewsContentType.resx">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120859074_UpdateUploadedFileId.resx">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.resx">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606160923032_NewsAddThumbnailImg.resx">
+      <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606180953495_RenameYachtNameIndex.resx">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

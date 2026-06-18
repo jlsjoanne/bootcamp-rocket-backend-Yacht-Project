@@ -15,7 +15,7 @@ namespace TayanaYachts.Models
         public int Id { get; set; }
 
         [Required]
-        [Index("IX_Name",IsUnique = true)]
+        [Index("IX_Yacht_Name",IsUnique = true)]
         [StringLength(50)]
         public string Name { get; set; }
 
@@ -28,8 +28,6 @@ namespace TayanaYachts.Models
 
         [AllowHtml]
         public string Overview { get; set; }
-
-        //public virtual UploadedFile OverviewImage { get; set; }
 
         [AllowHtml]
         public string Dimensions { get; set; }
