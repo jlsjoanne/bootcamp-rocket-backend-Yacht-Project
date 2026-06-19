@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TayanaYachts.Models
 {
-    public class YachtEditorImage : InEditorImage
+    public class YachtEditorImage : UploadedFile
     {
         public int? YachtId { get; set; }
 

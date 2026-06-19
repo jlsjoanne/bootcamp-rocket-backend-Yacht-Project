@@ -134,6 +134,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\YachtController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -198,6 +199,14 @@
     <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.Designer.cs">
       <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606190738551_UpdateYachtEditorImgs.cs" />
+    <Compile Include="Migrations\202606190738551_UpdateYachtEditorImgs.Designer.cs">
+      <DependentUpon>202606190738551_UpdateYachtEditorImgs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.cs" />
+    <Compile Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.Designer.cs">
+      <DependentUpon>202606190820375_MakeYachtEditorImageYachtIdNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -214,6 +223,7 @@
     <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\ViewModels\NewsVM.cs" />
+    <Compile Include="Models\ViewModels\YachtVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
     <Compile Include="Models\YachtEditorImage.cs" />
@@ -331,6 +341,11 @@
     <Content Include="Areas\Admin\Views\News\Details.cshtml" />
     <Content Include="Areas\Admin\Views\News\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\News\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Index.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />
@@ -448,6 +463,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606180953495_RenameYachtNameIndex.resx">
       <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606190738551_UpdateYachtEditorImgs.resx">
+      <DependentUpon>202606190738551_UpdateYachtEditorImgs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.resx">
+      <DependentUpon>202606190820375_MakeYachtEditorImageYachtIdNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
