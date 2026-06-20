@@ -32,13 +32,13 @@ namespace TayanaYachts.Models.ViewModels
         public string Specification { get; set; }
 
         [Display(Name = "Upload Layout & deck plan")]
-        HttpPostedFileBase[] DeckImgsUploads { get; set; }
+        public HttpPostedFileBase[] DeckImgsUploads { get; set; }
 
         [Display(Name = "Upload Interiors")]
-        HttpPostedFileBase[] InteriorUploads { get; set; }
+        public HttpPostedFileBase[] InteriorUploads { get; set; }
 
         [Display(Name = "Upload Files")]
-        HttpPostedFileBase[] DownloadFileUploads { get; set; }
+        public HttpPostedFileBase[] DownloadFileUploads { get; set; }
 
         [Display(Name = "Existing Layout & deck plan")]
         public IList<ExistingUploadFileVM> ExistingDeckImgs { get; set; }

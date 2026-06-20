@@ -479,7 +479,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceError("Post-commit upload cleanup failed:" + ex);
+                Trace.TraceError("Post-commit upload cleanup failed:" + ex);
             }
             
 

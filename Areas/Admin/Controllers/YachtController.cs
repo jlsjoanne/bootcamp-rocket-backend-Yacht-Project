@@ -12,6 +12,7 @@ using TayanaYachts.Methods;
 using TayanaYachts.Models.ViewModels;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Diagnostics;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
@@ -57,14 +58,117 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(YachtVM yachtVM)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Yachts.Add(yacht);
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
+            var deckImageUploads = (yachtVM.DeckImgsUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
+            var interiorUploads = (yachtVM.InteriorUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
+            var downloadFileUploads = (yachtVM.DownloadFileUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
 
-            return View(yachtVM);
+            foreach(var deckimage in deckImageUploads)
+            {
+                if (!UploadHelper.IsFileValid(deckimage, 1))
+                {
+                    ModelState.AddModelError("DeckImgsUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
+                }
+            }
+
+            foreach(var interior in interiorUploads)
+            {
+                if (!UploadHelper.IsFileValid(interior, 1))
+                {
+                    ModelState.AddModelError("InteriorUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
+                }
+            }
+
+            foreach(var download in downloadFileUploads)
+            {
+                if(!UploadHelper.IsFileValid(download, 0))
+                {
+                    ModelState.AddModelError("DownloadFileUploads", "One or more uploaded files are not allowed.");
+                }
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return View(yachtVM);
+            }
+
+            var savedUploads = new List<UploadedFile>();
+            var deletedEditorImages = new List<YachtEditorImage>();
+
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var yacht = ToYacht(yachtVM);
+
+                    foreach(var deckImage in deckImageUploads)
+                    {
+                        var savedUpload = UploadHelper.SaveUploadedFile<YachtImage>(deckImage, "~/Images", Server, Url);
+                        savedUploads.Add(savedUpload);
+                        yacht.DeckImgs.Add(savedUpload);
+                    }
+
+                    foreach(var interior in interiorUploads)
+                    {
+                        var savedUpload = UploadHelper.SaveUploadedFile<YachtInterior>(interior, "~/Images", Server, Url);
+                        savedUploads.Add(savedUpload);
+                        yacht.Interiors.Add(savedUpload);
+                    }
+
+                    foreach(var download in downloadFileUploads)
+                    {
+                        var savedUpload = UploadHelper.SaveUploadedFile<YachtDownload>(download, "~/Files", Server, Url);
+                        savedUploads.Add(savedUpload);
+                        yacht.Downloads.Add(savedUpload);
+                    }
+
+                    db.Yachts.Add(yacht);
+                    db.SaveChanges();
+
+                    var editorContent =
+                        (yachtVM.Overview ?? "") +
+                        (yachtVM.Dimensions ?? "") +
+                        (yachtVM.Specification ?? "");
+
+                    deletedEditorImages = HandleEditorImages(yacht.Id, editorContent);
+                    db.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+
+                    foreach(var savedUpload in savedUploads)
+                    {
+                        UploadHelper.DeleteUploadedFile(savedUpload, Server);
+                    }
+
+                    Trace.TraceError("Create yacht failed: " + ex);
+                    ModelState.AddModelError("", "Unable to save yacht. Please try again.");
+
+                    return View(yachtVM);
+                }
+            }
+
+            try
+            {
+                foreach (var editorImage in deletedEditorImages)
+                {
+                    UploadHelper.DeleteUploadedFile(editorImage, Server);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Post-commit delete cleanup failed:" + ex);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Admin/Yacht/Edit/5
@@ -74,12 +178,19 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Yacht yacht = db.Yachts.Find(id);
+            Yacht yacht = db.Yachts
+                .Include(y => y.DeckImgs)
+                .Include(y => y.Interiors)
+                .Include(y => y.Downloads)
+                .SingleOrDefault(y => y.Id == id);
             if (yacht == null)
             {
                 return HttpNotFound();
             }
-            return View(yacht);
+
+            var yachtVM = ToYachtVM(yacht);
+
+            return View(yachtVM);
         }
 
         // POST: Admin/Yacht/Edit/5
@@ -146,7 +257,10 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 Name = yachtVM.Name,
                 IsNew = yachtVM.IsNew,
                 IsPublished = yachtVM.IsPublished,
-                PostDate = DateTime.Now
+                PostDate = DateTime.Now,
+                Overview = yachtVM.Overview,
+                Dimensions = yachtVM.Dimensions,
+                Specification = yachtVM.Specification
             };
         }
 
@@ -156,6 +270,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
             yacht.IsNew = yachtVM.IsNew;
             yacht.IsPublished = yachtVM.IsPublished;
             yacht.PostDate = DateTime.Now;
+            yacht.Overview = yachtVM.Overview;
+            yacht.Dimensions = yachtVM.Dimensions;
+            yacht.Specification = yachtVM.Specification;
         }
 
         private static YachtVM ToYachtVM(Yacht yacht)
@@ -176,6 +293,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         }
 
         // Editor Image Upload
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UploadEditorImage(HttpPostedFileBase file)
         {
             if(!UploadHelper.IsFileValid(file, 1))
@@ -198,14 +317,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
         }
 
         // Handle Editor Image Upload after click submit
-        private void HandleEditorImages(int yachtId, string editorContent)
+        private List<YachtEditorImage> HandleEditorImages(int yachtId, string editorContent)
         {
             HashSet<string> referencedUrls = ExtractEditorImageUrls(editorContent);
             List<YachtEditorImage> currentEditorImages = db.YachtEditorImages.Where(i => i.YachtId == yachtId).ToList();
+            var deletedImages = new List<YachtEditorImage>();
 
             foreach(var image in currentEditorImages.Where(i => !referencedUrls.Contains(i.FilePath)).ToList())
             {
-                UploadHelper.DeleteUploadedFile(image, Server);
+                deletedImages.Add(image);
+                db.YachtEditorImages.Remove(image);
             }
 
             foreach(string imageUrl in referencedUrls)
@@ -218,6 +339,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     editorImage.YachtId = yachtId;
                 }
             }
+
+            return deletedImages;
         }
 
         private HashSet<String> ExtractEditorImageUrls(string editorContent)
