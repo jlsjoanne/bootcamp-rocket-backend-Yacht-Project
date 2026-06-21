@@ -13,6 +13,7 @@ using TayanaYachts.Models.ViewModels;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
+using System.Web.WebPages.Html;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
@@ -37,7 +38,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Yacht yacht = db.Yachts.Find(id);
+            Yacht yacht = db.Yachts
+                .Include(y => y.DeckImgs)
+                .Include(y => y.Interiors)
+                .Include(y => y.Downloads)
+                .SingleOrDefault(y => y.Id == id);
             if (yacht == null)
             {
                 return HttpNotFound();
@@ -200,13 +205,177 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(YachtVM yachtVM)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Entry(yacht).State = EntityState.Modified;
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-            return View(yachtVM);
+
+            // set deck, interior, download file lists
+            var deckImageUploads = (yachtVM.DeckImgsUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
+            var interiorUploads = (yachtVM.InteriorUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
+            var downfileUploads = (yachtVM.DownloadFileUploads ?? new HttpPostedFileBase[0])
+                .Where(f => f != null && f.ContentLength > 0)
+                .ToList();
+
+            foreach(var image in deckImageUploads)
+            {
+                if(!UploadHelper.IsFileValid(image, 1))
+                {
+                    ModelState.AddModelError("DeckImgsUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
+                }
+            }
+
+            foreach(var image in interiorUploads)
+            {
+                if (!UploadHelper.IsFileValid(image, 1))
+                {
+                    ModelState.AddModelError("InteriorUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
+                }
+            }
+
+            foreach(var file in downfileUploads)
+            {
+                if (!UploadHelper.IsFileValid(file, 0))
+                {
+                    ModelState.AddModelError("DownloadFileUploads", "One or more uploaded files are not allowed.");
+                }
+            }
+
+            var yacht = db.Yachts
+                .Include(y => y.DeckImgs)
+                .Include(y => y.Interiors)
+                .Include(y => y.Downloads)
+                .SingleOrDefault(y => y.Id == yachtVM.Id);
+
+            if(yacht == null)
+            {
+                return HttpNotFound();
+            }
+
+            var deleteDeckImageIds = yachtVM.DeleteDeckImgIds ?? new Guid[0];
+            var deleteInteriorIds = yachtVM.DeleteInteriorIds ?? new Guid[0];
+            var deleteFileIds = yachtVM.DeleteFileIds ?? new Guid[0];
+
+            if(db.Yachts.FirstOrDefault(y => y.Name == yachtVM.Name) != null)
+            {
+                ModelState.AddModelError("Name", "A yacht with this name already exists.");
+            }
+
+            if(!ModelState.IsValid)
+            {
+                var reloadYachtVM = ReloadYachtVM(yachtVM, yacht);
+                return View(reloadYachtVM);
+            }
+
+            var newSavedUploads = new List<UploadedFile>();
+            var deletedExistingUploads = new List<UploadedFile>();
+            var deletedEditorImages = new List<YachtEditorImage>();
+
+            using(var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Update Yacht data
+                    UpdateYachtFromYachtVM(yacht, yachtVM);
+
+
+                    // Delete deck, interior, download file from db and add to deletedExistingUploads list
+                    foreach(var deckId in deleteDeckImageIds)
+                    {
+                        var deckImages = db.YachtImages.Find(deckId);
+                        deletedExistingUploads.Add(deckImages);
+                        db.YachtImages.Remove(deckImages);
+                    }
+
+                    foreach(var interiorId in deleteInteriorIds)
+                    {
+                        var interiorImage = db.YachtInteriors.Find(interiorId);
+                        deletedExistingUploads.Add(interiorImage);
+                        db.YachtInteriors.Remove(interiorImage);
+                    }
+
+                    foreach(var fileId in deleteFileIds)
+                    {
+                        var yachtDownload = db.YachtDownloads.Find(fileId);
+                        deletedExistingUploads.Add(yachtDownload);
+                        db.YachtDownloads.Remove(yachtDownload);
+                    }
+
+                    // Add new upload files to db and relative folder
+                    foreach(var newDeckImage in deckImageUploads)
+                    {
+                        var newSaveUpload = UploadHelper.SaveUploadedFile<YachtImage>(newDeckImage, "~/Images", Server, Url);
+                        newSavedUploads.Add(newSaveUpload);
+                        yacht.DeckImgs.Add(newSaveUpload);
+                    }
+
+                    foreach(var newInterior in interiorUploads)
+                    {
+                        var newSaveUpload = UploadHelper.SaveUploadedFile<YachtInterior>(newInterior, "~/Images", Server, Url);
+                        newSavedUploads.Add(newSaveUpload);
+                        yacht.Interiors.Add(newSaveUpload);
+                    }
+
+                    foreach(var newFile in downfileUploads)
+                    {
+                        var newSaveUpload = UploadHelper.SaveUploadedFile<YachtDownload>(newFile, "~/Files", Server, Url);
+                        newSavedUploads.Add(newSaveUpload);
+                        yacht.Downloads.Add(newSaveUpload);
+                    }
+
+                    var editorContent =
+                        (yachtVM.Overview ?? "") +
+                        (yachtVM.Dimensions ?? "") +
+                        (yachtVM.Specification ?? "");
+
+                    deletedEditorImages = HandleEditorImages(yacht.Id, editorContent);
+
+                    db.SaveChanges();
+                    transaction.Commit();
+
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+
+                    foreach(var newSavedUpload in newSavedUploads)
+                    {
+                        UploadHelper.DeleteUploadedFile(newSavedUpload, Server);
+                    }
+
+                    Trace.TraceError("Edit yacht failed: " + ex);
+                    ModelState.AddModelError("", "Unable to save yacht. Please try again.");
+
+                    var reloadYachtVM = ReloadYachtVM(yachtVM, yacht);
+                    return View(reloadYachtVM);
+                }
+            }
+
+            try
+            {
+                foreach(var deletedExistingUpload in deletedExistingUploads)
+                {
+                    UploadHelper.DeleteUploadedFile(deletedExistingUpload, Server);
+                }
+            }
+            catch(Exception ex)
+            {
+                Trace.TraceError("Post-commit delete existing file cleanup failed:" + ex);
+            }
+
+            try
+            {
+                foreach(var deletedEditorImage in deletedEditorImages)
+                {
+                    UploadHelper.DeleteUploadedFile(deletedEditorImage, Server);
+                }
+            }
+            catch(Exception ex)
+            {
+                Trace.TraceError("Post-commit delete editor image cleanup failed:" + ex);
+            }
+
+            return RedirectToAction("Details", new { Id = yacht.Id });
         }
 
         // GET: Admin/Yacht/Delete/5
@@ -290,6 +459,19 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 ExistingInteriors = yacht.Interiors.Select(y => y.ToExistingUploadFileVM()).ToList(),
                 ExistingDownloadFile = yacht.Downloads.Select(y => y.ToExistingUploadFileVM()).ToList()
             };
+        }
+
+        private YachtVM ReloadYachtVM(YachtVM yachtVM, Yacht yacht)
+        {
+            var reloadYachtVM = ToYachtVM(yacht);
+            reloadYachtVM.Name = yachtVM.Name;
+            reloadYachtVM.IsNew = yachtVM.IsNew;
+            reloadYachtVM.IsPublished = yachtVM.IsPublished;
+            reloadYachtVM.Overview = yachtVM.Overview;
+            reloadYachtVM.Dimensions = yachtVM.Dimensions;
+            reloadYachtVM.Specification = yachtVM.Specification;
+
+            return reloadYachtVM;
         }
 
         // Editor Image Upload

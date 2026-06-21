@@ -8,61 +8,139 @@
 <div>
     <h4>Details</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
+    <dl class="mb-4">
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
 
-        <dd>
+        <dd class="mb-3">
             @Html.DisplayFor(model => model.Name)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.IsNew)
         </dt>
 
-        <dd>
+        <dd class="mb-3">
             @Html.DisplayFor(model => model.IsNew)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.IsPublished)
         </dt>
 
-        <dd>
+        <dd class="mb-3">
             @Html.DisplayFor(model => model.IsPublished)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.PostDate)
         </dt>
 
-        <dd>
+        <dd class="mb-3">
             @Html.DisplayFor(model => model.PostDate)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.Overview)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Overview)
+        <dd class="mb-3">
+            @Html.Raw(Model.Overview)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.Dimensions)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Dimensions)
+        <dd class="mb-3">
+            @Html.Raw(Model.Dimensions)
         </dd>
 
-        <dt>
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.Specification)
         </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Specification)
+        <dd class="mb-3">
+            @Html.Raw(Model.Specification)
+        </dd>
+
+        <dt class="mb-1">
+            @Html.DisplayNameFor(model => model.DeckImgs)
+        </dt>
+
+        <dd class="mb-3">
+            @if (Model.DeckImgs != null && Model.DeckImgs.Any())
+            {
+                <div class="vstack gap-3">
+                    @foreach (var deckImage in Model.DeckImgs)
+                    {
+                        <figure class="figure mb-0">
+                            <img src="@Url.Content(deckImage.FilePath)"
+                                 alt="@deckImage.OriginalFileName"
+                                 class="figure-img img-fluid" />
+                            <figcaption class="figure-caption">
+                                @deckImage.OriginalFileName
+                            </figcaption>
+                        </figure>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No Layout & deck plan image.</p>
+            }
+        </dd>
+
+        <dt class="mb-1">
+            @Html.DisplayNameFor(model => model.Interiors)
+        </dt>
+
+        <dd class="mb-3">
+            @if (Model.Interiors != null && Model.Interiors.Any())
+            {
+                <div class="vstack gap-3">
+                    @foreach (var interior in Model.Interiors)
+                    {
+                        <figure class="figure mb-0">
+                            <img src="@Url.Content(interior.FilePath)"
+                                 alt="@interior.OriginalFileName"
+                                 class="figure-img img-fluid" />
+                            <figcaption class="figure-caption">
+                                @interior.OriginalFileName
+                            </figcaption>
+                        </figure>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No Interior image.</p>
+            }
+        </dd>
+
+        <dt class="mb-1">
+            @Html.DisplayNameFor(model => model.Downloads)
+        </dt>
+
+        <dd class="mb-3">
+            @if (Model.Downloads != null && Model.Downloads.Any())
+            {
+                <ul class="list-unstyled mb-0">
+                    @foreach (var file in Model.Downloads)
+                    {
+                        <li class="mb-2">
+                            <a href="@Url.Content(file.FilePath)" target="_blank" rel="noreferrer noopener">
+                                @file.OriginalFileName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No files.</p>
+            }
         </dd>
 
     </dl>
