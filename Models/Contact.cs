@@ -35,5 +35,8 @@ namespace TayanaYachts.Models
         [StringLength(200)]
         [Display(Name="Comments")]
         public string Comment { get; set; }
+
+        [Display(Name = "Mark as Complete")]
+        public bool IsCompleted { get; set; } = false;
     }
 }
