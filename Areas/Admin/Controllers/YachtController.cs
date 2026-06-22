@@ -257,7 +257,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             var deleteInteriorIds = yachtVM.DeleteInteriorIds ?? new Guid[0];
             var deleteFileIds = yachtVM.DeleteFileIds ?? new Guid[0];
 
-            if(db.Yachts.FirstOrDefault(y => y.Name == yachtVM.Name) != null)
+            if(db.Yachts.Any(y => y.Name == yachtVM.Name && y.Id != yachtVM.Id))
             {
                 ModelState.AddModelError("Name", "A yacht with this name already exists.");
             }
@@ -283,23 +283,32 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     // Delete deck, interior, download file from db and add to deletedExistingUploads list
                     foreach(var deckId in deleteDeckImageIds)
                     {
-                        var deckImages = db.YachtImages.Find(deckId);
-                        deletedExistingUploads.Add(deckImages);
-                        db.YachtImages.Remove(deckImages);
+                        var deckImages = yacht.DeckImgs.SingleOrDefault(d => d.Id == deckId);
+                        if(deckImages != null)
+                        {
+                            deletedExistingUploads.Add(deckImages);
+                            db.YachtImages.Remove(deckImages);
+                        }
                     }
 
                     foreach(var interiorId in deleteInteriorIds)
                     {
-                        var interiorImage = db.YachtInteriors.Find(interiorId);
-                        deletedExistingUploads.Add(interiorImage);
-                        db.YachtInteriors.Remove(interiorImage);
+                        var interiorImage = yacht.Interiors.SingleOrDefault(i => i.Id == interiorId);
+                        if(interiorImage != null)
+                        {
+                            deletedExistingUploads.Add(interiorImage);
+                            db.YachtInteriors.Remove(interiorImage);
+                        }
                     }
 
                     foreach(var fileId in deleteFileIds)
                     {
-                        var yachtDownload = db.YachtDownloads.Find(fileId);
-                        deletedExistingUploads.Add(yachtDownload);
-                        db.YachtDownloads.Remove(yachtDownload);
+                        var yachtDownload = yacht.Downloads.SingleOrDefault(d => d.Id == fileId);
+                        if(yachtDownload != null)
+                        {
+                            deletedExistingUploads.Add(yachtDownload);
+                            db.YachtDownloads.Remove(yachtDownload);
+                        }   
                     }
 
                     // Add new upload files to db and relative folder
@@ -347,7 +356,19 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     Trace.TraceError("Edit yacht failed: " + ex);
                     ModelState.AddModelError("", "Unable to save yacht. Please try again.");
 
-                    var reloadYachtVM = ReloadYachtVM(yachtVM, yacht);
+                    var freshYacht = db.Yachts
+                        .AsNoTracking()
+                        .Include(y => y.DeckImgs)
+                        .Include(y => y.Interiors)
+                        .Include(y => y.Downloads)
+                        .SingleOrDefault(y => y.Id == yachtVM.Id);
+
+                    if(freshYacht == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    var reloadYachtVM = ReloadYachtVM(yachtVM, freshYacht);
                     return View(reloadYachtVM);
                 }
             }
@@ -386,11 +407,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Yacht yacht = db.Yachts
-                .Include(y => y.DeckImgs)
-                .Include(y => y.Interiors)
-                .Include(y => y.Downloads)
-                .SingleOrDefault(y => y.Id == id);
+            Yacht yacht = db.Yachts.SingleOrDefault(y => y.Id == id);
             if (yacht == null)
             {
                 return HttpNotFound();
@@ -403,9 +420,72 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Yacht yacht = db.Yachts.Find(id);
-            db.Yachts.Remove(yacht);
-            db.SaveChanges();
+            var yacht = db.Yachts
+                .Include(y => y.DeckImgs)
+                .Include(y => y.Interiors)
+                .Include(y => y.Downloads)
+                .Include(y => y.EditorImgs)
+                .SingleOrDefault(y => y.Id == id);
+
+            if(yacht == null)
+            {
+                return HttpNotFound();
+            }
+
+            var deleteUploads = new List<UploadedFile>();
+
+            using(var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var deckimage in yacht.DeckImgs)
+                    {
+                        deleteUploads.Add(deckimage);
+                    }
+
+                    foreach(var interior in yacht.Interiors)
+                    {
+                        deleteUploads.Add(interior);
+                    }
+
+                    foreach(var download in yacht.Downloads)
+                    {
+                        deleteUploads.Add(download);
+                    }
+
+                    foreach(var editorImage in yacht.EditorImgs)
+                    {
+                        deleteUploads.Add(editorImage);
+                    }
+
+                    db.Yachts.Remove(yacht);
+                    db.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+
+                    Trace.TraceError("Delete yacht failed: " + ex);
+                    ModelState.AddModelError("", "Unable to delete yacht. Please try again.");
+
+                    return View(yacht);
+                }
+            }
+
+            try
+            {
+                foreach(var deleteUpload in deleteUploads)
+                {
+                    UploadHelper.DeleteUploadedFile(deleteUpload, Server);
+                }
+            }
+            catch(Exception ex)
+            {
+                Trace.TraceError("Post-commit delete yacht files cleanup failed:" + ex);
+            }
+
             return RedirectToAction("Index");
         }
 
