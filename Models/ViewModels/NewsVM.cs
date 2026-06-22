@@ -15,6 +15,9 @@ namespace TayanaYachts.Models.ViewModels
         [StringLength(255)]
         public string Title { get; set; }
 
+        [StringLength(255)]
+        public string Summary { get; set; }
+
         [AllowHtml]
         public string Content { get; set; }
 

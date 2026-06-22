@@ -1,0 +1,82 @@
+﻿@model TayanaYachts.Models.Contact
+
+@{
+    ViewBag.PageHeader = "Contact";
+}
+
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            Country Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Country.Name)
+        </dd>
+
+        <dt>
+            Yacht
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Yacht.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCompleted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsCompleted)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    @if (!Model.IsCompleted)
+    {
+        using (Html.BeginForm("MarkAsComplete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.Id)
+            <button type="submit" class="btn btn-sm btn-success">Mark as Complete</button>
+        }
+        @: |
+    }
+    @Html.ActionLink("Back to List", "Index")
+</div>

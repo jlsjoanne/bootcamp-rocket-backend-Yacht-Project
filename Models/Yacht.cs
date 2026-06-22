@@ -24,6 +24,7 @@ namespace TayanaYachts.Models
         public bool IsPublished { get; set; } = false;
 
         [DataType(DataType.DateTime)]
+        [Display(Name="Last Modified Time")]
         public DateTime PostDate { get; set; }
 
         [AllowHtml]

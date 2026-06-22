@@ -939,6 +939,10 @@ body {
     vertical-align: top;
 }
 
+    .table02td01 table tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
 .table02 table {
     width: 100%;
 }

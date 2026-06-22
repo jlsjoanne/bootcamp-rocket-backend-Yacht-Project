@@ -28,14 +28,11 @@
     }
 </div>
 
-0
+
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Content)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().PublishDate)
@@ -54,9 +51,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PublishDate)
