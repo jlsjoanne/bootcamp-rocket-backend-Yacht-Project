@@ -42,7 +42,10 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (!String.IsNullOrWhiteSpace(searchString))
             {
-                news = news.Where(n => n.Title.Contains(searchString) || n.Content.Contains(searchString));
+                news = news.Where(n =>
+                    n.Title.Contains(searchString) ||
+                    (!String.IsNullOrWhiteSpace(n.Summary) && n.Summary.Contains(searchString)) ||
+                    (!String.IsNullOrWhiteSpace(n.Content) && n.Content.Contains(searchString)));
             }
 
             news = news.OrderByDescending(n => n.IsPinned)
@@ -170,7 +173,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     step = "saving news, images, and files to db before thumbnail";
                     db.SaveChanges();
 
-                    if(thumbnailImage != null)
+                    if (thumbnailImage != null)
                     {
                         step = "saving thumbnail image reference";
                         news.ThumbnailImageId = thumbnailImage.Id;
@@ -181,7 +184,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     transaction.Commit();
                     return RedirectToAction("Index");
                 }
-                catch(DbEntityValidationException ex)
+                catch (DbEntityValidationException ex)
                 {
                     transaction.Rollback();
 
@@ -193,9 +196,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     var details = new StringBuilder();
                     details.AppendLine("Create news fails at step:" + step);
 
-                    foreach(var entityErrors in ex.EntityValidationErrors)
+                    foreach (var entityErrors in ex.EntityValidationErrors)
                     {
-                        foreach(var validationError in entityErrors.ValidationErrors)
+                        foreach (var validationError in entityErrors.ValidationErrors)
                         {
                             details.AppendLine(validationError.PropertyName + ": " + validationError.ErrorMessage);
                             ModelState.AddModelError(validationError.PropertyName, validationError.ErrorMessage);
@@ -207,7 +210,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Unable to save news. Please try again.");
                     return View(newsVM);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
 
@@ -358,6 +361,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 var reloadNewsVM = ToNewsVM(news);
                 reloadNewsVM.Title = newsVM.Title;
+                reloadNewsVM.Summary = newsVM.Summary;
                 reloadNewsVM.Content = newsVM.Content;
                 reloadNewsVM.PublishDate = newsVM.PublishDate;
                 reloadNewsVM.IsPinned = newsVM.IsPinned;
@@ -429,7 +433,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     db.SaveChanges();
 
-                    if(newThumbnailImage != null)
+                    if (newThumbnailImage != null)
                     {
                         news.ThumbnailImageId = newThumbnailImage.Id;
                         db.SaveChanges();
@@ -437,7 +441,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     transaction.Commit();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                     Trace.TraceError("Edit news failed: " + ex);
@@ -454,13 +458,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         .Include(n => n.Files)
                         .SingleOrDefault(n => n.Id == newsVM.Id);
 
-                    if(reloadNews == null)
+                    if (reloadNews == null)
                     {
                         return HttpNotFound();
                     }
 
                     var reloadNewsVM = ToNewsVM(reloadNews);
                     reloadNewsVM.Title = newsVM.Title;
+                    reloadNewsVM.Summary = newsVM.Summary;
                     reloadNewsVM.Content = newsVM.Content;
                     reloadNewsVM.PublishDate = newsVM.PublishDate;
                     reloadNewsVM.IsPinned = newsVM.IsPinned;
@@ -477,13 +482,13 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     UploadHelper.DeleteUploadedFile(upload, Server);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Trace.TraceError("Post-commit upload cleanup failed:" + ex);
             }
-            
 
-            return RedirectToAction("Details", new {id = news.Id});
+
+            return RedirectToAction("Details", new { id = news.Id });
         }
 
         // GET: Admin/News/Delete/5
@@ -506,17 +511,58 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            News news = db.News.Find(id);
-            foreach (var newsImage in news.Images)
+            var news = db.News
+                .Include(n => n.Images)
+                .Include(n => n.Files)
+                .SingleOrDefault(n => n.Id == id);
+
+            if (news == null)
             {
-                UploadHelper.DeleteUploadedFile(newsImage, Server);
+                return HttpNotFound();
             }
-            foreach (var newsFile in news.Files)
+
+            var imagesToDelete = news.Images.ToList();
+            var filesToDelete = news.Files.ToList();
+
+            using (var transaction = db.Database.BeginTransaction())
             {
-                UploadHelper.DeleteUploadedFile(newsFile, Server);
+                try
+                {
+                    news.ThumbnailImageId = null;
+                    news.ThumbnailImage = null;
+                    db.SaveChanges();
+
+                    db.News.Remove(news);
+
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Trace.TraceError("Delete news failed: " + ex);
+
+                    ModelState.AddModelError("", ex.GetBaseException().Message);
+                    return View(news);
+                }
             }
-            db.News.Remove(news);
-            db.SaveChanges();
+
+            try
+            {
+                foreach (var image in imagesToDelete)
+                {
+                    UploadHelper.DeleteUploadedFile(image, Server);
+                }
+                foreach (var file in filesToDelete)
+                {
+                    UploadHelper.DeleteUploadedFile(file, Server);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Post-commit upload cleanup failed: " + ex);
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -534,6 +580,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             return new News
             {
                 Title = newsVM.Title,
+                Summary = newsVM.Summary,
                 Content = newsVM.Content,
                 PublishDate = newsVM.PublishDate,
                 IsPinned = newsVM.IsPinned,
@@ -544,6 +591,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         private static void UpdateNewsFromVM(News news, NewsVM newsVM)
         {
             news.Title = newsVM.Title;
+            news.Summary = newsVM.Summary;
             news.Content = newsVM.Content;
             news.PublishDate = newsVM.PublishDate;
             news.IsPinned = newsVM.IsPinned;
@@ -556,6 +604,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 Id = news.Id,
                 Title = news.Title,
+                Summary = news.Summary,
                 Content = news.Content,
                 PublishDate = news.PublishDate,
                 IsPinned = news.IsPinned,

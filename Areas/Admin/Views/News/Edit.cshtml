@@ -8,190 +8,198 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Edit</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+<div class="form-horizontal">
+    <h4>Edit</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
+            @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Content, new { @class = "form-control", rows = "10", style = "resize: both; width:600px; max-width: 100%; " })
+            @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PublishDate, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.PublishDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsPinned, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.EditorFor(model => model.IsPinned)
+                @Html.ValidationMessageFor(model => model.IsPinned, "", new { @class = "text-danger" })
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Content, new { @class = "form-control", rows = "10", style = "resize: both; width:600px; max-width: 100%; " })
-                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsPublished, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.EditorFor(model => model.IsPublished)
+                @Html.ValidationMessageFor(model => model.IsPublished, "", new { @class = "text-danger" })
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PublishDate, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PublishDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsPinned, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsPinned)
-                    @Html.ValidationMessageFor(model => model.IsPinned, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsPublished, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsPublished)
-                    @Html.ValidationMessageFor(model => model.IsPublished, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ExistingImages, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+    <div class="form-group">
+        @Html.LabelFor(model => model.ExistingImages, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+            {
+                foreach (var image in Model.ExistingImages)
                 {
-                    foreach (var image in Model.ExistingImages)
-                    {
-                        <div class="mb-3 existing-upload-item">
-                            <figure>
-                                <img src="@Url.Content(image.FilePath)"
-                                     alt="@image.OriginalFileName"
-                                     style="max-width: 160px;" />
-                                <figcaption>
-                                    <a href="@Url.Content(image.FilePath)" target="_blank" rel="noopener noreferrer">
-                                        @image.OriginalFileName
-                                    </a>
-                                </figcaption>
-                            </figure>
+                    <div class="mb-3 existing-upload-item">
+                        <figure>
+                            <img src="@Url.Content(image.FilePath)"
+                                 alt="@image.OriginalFileName"
+                                 style="max-width: 160px;" />
+                            <figcaption>
+                                <a href="@Url.Content(image.FilePath)" target="_blank" rel="noopener noreferrer">
+                                    @image.OriginalFileName
+                                </a>
+                            </figcaption>
+                        </figure>
 
-                            <div class="form-check mt-1">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="ThumbnailSelection" 
-                                       value="existing:@image.Id" 
-                                       id="thumbnail-existing-@image.Id"
-                                       @(Model.ThumbnailImageId == image.Id ? "checked" : "") />
-
-                                <label class="form-check-label" for="thumbnail-existing-@image.Id">
-                                    Use as thumbnail
-                                </label>
-                            </div>
-
-                            <label class="ms-2">
-                                <input class="existing-image-delete" 
-                                       type="checkbox"
-                                       name="DeleteImageIds"
-                                       value="@image.Id"
-                                       data-thumbnail-radio-id="thumbnail-existing-@image.Id" />
-                                Delete
-                            </label>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p class="text-body-secondary mb-0">No existing images.</p>
-                }
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label col-md-2">Upload New Images</label>
-            <div class="col-md-10">
-                <div id="image-upload-list" class="pb-2">
-                    <div class="upload-row mb-2">
-                        <input type="file"
-                               name="ImageUploads[0]"
-                               accept="image/*"
-                               class="form-control" />
                         <div class="form-check mt-1">
                             <input class="form-check-input"
                                    type="radio"
                                    name="ThumbnailSelection"
-                                   value="upload:0"
-                                   id="thumbnail-upload-0" />
-                            <label class="form-check-label" for="thumbnail-upload-0">
+                                   value="existing:@image.Id"
+                                   id="thumbnail-existing-@image.Id"
+                                   @(Model.ThumbnailImageId == image.Id ? "checked" : "") />
+
+                            <label class="form-check-label" for="thumbnail-existing-@image.Id">
                                 Use as thumbnail
                             </label>
                         </div>
+
+                        <label class="ms-2">
+                            <input class="existing-image-delete"
+                                   type="checkbox"
+                                   name="DeleteImageIds"
+                                   value="@image.Id"
+                                   data-thumbnail-radio-id="thumbnail-existing-@image.Id" />
+                            Delete
+                        </label>
                     </div>
-                </div>
-
-                <button type="button" id="add-image-upload" class="btn btn-outline-secondary pt-2">
-                    Add Image
-                </button>
-                @Html.ValidationMessageFor(model => model.ImageUploads, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.ThumbnailSelection, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ExistingFiles, htmlAttributes: new { @class = "form-label col-md-2" })
-            <div class="col-md-10">
-                @if (Model.ExistingFiles != null && Model.ExistingFiles.Any())
-                {
-                    foreach (var file in Model.ExistingFiles)
-                    {
-                        <div class="mb-3 existing-upload-item">
-                            <a href="@Url.Content(file.FilePath)" target="_blank" rel="noopener noreferrer">
-                                @file.OriginalFileName
-                            </a>
-
-                            <span class="badge text-bg-secondary">@file.FileType</span>
-
-                            <label class="ms-2">
-                                <input type="checkbox"
-                                       name="DeleteFileIds"
-                                       value="@file.Id" />
-                                Delete
-                            </label>
-                        </div>
-                    }
                 }
-                else
-                {
-                    <p class="text-body-secondary mb-0">No existing files.</p>
-                }
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label col-md-2">Upload New Files</label>
-            <div class="col-md-10">
-                <div id="file-upload-list" class="pb-2">
-                    <div class="upload-row">
-                        <input type="file"
-                               name="FileUploads"
-                               class="form-control" />
-                    </div>
-                </div>
-                <button type="button" id="add-file-upload" class="btn btn-outline-secondary pt-2">
-                    Add File
-                </button>
-
-                @Html.ValidationMessageFor(model => model.FileUploads, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No existing images.</p>
+            }
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="form-label col-md-2">Upload New Images</label>
+        <div class="col-md-10">
+            <div id="image-upload-list" class="pb-2">
+                <div class="upload-row mb-2">
+                    <input type="file"
+                           name="ImageUploads[0]"
+                           accept="image/*"
+                           class="form-control" />
+                    <div class="form-check mt-1">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="ThumbnailSelection"
+                               value="upload:0"
+                               id="thumbnail-upload-0" />
+                        <label class="form-check-label" for="thumbnail-upload-0">
+                            Use as thumbnail
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="add-image-upload" class="btn btn-outline-secondary pt-2">
+                Add Image
+            </button>
+            @Html.ValidationMessageFor(model => model.ImageUploads, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(model => model.ThumbnailSelection, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ExistingFiles, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @if (Model.ExistingFiles != null && Model.ExistingFiles.Any())
+            {
+                foreach (var file in Model.ExistingFiles)
+                {
+                    <div class="mb-3 existing-upload-item">
+                        <a href="@Url.Content(file.FilePath)" target="_blank" rel="noopener noreferrer">
+                            @file.OriginalFileName
+                        </a>
+
+                        <span class="badge text-bg-secondary">@file.FileType</span>
+
+                        <label class="ms-2">
+                            <input type="checkbox"
+                                   name="DeleteFileIds"
+                                   value="@file.Id" />
+                            Delete
+                        </label>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-body-secondary mb-0">No existing files.</p>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label col-md-2">Upload New Files</label>
+        <div class="col-md-10">
+            <div id="file-upload-list" class="pb-2">
+                <div class="upload-row">
+                    <input type="file"
+                           name="FileUploads"
+                           class="form-control" />
+                </div>
+            </div>
+            <button type="button" id="add-file-upload" class="btn btn-outline-secondary pt-2">
+                Add File
+            </button>
+
+            @Html.ValidationMessageFor(model => model.FileUploads, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

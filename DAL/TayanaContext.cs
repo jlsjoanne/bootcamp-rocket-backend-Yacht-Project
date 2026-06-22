@@ -36,6 +36,16 @@ namespace TayanaYachts.DAL
         
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<News>()
+                .HasMany(n => n.Images)
+                .WithRequired(i => i.News)
+                .HasForeignKey(i => i.NewsId)
+                .WillCascadeOnDelete(true);
+            modelBuilder.Entity<News>()
+                .HasOptional(n => n.ThumbnailImage)
+                .WithMany()
+                .HasForeignKey(n => n.ThumbnailImageId)
+                .WillCascadeOnDelete(false);
             modelBuilder.Entity<NewsFile>()
                 .Map(m =>
                 {
