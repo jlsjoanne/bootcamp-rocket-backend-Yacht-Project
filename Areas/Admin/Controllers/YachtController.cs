@@ -24,13 +24,36 @@ namespace TayanaYachts.Areas.Admin.Controllers
         private TayanaContext db = new TayanaContext();
 
         // GET: Admin/Yacht
-        public ActionResult Index()
+        public ActionResult Index(string searchString, string currentFilter, int? page)
         {
-            // 還要加搜尋、分頁
-            var yachts = db.Yachts.OrderByDescending(y => y.IsNew)
+            // Add Search and Paging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var yachts = db.Yachts.AsQueryable();
+
+            if (!String.IsNullOrWhiteSpace(searchString))
+            {
+                yachts = yachts.Where(y => 
+                    y.Name.Contains(searchString) ||
+                    (y.Overview != null && y.Overview.Contains(searchString)));
+            }
+
+            yachts = yachts.OrderByDescending(y => y.IsNew)
                 .ThenByDescending(y => y.PostDate);
 
-            return View(yachts.ToList());
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            return View(yachts.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/Yacht/Details/5

@@ -38,5 +38,7 @@ namespace TayanaYachts.Models
 
         [Display(Name = "Mark as Complete")]
         public bool IsCompleted { get; set; } = false;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }

@@ -19,7 +19,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Contact
         public ActionResult Index()
         {
-            var contacts = db.Contacts.Include(c => c.Country).Include(c => c.Yacht);
+            var contacts = db.Contacts.Where(c => c.IsDeleted == false).Include(c => c.Country).Include(c => c.Yacht);
             return View(contacts.ToList());
         }
 
@@ -53,6 +53,40 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
 
             contact.IsCompleted = true;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MarkAsIncomplete(Guid id)
+        {
+            var contact = db.Contacts.Find(id);
+            
+            if(contact == null)
+            {
+                return HttpNotFound();
+            }
+
+            contact.IsCompleted = false;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(Guid id)
+        {
+            var contact = db.Contacts.Find(id);
+            
+            if(contact == null)
+            {
+                return HttpNotFound();
+            }
+
+            contact.IsDeleted = true;
             db.SaveChanges();
 
             return RedirectToAction("Index");

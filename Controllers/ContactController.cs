@@ -50,7 +50,8 @@ namespace TayanaYachts.Controllers
                 CountryId = contactVM.Form.CountryId,
                 YachtId = contactVM.Form.YachtId,
                 Comment = contactVM.Form.Comment,
-                IsCompleted = false
+                IsCompleted = false,
+                IsDeleted = false
             };
 
             db.Contacts.Add(contact);
