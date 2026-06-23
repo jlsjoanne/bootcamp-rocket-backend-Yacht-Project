@@ -18,6 +18,7 @@ using PagedList;
 
 namespace TayanaYachts.Areas.Admin.Controllers
 {
+    [Authorize]
     public class YachtController : Controller
     {
         private TayanaContext db = new TayanaContext();

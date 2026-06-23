@@ -2,27 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>TtayanaWorld (DEMO)</title>
-    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery.cycle.all.2.74.js"></script>
-    <link href="~/Content/css/reset.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/css/style.css" rel="stylesheet" type="text/css" />
+    <title>Tayana | Tayana Yachts Official Website </title>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.cycle.all.2.74.js")"></script>
+
+    <link href="@Url.Content("~/Content/css/reset.css")" rel="stylesheet" type="text/css" />
+    @RenderSection("styles", required: false)
 </head>
 
 <body>
     <div class="contain">
         <div class="sub">
-            <p><a href="#">Home</a></p>
+            <p><a href="@Url.Action("Index","Home")">Home</a></p>
         </div>
 
         <!--------------------------------選單開始---------------------------------------------------->
         <div class="menu">
             <ul>
-                <li class="menuli01"><img src="~/Content/images/mmmmeeeee.gif" alt="&quot;&quot;" /><a href="#">Yachts</a></li>
-                <li class="menuli02"><img src="~/Content/images/mmmmeeeee.gif" alt="&quot;&quot;" /><a href="#">NEWS</a></li>
-                <li class="menuli03"><img src="~/Content/images/mmmmeeeee.gif" alt="&quot;&quot;" /><a href="#">COMPANY</a></li>
-                <li class="menuli04"><img src="~/Content/images/mmmmeeeee.gif" alt="&quot;&quot;" /><a href="#">DEALERS</a></li>
-                <li class="menuli05"><img src="~/Content/images/mmmmeeeee.gif" alt="&quot;&quot;" /><a href="#">CONTACT</a></li>
+                <li class="menuli01"><a href="#">Yachts</a></li>
+                <li class="menuli02"><a href="#">NEWS</a></li>
+                <li class="menuli03"><a href="#">COMPANY</a></li>
+                <li class="menuli04"><a href="#">DEALERS</a></li>
+                <li class="menuli05"><a href="@Url.Action("Index","Contact")"><span>CONTACT</span></a></li>
             </ul>
         </div>
         
@@ -43,6 +44,6 @@
 
     </div>
 
-
+    @RenderSection("scripts", required: false)
 </body>
 </html>

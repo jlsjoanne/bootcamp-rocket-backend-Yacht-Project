@@ -167,6 +167,7 @@
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
     <Compile Include="Areas\Admin\Controllers\YachtController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -267,6 +268,7 @@
     <Compile Include="Models\NewsImage.cs" />
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\InEditorImage.cs" />
+    <Compile Include="Models\ViewModels\ContactPageVM.cs" />
     <Compile Include="Models\ViewModels\DealerVM.cs" />
     <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
@@ -312,7 +314,10 @@
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\images\buttbg.gif" />
+    <Content Include="Content\images\buttom03.gif" />
+    <Content Include="Content\images\contact.jpg" />
     <Content Include="Content\images\con_bg.gif" />
+    <Content Include="Content\images\DEALERS_new.jpg" />
     <Content Include="Content\images\icon003.gif" />
     <Content Include="Content\images\icon004.gif" />
     <Content Include="Content\images\icon005.gif" />
@@ -327,6 +332,7 @@
     <Content Include="Content\images\menu_y2_04.jpg" />
     <Content Include="Content\images\menu_y2_05.jpg" />
     <Content Include="Content\images\menu_y2_06.jpg" />
+    <Content Include="Content\images\newbanner.jpg" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\summernote\summernote-bs5.min.css" />
     <Content Include="Content\summernote\summernote-lite.min.css" />
@@ -437,10 +443,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_TayanaLayout.cshtml" />
+    <Content Include="Views\Contact\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
