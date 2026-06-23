@@ -444,6 +444,10 @@ body {
     padding: 5px;
 }
 
+.box3 p{
+    float:right;
+}
+
 .box4 p {
     float: right;
     padding: 7px;

@@ -9,6 +9,9 @@ using TayanaYachts.Models.ViewModels;
 using System.Configuration;
 using System.Net.Http;
 using System.Web.Script.Serialization;
+using TayanaYachts.Services;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace TayanaYachts.Controllers
 {
@@ -25,7 +28,7 @@ namespace TayanaYachts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(ContactPageVM contactVM)
+        public async Task<ActionResult> Index(ContactPageVM contactVM)
         {
             if (!ModelState.IsValid)
             {
@@ -54,6 +57,20 @@ namespace TayanaYachts.Controllers
             db.SaveChanges();
 
             // Add send email feature
+
+            // explicit loading:  load related data later, after you already have the entity
+            db.Entry(contact).Reference(c => c.Country).Load();
+            db.Entry(contact).Reference(c => c.Yacht).Load();
+
+            try
+            {
+                var emailService = new EmailService();
+                await emailService.SendContactFormEmailAsync(contact);
+            }
+            catch(Exception ex)
+            {
+                Trace.TraceError($"Failed to send contact form email for ContactId={contact.Id}. {ex}");
+            }
 
             TempData["ContactSuccessMessage"] = "Submit success. Thank you for contacting us.";
             return RedirectToAction("Index");

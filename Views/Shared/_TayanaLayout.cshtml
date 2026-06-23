@@ -21,7 +21,7 @@
             <ul>
                 <li class="menuli01"><a href="#">Yachts</a></li>
                 <li class="menuli02"><a href="#">NEWS</a></li>
-                <li class="menuli03"><a href="#">COMPANY</a></li>
+                <li class="menuli03"><a href="@Url.Action("Index","Company")"><span>COMPANY</span></a></li>
                 <li class="menuli04"><a href="#">DEALERS</a></li>
                 <li class="menuli05"><a href="@Url.Action("Index","Contact")"><span>CONTACT</span></a></li>
             </ul>
@@ -32,7 +32,7 @@
         
         <div class="footer">
             <div class="footerp00">
-                <a href="#"><img src="~/Content/images/tog.jpg" alt="&quot;&quot;" /></a>
+                <a href="#"><img src="@Url.Content("~/Content/images/tog.jpg")" alt="&quot;&quot;" /></a>
                 <p class="footerp001">© 1973-2011 Tayana Yachts, Inc. All Rights Reserved</p>
             </div>
             <div class="footer01">

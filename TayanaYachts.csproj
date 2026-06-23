@@ -167,6 +167,7 @@
     <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
     <Compile Include="Areas\Admin\Controllers\YachtController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
@@ -333,6 +334,7 @@
     <Content Include="Content\images\menu_y2_05.jpg" />
     <Content Include="Content\images\menu_y2_06.jpg" />
     <Content Include="Content\images\newbanner.jpg" />
+    <Content Include="Content\images\pit010.jpg" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\summernote\summernote-bs5.min.css" />
     <Content Include="Content\summernote\summernote-lite.min.css" />
@@ -446,6 +448,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_TayanaLayout.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
+    <Content Include="Views\Company\Index.cshtml" />
+    <Content Include="Views\Company\Certificat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
