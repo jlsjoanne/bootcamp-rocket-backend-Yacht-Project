@@ -17,6 +17,10 @@ namespace TayanaYachts.Models
 
         public virtual ICollection<Area> Areas { get; set; }
 
+        [Display(Name = "Display Order")]
+        [Range(0, 9999)]
+        public int SortOrder { get; set; }
+
         public Country()
         {
             Areas = new HashSet<Area>();

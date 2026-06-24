@@ -33,7 +33,9 @@ namespace TayanaYachts.Models.ViewModels
         [Display(Name="Area")]
         public int? AreaId { get; set; }
 
-        
+        [Display(Name = "Display Order")]
+        [Range(0, 9999)]
+        public int? SortOrder { get; set; }
 
         public IEnumerable<SelectListItem> CountryList { get; set; }
         public IEnumerable<SelectListItem> AreaList { get; set; }

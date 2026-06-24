@@ -169,7 +169,9 @@
     <Compile Include="Areas\Admin\Controllers\YachtController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\DealerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -261,6 +263,10 @@
     <Compile Include="Migrations\202606230811386_ContactAddIsDeleted.Designer.cs">
       <DependentUpon>202606230811386_ContactAddIsDeleted.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606240312338_AddSortOrderToDealernCountry.cs" />
+    <Compile Include="Migrations\202606240312338_AddSortOrderToDealernCountry.Designer.cs">
+      <DependentUpon>202606240312338_AddSortOrderToDealernCountry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -274,6 +280,7 @@
     <Compile Include="Models\UploadedFile.cs" />
     <Compile Include="Models\InEditorImage.cs" />
     <Compile Include="Models\ViewModels\ContactPageVM.cs" />
+    <Compile Include="Models\ViewModels\DealerPageVM.cs" />
     <Compile Include="Models\ViewModels\DealerVM.cs" />
     <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
@@ -318,11 +325,13 @@
     <Content Include="Content\css\js.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\images\back.gif" />
     <Content Include="Content\images\buttbg.gif" />
     <Content Include="Content\images\buttom03.gif" />
     <Content Include="Content\images\contact.jpg" />
     <Content Include="Content\images\con_bg.gif" />
     <Content Include="Content\images\DEALERS_new.jpg" />
+    <Content Include="Content\images\downloads.gif" />
     <Content Include="Content\images\icon003.gif" />
     <Content Include="Content\images\icon004.gif" />
     <Content Include="Content\images\icon005.gif" />
@@ -454,6 +463,9 @@
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Company\Certificat.cshtml" />
+    <Content Include="Views\Dealer\Index.cshtml" />
+    <Content Include="Views\News\Index.cshtml" />
+    <Content Include="Views\News\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -551,6 +563,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606230811386_ContactAddIsDeleted.resx">
       <DependentUpon>202606230811386_ContactAddIsDeleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606240312338_AddSortOrderToDealernCountry.resx">
+      <DependentUpon>202606240312338_AddSortOrderToDealernCountry.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

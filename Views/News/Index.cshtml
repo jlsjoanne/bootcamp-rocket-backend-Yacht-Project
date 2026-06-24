@@ -1,0 +1,146 @@
+﻿@model PagedList.IPagedList<TayanaYachts.Models.News>
+@using PagedList.Mvc;
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+
+    <style>
+        .news-thumbnail-frame {
+            width: 150px;
+            height: 100px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .news-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="banner" />
+</div>
+
+<div class="banner">
+    <ul>
+        <li><img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" /></li>
+    </ul>
+</div>
+
+<div class="conbg">
+    <div class="left">
+        <div class="left1">
+            <p>
+                <span>NEWS</span>
+            </p>
+            <ul>
+                <li>
+                    <a href="#">
+                        News & Events
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="crumb">
+        <a href="@Url.Action("Index","Home")">Home</a> >>
+        <a href="#">News </a> >>
+        <a href="#">
+            <span class="on1">
+                News & Events
+            </span>
+        </a>
+    </div>
+
+    <div class="right">
+        <div class="right1">
+            <div class="title">
+                <span>News & Events</span>
+            </div>
+
+            <div class="box2_list">
+                @if (Model != null && Model.Any())
+                {
+                    <ul>
+                        @foreach (var news in Model)
+                        {
+                            <li>
+                                <div class="list01">
+                                    <ul>
+                                        <li>
+                                            <div>
+                                                <p class="news-thumbnail-frame">
+                                                    @if (news.ThumbnailImage != null)
+                                                    {
+                                                        <img src="@Url.Content(news.ThumbnailImage.FilePath)"
+                                                             border="0" alt="@news.Title"
+                                                             class="news-thumbnail" />
+                                                    }
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span>@news.PublishDate.ToString("yyyy/M/d")</span><br />
+                                            <a href="@Url.Action("Details","News", new { id = news.Id})">
+                                                @news.Title
+                                            </a>
+                                            <br />
+                                        </li>
+                                        <li>
+                                            @news.Summary
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="pagenumber">
+                        <div class="pagination">
+                            共 <span style="color:red">@Model.TotalItemCount</span>筆資料
+
+                            @if (Model.HasPreviousPage)
+                            {
+                                <a href="@Url.Action("Index","News", new { page = Model.PageNumber - 1 })">上一頁</a>
+                            }
+                            else
+                            {
+                                <span class="disabled">上一頁</span>
+                            }
+
+                            @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                            {
+                                if (pageNumber == Model.PageNumber)
+                                {
+                                    <span class="current">@pageNumber</span>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Index","News", new { page = pageNumber})">@pageNumber</a>
+                                }
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <a href="@Url.Action("Index","News", new { page = Model.PageNumber + 1})">下一頁</a>
+                            }
+                            else
+                            {
+                                <span class="disabled">下一頁</span>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>No news available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
