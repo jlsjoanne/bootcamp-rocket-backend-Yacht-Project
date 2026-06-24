@@ -21,6 +21,10 @@ namespace TayanaYachts.Models.ViewModels
         [Display(Name = "Publish to Website")]
         public bool IsPublished { get; set; }
 
+        [Display(Name = "Display Order")]
+        [Range(0, 9999)]
+        public int? SortOrder { get; set; }
+
         [AllowHtml]
         public string Overview { get; set; }
 

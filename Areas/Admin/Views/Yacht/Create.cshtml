@@ -41,6 +41,22 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.SortOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.SortOrder, new
+           {
+               @class = "form-control",
+               type = "number",
+               min = "0",
+               max = "9999",
+               placeholder = "Leave empty to use 0"
+           })
+                @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Lower numbers appear first. Leave empty to use 0.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Overview, htmlAttributes: new { @class = "form-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.Overview, new { @class = "form-control", rows = "10" })

@@ -48,7 +48,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
 
             yachts = yachts.OrderByDescending(y => y.IsNew)
-                .ThenByDescending(y => y.PostDate);
+                .ThenBy(y => y.SortOrder)
+                .ThenByDescending(y => y.Id);
 
             int pageSize = 5;
             int pageNumber = (page ?? 1);
@@ -524,7 +525,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         // Yacht Model <=> View Model transform
 
-        private static Yacht ToYacht(YachtVM yachtVM)
+        private Yacht ToYacht(YachtVM yachtVM)
         {
             return new Yacht
             {
@@ -534,11 +535,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 PostDate = DateTime.Now,
                 Overview = yachtVM.Overview,
                 Dimensions = yachtVM.Dimensions,
-                Specification = yachtVM.Specification
+                Specification = yachtVM.Specification,
+                SortOrder = yachtVM.SortOrder.HasValue ? yachtVM.SortOrder.Value : 0
             };
         }
 
-        private static void UpdateYachtFromYachtVM(Yacht yacht, YachtVM yachtVM)
+        private void UpdateYachtFromYachtVM(Yacht yacht, YachtVM yachtVM)
         {
             yacht.Name = yachtVM.Name;
             yacht.IsNew = yachtVM.IsNew;
@@ -547,9 +549,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
             yacht.Overview = yachtVM.Overview;
             yacht.Dimensions = yachtVM.Dimensions;
             yacht.Specification = yachtVM.Specification;
+
+            if (yachtVM.SortOrder.HasValue)
+            {
+                yacht.SortOrder = yachtVM.SortOrder.Value;
+            }
         }
 
-        private static YachtVM ToYachtVM(Yacht yacht)
+        private YachtVM ToYachtVM(Yacht yacht)
         {
             return new YachtVM
             {
@@ -557,6 +564,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 Name = yacht.Name,
                 IsNew = yacht.IsNew,
                 IsPublished = yacht.IsPublished,
+                SortOrder = yacht.SortOrder,
                 Overview = yacht.Overview,
                 Dimensions = yacht.Dimensions,
                 Specification = yacht.Specification,
@@ -575,6 +583,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             reloadYachtVM.Overview = yachtVM.Overview;
             reloadYachtVM.Dimensions = yachtVM.Dimensions;
             reloadYachtVM.Specification = yachtVM.Specification;
+            reloadYachtVM.SortOrder = yachtVM.SortOrder;
 
             return reloadYachtVM;
         }
@@ -662,5 +671,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             return imageUrls;
         }
+
+        
     }
 }
