@@ -172,6 +172,7 @@
     <Compile Include="Controllers\DealerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\YachtController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -271,6 +272,10 @@
     <Compile Include="Migrations\202606240920454_AddSortOrderToYacht.Designer.cs">
       <DependentUpon>202606240920454_AddSortOrderToYacht.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606241646462_YachtAddHeroImage.cs" />
+    <Compile Include="Migrations\202606241646462_YachtAddHeroImage.Designer.cs">
+      <DependentUpon>202606241646462_YachtAddHeroImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Country.cs" />
@@ -287,12 +292,15 @@
     <Compile Include="Models\ViewModels\DealerPageVM.cs" />
     <Compile Include="Models\ViewModels\DealerVM.cs" />
     <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
+    <Compile Include="Models\ViewModels\HomePageVM.cs" />
     <Compile Include="Models\ViewModels\LogInVM.cs" />
     <Compile Include="Models\ViewModels\NewsVM.cs" />
+    <Compile Include="Models\ViewModels\YachtPageVM.cs" />
     <Compile Include="Models\ViewModels\YachtVM.cs" />
     <Compile Include="Models\Yacht.cs" />
     <Compile Include="Models\YachtDownload.cs" />
     <Compile Include="Models\YachtEditorImage.cs" />
+    <Compile Include="Models\YachtHeroImage.cs" />
     <Compile Include="Models\YachtImage.cs" />
     <Compile Include="Models\YachtInterior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -330,7 +338,10 @@
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\images\back.gif" />
+    <Content Include="Content\images\banner01_masks.png" />
     <Content Include="Content\images\buttbg.gif" />
+    <Content Include="Content\images\buttom01.gif" />
+    <Content Include="Content\images\buttom02.gif" />
     <Content Include="Content\images\buttom03.gif" />
     <Content Include="Content\images\contact.jpg" />
     <Content Include="Content\images\con_bg.gif" />
@@ -352,6 +363,7 @@
     <Content Include="Content\images\menu_y2_06.jpg" />
     <Content Include="Content\images\newbanner.jpg" />
     <Content Include="Content\images\pit010.jpg" />
+    <Content Include="Content\images\top.gif" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\summernote\summernote-bs5.min.css" />
     <Content Include="Content\summernote\summernote-lite.min.css" />
@@ -470,6 +482,7 @@
     <Content Include="Views\Dealer\Index.cshtml" />
     <Content Include="Views\News\Index.cshtml" />
     <Content Include="Views\News\Details.cshtml" />
+    <Content Include="Views\Yacht\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -573,6 +586,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202606240920454_AddSortOrderToYacht.resx">
       <DependentUpon>202606240920454_AddSortOrderToYacht.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606241646462_YachtAddHeroImage.resx">
+      <DependentUpon>202606241646462_YachtAddHeroImage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

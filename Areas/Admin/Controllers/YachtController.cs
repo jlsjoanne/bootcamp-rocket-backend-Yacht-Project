@@ -73,6 +73,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+
+            var heroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
+
+            ViewBag.HeroImage = heroImage?.ToExistingUploadFileVM();
+
             return View(yacht);
         }
 
@@ -99,6 +104,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
 
+            var heroImageUpload = yachtVM.HeroImageUpload;
+            var hasHeroImageUpload = heroImageUpload != null && heroImageUpload.ContentLength > 0;
+
             foreach(var deckimage in deckImageUploads)
             {
                 if (!UploadHelper.IsFileValid(deckimage, 1))
@@ -121,6 +129,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("DownloadFileUploads", "One or more uploaded files are not allowed.");
                 }
+            }
+
+            if(hasHeroImageUpload && !UploadHelper.IsFileValid(heroImageUpload, 1))
+            {
+                ModelState.AddModelError("HeroImageUpload", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
             }
 
             if(!ModelState.IsValid)
@@ -168,6 +181,17 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     deletedEditorImages = HandleEditorImages(yacht.Id, editorContent);
                     db.SaveChanges();
+
+                    if (hasHeroImageUpload)
+                    {
+                        var savedHeroImage = UploadHelper.SaveUploadedFile<YachtHeroImage>(heroImageUpload, "~/Images", Server, Url);
+                        savedUploads.Add(savedHeroImage);
+                        
+                        savedHeroImage.YachtId = yacht.Id;
+                        db.YachtHeroImages.Add(savedHeroImage);
+
+                        db.SaveChanges();
+                    }
 
                     transaction.Commit();
                 }
@@ -219,7 +243,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return HttpNotFound();
             }
 
-            var yachtVM = ToYachtVM(yacht);
+            var existingHeroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
+
+            var yachtVM = ToYachtVM(yacht,existingHeroImage);
 
             return View(yachtVM);
         }
@@ -242,6 +268,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
             var downfileUploads = (yachtVM.DownloadFileUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
+
+            var heroImageUpload = yachtVM.HeroImageUpload;
+            var hasHeroImageUpload = heroImageUpload != null && heroImageUpload.ContentLength > 0;
 
             foreach(var image in deckImageUploads)
             {
@@ -267,6 +296,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 }
             }
 
+            if(hasHeroImageUpload && !UploadHelper.IsFileValid(heroImageUpload, 1))
+            {
+                ModelState.AddModelError("HeroImageUpload", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
+            }
+
             var yacht = db.Yachts
                 .Include(y => y.DeckImgs)
                 .Include(y => y.Interiors)
@@ -277,6 +311,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+
+            var existingHeroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
 
             var deleteDeckImageIds = yachtVM.DeleteDeckImgIds ?? new Guid[0];
             var deleteInteriorIds = yachtVM.DeleteInteriorIds ?? new Guid[0];
@@ -289,7 +325,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if(!ModelState.IsValid)
             {
-                var reloadYachtVM = ReloadYachtVM(yachtVM, yacht);
+                var reloadYachtVM = ReloadYachtVM(yachtVM, yacht, existingHeroImage);
                 return View(reloadYachtVM);
             }
 
@@ -304,6 +340,21 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     // Update Yacht data
                     UpdateYachtFromYachtVM(yacht, yachtVM);
 
+                    // Update Hero Image
+                    if((yachtVM.DeleteHeroImage || hasHeroImageUpload) && existingHeroImage != null)
+                    {
+                        deletedExistingUploads.Add(existingHeroImage);
+                        db.YachtHeroImages.Remove(existingHeroImage);
+                        db.SaveChanges();
+                    }
+
+                    if (hasHeroImageUpload)
+                    {
+                        var newHeroImage = UploadHelper.SaveUploadedFile<YachtHeroImage>(heroImageUpload, "~/Images", Server, Url);
+                        newSavedUploads.Add(newHeroImage);
+                        newHeroImage.YachtId = yacht.Id;
+                        db.YachtHeroImages.Add(newHeroImage);
+                    }
 
                     // Delete deck, interior, download file from db and add to deletedExistingUploads list
                     foreach(var deckId in deleteDeckImageIds)
@@ -393,6 +444,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         return HttpNotFound();
                     }
 
+                    var freshHeroImage = db.YachtHeroImages.AsNoTracking().SingleOrDefault(h => h.YachtId == freshYacht.Id);
+
                     var reloadYachtVM = ReloadYachtVM(yachtVM, freshYacht);
                     return View(reloadYachtVM);
                 }
@@ -457,6 +510,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return HttpNotFound();
             }
 
+            var heroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
+
             var deleteUploads = new List<UploadedFile>();
 
             using(var transaction = db.Database.BeginTransaction())
@@ -481,6 +536,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     foreach(var editorImage in yacht.EditorImgs)
                     {
                         deleteUploads.Add(editorImage);
+                    }
+
+                    if(heroImage != null)
+                    {
+                        deleteUploads.Add(heroImage);
+                        db.YachtHeroImages.Remove(heroImage);
                     }
 
                     db.Yachts.Remove(yacht);
@@ -556,7 +617,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
         }
 
-        private YachtVM ToYachtVM(Yacht yacht)
+        private YachtVM ToYachtVM(Yacht yacht, YachtHeroImage heroImage = null)
         {
             return new YachtVM
             {
@@ -568,15 +629,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 Overview = yacht.Overview,
                 Dimensions = yacht.Dimensions,
                 Specification = yacht.Specification,
+                ExistingHeroImage = heroImage?.ToExistingUploadFileVM(),
                 ExistingDeckImgs = yacht.DeckImgs.Select(y => y.ToExistingUploadFileVM()).ToList(),
                 ExistingInteriors = yacht.Interiors.Select(y => y.ToExistingUploadFileVM()).ToList(),
                 ExistingDownloadFile = yacht.Downloads.Select(y => y.ToExistingUploadFileVM()).ToList()
             };
         }
 
-        private YachtVM ReloadYachtVM(YachtVM yachtVM, Yacht yacht)
+        private YachtVM ReloadYachtVM(YachtVM yachtVM, Yacht yacht, YachtHeroImage heroImage = null)
         {
-            var reloadYachtVM = ToYachtVM(yacht);
+            var reloadYachtVM = ToYachtVM(yacht, heroImage);
             reloadYachtVM.Name = yachtVM.Name;
             reloadYachtVM.IsNew = yachtVM.IsNew;
             reloadYachtVM.IsPublished = yachtVM.IsPublished;
