@@ -12,6 +12,7 @@ using TayanaYachts.Models.ViewModels;
 using System.Text.RegularExpressions;
 using System.IO;
 
+
 namespace TayanaYachts.Areas.Admin.Controllers
 {
     [Authorize]
@@ -22,7 +23,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Dealer
         public ActionResult Index()
         {
-            var dealers = db.Dealers.Include(d => d.Area);
+            var dealers = db.Dealers
+                .Include(d => d.Area.Country)
+                .OrderBy(d => d.Area.Country.SortOrder)
+                .ThenBy(d => d.Area.Country.Name)
+                .ThenBy(d => d.SortOrder)
+                .ThenBy(d => d.Name);
             return View(dealers.ToList());
         }
 
@@ -63,16 +69,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Create(DealerVM dealerVM)
         {
             // check Image File
-            if(dealerVM.ImageFile == null || dealerVM.ImageFile.ContentLength == 0)
+            if (dealerVM.ImageFile == null || dealerVM.ImageFile.ContentLength == 0)
             {
                 ModelState.AddModelError("ImageFile", "Dealer Image is Required.");
             }
 
-            if (!IsImageValid(dealerVM.ImageFile))
+            else if (!IsImageValid(dealerVM.ImageFile))
             {
                 ModelState.AddModelError("ImageFile", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed");
             }
-            
+
             if (!ModelState.IsValid)
             {
                 dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
@@ -80,22 +86,28 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                 return View(dealerVM);
             }
-            
-            using(var transaction = db.Database.BeginTransaction())
+
+            DealerImage dealerImage = null;
+
+            using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
+                    // Check if input SortOrder
+                    var sortOrder = dealerVM.SortOrder ?? GetNextDealerSortOrder(dealerVM.CountryId);
+
+                    dealerImage = DealerImgUpload(dealerVM.ImageFile);
+
                     // DealerVM to Dealer class
                     var dealer = new Dealer
                     {
                         Name = dealerVM.Name,
                         Content = RemoveWrappingPTag(dealerVM.Content),
-                        AreaId = dealerVM.AreaId.Value
+                        AreaId = dealerVM.AreaId.Value,
+                        SortOrder = sortOrder,
+                        Image = dealerImage
                     };
 
-                    var dealerImage = DealerImgUpload(dealerVM.ImageFile);
-
-                    dealer.Image = dealerImage;
                     db.Dealers.Add(dealer);
 
                     db.SaveChanges();
@@ -107,6 +119,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 catch
                 {
                     transaction.Rollback();
+
+                    if( dealerImage != null)
+                    {
+                        DeleteImageFile(dealerImage);
+                    }
 
                     ModelState.AddModelError("", "Unable to save dealer. Please try again");
 
@@ -140,8 +157,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 FilePath = dealer.Image.FilePath,
                 CountryId = dealer.Area.CountryId,
                 AreaId = dealer.AreaId,
+                SortOrder = dealer.SortOrder,
                 CountryList = GetCountrySelectList(dealer.Area.CountryId),
-                AreaList = GetAreaSelectList(dealer.Area.CountryId,dealer.AreaId)
+                AreaList = GetAreaSelectList(dealer.Area.CountryId, dealer.AreaId)
             };
             return View(dealerVM);
         }
@@ -153,47 +171,88 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(DealerVM dealerVM)
         {
-            if (!ModelState.IsValid)
+            // Check if update new image
+            var hasNewImage = dealerVM.ImageFile != null && dealerVM.ImageFile.ContentLength > 0;
+
+            if(hasNewImage && !IsImageValid(dealerVM.ImageFile))
             {
+                ModelState.AddModelError("ImageFile", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed");
+            }
+
+            if(!ModelState.IsValid)
+            {
+                var existingDealer = db.Dealers
+                    .Include(d => d.Image)
+                    .SingleOrDefault(d => d.Id == dealerVM.Id);
+
+                if(existingDealer == null)
+                {
+                    return HttpNotFound();
+                }
+
+                dealerVM.FilePath = existingDealer.Image.FilePath;
                 dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
                 dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
-
                 return View(dealerVM);
             }
 
-            var dealer = db.Dealers.Include(d => d.Image).SingleOrDefault(d => d.Id == dealerVM.Id);
+            var dealer = db.Dealers
+                .Include(d => d.Image)
+                .SingleOrDefault(d => d.Id == dealerVM.Id);
 
             if(dealer == null)
             {
                 return HttpNotFound();
             }
 
-            dealer.Name = dealerVM.Name;
-            dealer.Content = RemoveWrappingPTag(dealerVM.Content);
-            dealer.AreaId = dealerVM.AreaId.Value;
+            DealerImage newImage = null;
+            DealerImage oldImage = null;
 
-            // Check if upload new Image, if uploaded => delete old and update new
-            if(dealerVM.ImageFile != null && dealerVM.ImageFile.ContentLength > 0)
+            try
             {
-                if (!IsImageValid(dealerVM.ImageFile))
+                dealer.Name = dealerVM.Name;
+                dealer.Content = RemoveWrappingPTag(dealerVM.Content);
+                dealer.AreaId = dealerVM.AreaId.Value;
+
+                if (dealerVM.SortOrder.HasValue)
                 {
-                    ModelState.AddModelError("ImageFile", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed");
-                    dealerVM.FilePath = dealer.Image.FilePath;
-                    return View(dealerVM);
+                    dealer.SortOrder = dealerVM.SortOrder.Value;
                 }
 
-                DeleteImageFile(dealer.Image);
+                if (hasNewImage)
+                {
+                    oldImage = new DealerImage { FilePath = dealer.Image.FilePath };
+                    newImage = DealerImgUpload(dealerVM.ImageFile);
 
-                var newImageData = DealerImgUpload(dealerVM.ImageFile);
+                    dealer.Image.OriginalFileName = newImage.OriginalFileName;
+                    dealer.Image.StoredFileName = newImage.StoredFileName;
+                    dealer.Image.FileType = newImage.FileType;
+                    dealer.Image.ContentType = newImage.ContentType;
+                    dealer.Image.FilePath = newImage.FilePath;
+                }
 
-                dealer.Image.OriginalFileName = newImageData.OriginalFileName;
-                dealer.Image.StoredFileName = newImageData.StoredFileName;
-                dealer.Image.FileType = newImageData.FileType;
-                dealer.Image.ContentType = newImageData.ContentType;
-                dealer.Image.FilePath = newImageData.FilePath;
+                db.SaveChanges();
+            }
+            catch
+            {
+                if(newImage != null)
+                {
+                    DeleteImageFile(newImage);
+                }
+
+                ModelState.AddModelError("", "Unable to save dealer. Please try again.");
+
+                dealerVM.FilePath = dealer.Image.FilePath;
+                dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
+                dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
+
+                return View(dealerVM);
             }
 
-            db.SaveChanges();
+            if (oldImage != null)
+            {
+                DeleteImageFile(oldImage);
+            }
 
             return RedirectToAction("Details", new { id = dealer.Id });
         }
@@ -219,6 +278,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Dealer dealer = db.Dealers.Include(d => d.Image).SingleOrDefault(d => d.Id == id);
+
+            if (dealer == null)
+            {
+                return HttpNotFound();
+            }
+
             var dealerImage = dealer.Image;
             DeleteImageFile(dealerImage);
             db.Dealers.Remove(dealer);
@@ -241,7 +306,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         private IEnumerable<SelectListItem> GetCountrySelectList(int? selectedCountryId = null)
         {
             return db.Countries
-                .OrderBy(c => c.Name)
+                .OrderBy(c => c.SortOrder)
+                .ThenBy(c => c.Name)
                 .Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
@@ -293,13 +359,13 @@ namespace TayanaYachts.Areas.Admin.Controllers
             return Json(areas, JsonRequestBehavior.AllowGet);
         }
 
-        
+
         // private method
         // For Image File
         // Check if Image file is Valid
         private bool IsImageValid(HttpPostedFileBase file)
         {
-            if(file == null || file.ContentLength == 0)
+            if (file == null || file.ContentLength == 0)
             {
                 return false;
             }
@@ -323,10 +389,10 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 ".webp"
             };
 
-            var imgMaxSize = 15 * 1028 * 1028;
+            var imgMaxSize = 15 * 1024 * 1024;
 
             // verify if file match image limitation
-            if(!allowedContentType.Contains(file.ContentType))
+            if (!allowedContentType.Contains(file.ContentType))
             {
                 return false;
             }
@@ -338,13 +404,13 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return false;
             }
 
-            if(file.ContentLength > imgMaxSize)
+            if (file.ContentLength > imgMaxSize)
             {
                 return false;
             }
 
             return true;
-            
+
         }
 
         // Image Upload
@@ -357,7 +423,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             var relativeFolder = "~/Images";
             var absoluteFolder = Server.MapPath(relativeFolder);
 
-            if(!Directory.Exists(absoluteFolder))
+            if (!Directory.Exists(absoluteFolder))
             {
                 Directory.CreateDirectory(absoluteFolder);
             }
@@ -379,7 +445,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // Delete Old Image File
         private void DeleteImageFile(DealerImage image)
         {
-            if(image == null || string.IsNullOrEmpty(image.FilePath))
+            if (image == null || string.IsNullOrEmpty(image.FilePath))
             {
                 return;
             }
@@ -402,7 +468,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             content = content.Trim();
 
-            if(Regex.IsMatch(content, @"^<p[^>]*>\s*(<br\s*/?>)?\s*</p>$", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(content, @"^<p[^>]*>\s*(<br\s*/?>)?\s*</p>$", RegexOptions.IgnoreCase))
             {
                 return String.Empty;
             }
@@ -424,6 +490,17 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
 
             return innerContent.Trim();
+        }
+
+        // if user doesn't enter order => automatically get next order as SortOrder
+        private int GetNextDealerSortOrder(int? countryId)
+        {
+            var maxSortOrder = db.Dealers
+                .Where(d => d.Area.CountryId == countryId)
+                .Select(d => (int?)d.SortOrder)
+                .Max();
+
+            return (maxSortOrder ?? 0) + 10;
         }
     }
 }

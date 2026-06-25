@@ -23,6 +23,10 @@ namespace TayanaYachts.Models
 
         public bool IsPublished { get; set; } = false;
 
+        [Display(Name="Display Order")]
+        [Range(0,9999)]
+        public int SortOrder { get; set; }
+
         [DataType(DataType.DateTime)]
         [Display(Name="Last Modified Time")]
         public DateTime PostDate { get; set; }
@@ -45,6 +49,8 @@ namespace TayanaYachts.Models
         public virtual ICollection<YachtDownload> Downloads { get; set; }
 
         public virtual ICollection<YachtEditorImage> EditorImgs { get; set; }
+
+        
 
         public Yacht()
         {

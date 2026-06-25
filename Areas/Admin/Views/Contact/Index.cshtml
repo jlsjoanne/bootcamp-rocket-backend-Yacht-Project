@@ -20,12 +20,6 @@
             Country
         </th>
         <th>
-            Yacht
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Comment)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.IsCompleted)
         </th>
         <th></th>
@@ -47,12 +41,6 @@
                 @Html.DisplayFor(modelItem => item.Country.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Yacht.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.IsCompleted)
             </td>
             <td>
@@ -66,6 +54,23 @@
                         @Html.Hidden("id", item.Id)
                         <button type="submit" class="btn btn-sm btn-success">Mark as Complete</button>
                     }
+                }
+                else
+                {
+                    @: |
+                    using (Html.BeginForm("MarkAsIncomplete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Mark as Incomplete</button>
+                    }
+                }
+                |
+                @using (Html.BeginForm("Delete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", item.Id)
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 }
             </td>
         </tr>

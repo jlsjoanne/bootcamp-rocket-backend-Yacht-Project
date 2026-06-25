@@ -31,6 +31,8 @@ namespace TayanaYachts.DAL
         public DbSet<YachtInterior> YachtInteriors { get; set; }
         public DbSet<YachtEditorImage> YachtEditorImages { get; set; }
 
+        public DbSet<YachtHeroImage> YachtHeroImages { get; set; }
+
         public DbSet<Member> Members { get; set; }
         
         
@@ -85,6 +87,17 @@ namespace TayanaYachts.DAL
             modelBuilder.Entity<Dealer>()
                 .HasRequired(d => d.Image)
                 .WithRequiredPrincipal(i => i.Dealer)
+                .WillCascadeOnDelete(true);
+            modelBuilder.Entity<YachtHeroImage>()
+                .Map(m =>
+                {
+                    m.MapInheritedProperties();
+                    m.ToTable("YachtHeroImages");
+                });
+            modelBuilder.Entity<YachtHeroImage>()
+                .HasRequired(h => h.Yacht)
+                .WithMany()
+                .HasForeignKey(h => h.YachtId)
                 .WillCascadeOnDelete(true);
             base.OnModelCreating(modelBuilder);
         }

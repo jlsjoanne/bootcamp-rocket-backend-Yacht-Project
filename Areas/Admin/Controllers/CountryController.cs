@@ -19,7 +19,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Country
         public ActionResult Index()
         {
-            var Countries = db.Countries;
+            var Countries = db.Countries
+                .OrderBy(c => c.SortOrder)
+                .ThenBy(c => c.Name);
             return View(Countries.ToList());
         }
 
@@ -30,7 +32,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var country = db.Countries.Find(id);
+            var country = db.Countries.Include(c => c.Areas).SingleOrDefault(c => c.Id == id);
             if (country == null)
             {
                 return HttpNotFound();
@@ -53,6 +55,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(country.SortOrder <= 0)
+                {
+                    country.SortOrder = GetNextSortOrder();
+                }
+
                 db.Countries.Add(country);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -85,7 +92,20 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(country).State = EntityState.Modified;
+                var countryToUpdate = db.Countries.Find(country.Id);
+
+                if(countryToUpdate == null)
+                {
+                    return HttpNotFound();
+                }
+
+                countryToUpdate.Name = country.Name;
+
+                if(country.SortOrder > 0)
+                {
+                    countryToUpdate.SortOrder = country.SortOrder;
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -113,6 +133,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Country country = db.Countries.Find(id);
+            if(country == null)
+            {
+                return HttpNotFound();
+            }
+
             db.Countries.Remove(country);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -125,6 +150,17 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        // private methods
+        // GetNextSortOrder if sort order not input
+        private int GetNextSortOrder()
+        {
+            var maxSortOrder = db.Countries
+                .Select(c => (int?)c.SortOrder)
+                .Max();
+
+            return (maxSortOrder ?? 0) + 10;
         }
     }
 }

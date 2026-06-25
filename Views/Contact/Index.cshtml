@@ -1,0 +1,204 @@
+﻿@model TayanaYachts.Models.ViewModels.ContactPageVM
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/contact.jpg")" alt="Contact" width="967" height="371" />
+</div>
+
+<div class="banner">
+    <ul>
+        <li>
+            <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" />
+        </li>
+    </ul>
+</div>
+
+<div class="conbg">
+    <div class="left">
+        <div class="left1">
+            <p><span>CONTACT</span></p>
+            <ul>
+                <li><a href="#">contacts</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="crumb">
+        <a href="@Url.Action("Index","Home")">Home</a> &gt;&gt;
+        <a href="#">
+            <span class="on1">Contact</span>
+        </a>
+    </div>
+
+    <div class="right">
+        <div class="right1">
+            <div class="title">
+                <span>Contact</span>
+            </div>
+
+            <div class="from01">
+                @if (TempData["ContactSuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["ContactSuccessMessage"]
+                    </div>
+                }
+
+                <p>
+                    Please Enter your contact information
+                    <span class="span01">*Required</span>
+                </p>
+                <br />
+
+                @using (Html.BeginForm("Index", "Contact", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="from01td01">
+                                    @Html.LabelFor(model => model.Form.Name) :
+                                </td>
+                                <td>
+                                    <span>*</span>
+                                    @Html.TextBoxFor(model => model.Form.Name)
+                                    @Html.ValidationMessageFor(model => model.Form.Name, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">
+                                    @Html.LabelFor(model => model.Form.Email) :
+                                </td>
+                                <td>
+                                    <span>*</span>
+                                    @Html.TextBoxFor(model => model.Form.Email)
+                                    @Html.ValidationMessageFor(model => model.Form.Email, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">
+                                    @Html.LabelFor(model => model.Form.Phone)  :
+                                </td>
+                                <td>
+                                    <span>*</span>
+                                    @Html.TextBoxFor(model => model.Form.Phone)
+                                    @Html.ValidationMessageFor(model => model.Form.Phone, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">
+                                    Country :
+                                </td>
+                                <td>
+                                    <span>*</span>
+                                    @Html.DropDownListFor(model => model.Form.CountryId, Model.Countries, "Select Country")
+                                    @Html.ValidationMessageFor(model => model.Form.CountryId, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">
+                                    <span>*</span>Brochure of interest  *Which Brochure would you like to view?
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">&nbsp;</td>
+                                <td>
+                                    @Html.DropDownListFor(model => model.Form.YachtId, Model.Yachts, "Select Yacht")
+                                    @Html.ValidationMessageFor(model => model.Form.YachtId, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">
+                                    @Html.LabelFor(model => model.Form.Comment) :
+                                </td>
+                                <td>
+                                    @Html.TextAreaFor(model => model.Form.Comment, new { rows = 2, cols = 20 })
+                                    @Html.ValidationMessageFor(model => model.Form.Comment, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">&nbsp;</td>
+                                <td class="f_right">
+                                    <div class="g-recaptcha" data-sitekey="@System.Configuration.ConfigurationManager.AppSettings["RecaptchaSiteKey"]"></div>
+
+                                    @if (ViewData.ModelState["Recaptcha"] != null)
+                                    {
+                                        <span class="field-validation-error">
+                                            @ViewData.ModelState["Recaptcha"].Errors[0].ErrorMessage
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="from01td01">&nbsp;</td>
+                                <td class="f_right">
+                                    <input type="image"
+                                           src="@Url.Content("~/Content/images/buttom03.gif")"
+                                           border="0"
+                                           alt="Submit" />
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                }
+            </div>
+
+            <div class="box1">
+                <span class="span02">Contact with us</span><br>
+                Thanks for your enjoying our web site as an introduction to the Tayana world and our range of yachts.
+                As all the designs in our range are semi-custom built, we are glad to offer a personal service to all our potential customers.
+                If you have any questions about our yachts or would like to take your interest a stage further, please feel free to contact us.
+            </div>
+
+            <div class="list03">
+                <p>
+                    <span>TAYANA HEAD OFFICE</span><br>
+                    NO.60 Haichien Rd. Chungmen Village Linyuan Kaohsiung Hsien 832 Taiwan R.O.C<br>
+                    tel. +886(7)641 2422<br>
+                    fax. +886(7)642 3193<br>
+                    info@tayanaworld.com<br>
+                </p>
+            </div>
+
+            <div class="list03">
+                <p>
+                    <span>SALES DEPT.</span><br>
+                    +886(7)641 2422  ATTEN. Mr.Basil Lin<br><br>
+                </p>
+            </div>
+
+            <div class="box4">
+                <h4>Location</h4>
+                <p>
+                    <iframe src="https://www.google.com/maps?q=No.%2060%20Haiqiang%20Road%2C%20Linyuan%20District%2C%20Kaohsiung%2C%20Taiwan&output=embed"
+                            width="695"
+                            height="518"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

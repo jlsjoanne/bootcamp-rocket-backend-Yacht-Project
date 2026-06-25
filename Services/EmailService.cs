@@ -23,8 +23,36 @@ namespace TayanaYachts.Services
         public async Task SendContactFormEmailAsync(Contact contact)
         {
             // Email 1: confirmation email to user
+            string confirmationText = $@"
+Hi {contact.Name},
+Thank you for contacting us.
+
+We have received your message:
+
+Country: {contact.Country.Name}
+Brochure of Interest: {contact.Yacht.Name}
+Comment: {contact.Comment}
+
+We will get back as soon as possible.";
+
+            await SendEmailAsync(toEmail: contact.Email,
+                subject: "Your message was received - Tayana Yachts",
+                plainTextBody: confirmationText);
 
             // Email 2: notification email to host/admin
+
+            string notificationText = $@"New Contact from Submission:
+Name: {contact.Name}
+Email: {contact.Email}
+Phone: {contact.Phone}
+Country: {contact.Country.Name}
+Brochure of Interest: {contact.Yacht.Name}
+Comment: {contact.Comment}";
+
+            await SendEmailAsync(toEmail: _settings.ContactHostEmail,
+                subject: $"New contact form submission: {contact.Id}",
+                 plainTextBody:notificationText, replyToEmail: contact.Email);
+                
         }
 
         private async Task SendEmailAsync(string toEmail, string subject, string plainTextBody, string replyToEmail = null)

@@ -63,6 +63,8 @@ body {
     float: left;
     height: 71px;
     width: 100%;
+    position: relative;
+    z-index: 50;
 }
 
     .menu ul {
@@ -76,6 +78,16 @@ body {
         font-size: 0px;
         text-decoration: none;
         color: #F6F6F6;
+    }
+
+    .menu li a{
+        display:block;
+        width: 100%;
+        height: 71px;
+    }
+
+    .menu li a span{
+        display:none;
     }
 
     .menu a {
@@ -430,6 +442,10 @@ body {
 .box3 p img {
     border: 1px solid #CCCCCC;
     padding: 5px;
+}
+
+.box3 p{
+    float:right;
 }
 
 .box4 p {

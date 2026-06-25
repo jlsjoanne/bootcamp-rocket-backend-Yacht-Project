@@ -8,76 +8,92 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Edit</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+<div class="form-horizontal">
+    <h4>Edit</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Content, new { htmlAttributes = new { @class = "form-control", rows=10 } })
-                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div>
-            <p>
-                <img src="@Url.Content(Model.FilePath)" border="0" />
-            </p>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2">Upload New Image</label>
-            @*@Html.LabelFor(model => model.ImageFile, htmlAttributes: new { @class = "control-label col-md-2" })*@
-            <div class="col-md-10">
-                <input type="file"
-                       name="ImageFile"
-                       class="form-control"
-                       accept="image/*" />
-                @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(
-                    model => model.CountryId,
-                    Model.CountryList,
-                    "-- Select Country --",
-                    new { @class = "form-select", id = "CountryId" })
-                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AreaId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(
-                    model => model.AreaId,
-                    Model.AreaList,
-                    "-- Select Area --",
-                    new { @class = "form-select", id = "AreaId" })
-                @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Content, new { htmlAttributes = new { @class = "form-control", rows = 10 } })
+            @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div>
+        <p>
+            <img src="@Url.Content(Model.FilePath)" border="0" />
+        </p>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Upload New Image</label>
+        <div class="col-md-10">
+            <input type="file"
+                   name="ImageFile"
+                   class="form-control"
+                   accept="image/*" />
+            @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(
+                model => model.CountryId,
+                Model.CountryList,
+                "-- Select Country --",
+                new { @class = "form-select", id = "CountryId" })
+            @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AreaId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(
+                model => model.AreaId,
+                Model.AreaList,
+                "-- Select Area --",
+                new { @class = "form-select", id = "AreaId" })
+            @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SortOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.SortOrder, new
+       {
+           @class = "form-control",
+           type = "number",
+           min = "0",
+           max = "9999",
+           step = "1",
+           placeholder = "Leave empty to keep current order"
+       })
+            @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+            <small class="form-text text-muted">Lower numbers appear first. Leave empty to keep current order.</small>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

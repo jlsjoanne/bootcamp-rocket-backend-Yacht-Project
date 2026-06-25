@@ -44,8 +44,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 news = news.Where(n =>
                     n.Title.Contains(searchString) ||
-                    (!String.IsNullOrWhiteSpace(n.Summary) && n.Summary.Contains(searchString)) ||
-                    (!String.IsNullOrWhiteSpace(n.Content) && n.Content.Contains(searchString)));
+                    (n.Summary != null && n.Summary.Contains(searchString)) ||
+                    (n.Content != null && n.Content.Contains(searchString)));
             }
 
             news = news.OrderByDescending(n => n.IsPinned)

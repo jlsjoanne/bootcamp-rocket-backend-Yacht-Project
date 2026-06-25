@@ -1,7 +1,49 @@
 ﻿(function () {
     var config = window.yachtCustomizeConfig || {};
 
-    function uploadSummernoteImage(file, $editor) {
+    var DIMENSION_IMAGE_WIDTH = 278;
+    var DIMENSION_IMAGE_HEIGHT = 345;
+
+    function formatDefaultSummernoteImage($image) {
+        $image.addClass("img-fluid");
+    }
+
+    function formatDimensionSummernoteImage($image) {
+        var $cell = $image.closest(".dimension-image-cell");
+
+        $image
+            .removeClass("img-fluid")
+            .addClass("dimension-fixed-image")
+            .attr({
+                width: DIMENSION_IMAGE_WIDTH,
+                height: DIMENSION_IMAGE_HEIGHT
+            })
+            .css({
+                width: DIMENSION_IMAGE_WIDTH + "px",
+                height: DIMENSION_IMAGE_HEIGHT + "px",
+                "object-fit": "contain",
+                "object-position": "center center",
+                "max-width": "none",
+                display: "block",
+                margin: "0 auto"
+            });
+
+        if ($cell.length) {
+            $cell.find("p").remove();
+            $cell.find("img").not($image).remove();
+
+            $cell
+                .append($image)
+                .css({
+                    width: DIMENSION_IMAGE_WIDTH + "px",
+                    height: DIMENSION_IMAGE_HEIGHT + "px",
+                    "text-align": "center",
+                    "vertical-align": "middle"
+                });
+        }
+    }
+
+    function uploadSummernoteImage(file, $editor, formatImage) {
         var formData = new FormData();
 
         formData.append("file", file);
@@ -27,7 +69,9 @@
             success: function (response) {
                 if (response && response.url) {
                     $editor.summernote("insertImage", response.url, function ($image) {
-                        $image.addClass("img-fluid");
+                        if (typeof formatImage === "function") {
+                            formatImage($image);
+                        }
                     });
                 } else {
                     alert("Image upload failed. No image URL returned.");
@@ -241,7 +285,7 @@
             callbacks: {
                 onImageUpload: function (files) {
                     if (files && files.length > 0) {
-                        uploadSummernoteImage(files[0], $overview);
+                        uploadSummernoteImage(files[0], $overview, formatDefaultSummernoteImage);
                     }
                 },
 
@@ -264,7 +308,7 @@
                 ["style", ["bold", "italic", "clear"]],
                 ["para", ["paragraph"]],
                 ["insert", ["picture", "table", "dimensionTemplate"]],
-                ["view", ["fullscreen"]]
+                ["view", ["fullscreen","codeview"]]
             ],
 
             buttons: {
@@ -273,7 +317,6 @@
 
             popover: {
                 image: [
-                    ["image", ["resizeFull", "resizeHalf", "resizeQuarter", "resizeNone"]],
                     ["float", ["floatLeft", "floatRight", "floatNone"]],
                     ["remove", ["removeMedia"]]
                 ],
@@ -288,7 +331,7 @@
             callbacks: {
                 onImageUpload: function (files) {
                     if (files && files.length > 0) {
-                        uploadSummernoteImage(files[0], $dimensions);
+                        uploadSummernoteImage(files[0], $dimensions, formatDimensionSummernoteImage);
                     }
                 }
             }

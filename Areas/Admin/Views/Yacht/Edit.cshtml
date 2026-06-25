@@ -43,6 +43,22 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.SortOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.SortOrder, new
+           {
+               @class = "form-control",
+               type = "number",
+               min = "0",
+               max = "9999",
+               placeholder = "Leave empty to keep current order"
+           })
+                @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Lower numbers appear first. Leave empty to keep current order.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Overview, htmlAttributes: new { @class = "form-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.Overview, new { @class = "form-control", rows = "10" })
@@ -63,6 +79,49 @@
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.Specification, new { @class = "form-control", rows = "10" })
                 @Html.ValidationMessageFor(model => model.Specification, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExistingHeroImage, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.ExistingHeroImage != null)
+                {
+                    <div class="mb-3 existing-upload-item">
+                        <figure>
+                            <img src="@Url.Content(Model.ExistingHeroImage.FilePath)"
+                                 alt="@Model.ExistingHeroImage.OriginalFileName"
+                                 style="max-width: 240px;" />
+                            <figcaption>
+                                <a href="@Url.Content(Model.ExistingHeroImage.FilePath)" target="_blank" rel="noopener noreferrer">
+                                    @Model.ExistingHeroImage.OriginalFileName
+                                </a>
+                            </figcaption>
+                        </figure>
+
+                        <label class="ms-2">
+                            @Html.CheckBoxFor(model => model.DeleteHeroImage)
+                            Delete
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">No homepage hero image.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HeroImageUpload, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file"
+                       name="HeroImageUpload"
+                       accept="image/*"
+                       class="form-control" />
+
+                @Html.ValidationMessageFor(model => model.HeroImageUpload, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Uploading a new image will replace the current homepage hero image.</small>
             </div>
         </div>
 
@@ -177,7 +236,7 @@
             <div class="col-md-10">
                 @if (Model.ExistingDownloadFile != null && Model.ExistingDownloadFile.Any())
                 {
-                    foreach(var fileUploaded in Model.ExistingDownloadFile)
+                    foreach (var fileUploaded in Model.ExistingDownloadFile)
                     {
                         <div class="mb-3 existing-upload-item">
                             <a href="@Url.Content(fileUploaded.FilePath)" target="_blank" rel="noopener noreferrer">

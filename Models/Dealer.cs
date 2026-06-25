@@ -28,6 +28,10 @@ namespace TayanaYachts.Models
 
         [ForeignKey("AreaId")]
         public virtual Area Area { get; set; }
+
+        [Display(Name ="Display Order")]
+        [Range(0,9999)]
+        public int SortOrder { get; set; }
         
     }
 }

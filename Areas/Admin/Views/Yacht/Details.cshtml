@@ -2,6 +2,7 @@
 
 @{
     ViewBag.PageHeader = "Yacht";
+    var heroImage = ViewBag.HeroImage as TayanaYachts.Models.ViewModels.ExistingUploadFileVM;
 }
 
 
@@ -42,6 +43,14 @@
         </dd>
 
         <dt class="mb-1">
+            @Html.DisplayNameFor(model => model.SortOrder)
+        </dt>
+
+        <dd class="mb-3">
+            @Html.DisplayFor(model => model.SortOrder)
+        </dd>
+
+        <dt class="mb-1">
             @Html.DisplayNameFor(model => model.Overview)
         </dt>
 
@@ -63,6 +72,30 @@
 
         <dd class="mb-3">
             @Html.Raw(Model.Specification)
+        </dd>
+
+        <dt class="mb-1">
+            Homepage Hero Image
+        </dt>
+
+        <dd class="mb-3">
+            @if (heroImage != null)
+            {
+                <div>
+                    <img src="@Url.Content(heroImage.FilePath)"
+                         alt="@heroImage.OriginalFileName"
+                         style="max-width: 240px;"/>
+                    <div>
+                        <a href="@Url.Content(heroImage.FilePath)" target="_blank" rel="noopener noreferrer">
+                            @heroImage.OriginalFileName
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <span class="text-muted">No homepage hero image.</span>
+            }
         </dd>
 
         <dt class="mb-1">
