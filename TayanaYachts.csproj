@@ -361,7 +361,10 @@
     <Content Include="Content\images\menu_y2_04.jpg" />
     <Content Include="Content\images\menu_y2_05.jpg" />
     <Content Include="Content\images\menu_y2_06.jpg" />
+    <Content Include="Content\images\new01.png" />
     <Content Include="Content\images\newbanner.jpg" />
+    <Content Include="Content\images\news.gif" />
+    <Content Include="Content\images\new_top01.png" />
     <Content Include="Content\images\pit010.jpg" />
     <Content Include="Content\images\top.gif" />
     <Content Include="Content\PagedList.css" />
