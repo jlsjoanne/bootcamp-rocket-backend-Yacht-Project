@@ -29,7 +29,7 @@ namespace TayanaYachts.Controllers
 
             var latestNews = db.News
                 .Include(n => n.ThumbnailImage)
-                .Where(n => n.IsPublished)
+                .Where(n => n.IsPublished && n.PublishDate <= DateTime.Today)
                 .OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.PublishDate)
                 .ThenByDescending(n => n.Id)
@@ -69,13 +69,11 @@ namespace TayanaYachts.Controllers
 
             var parts = yachtName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if(parts.Length == 1)
+            title = parts[0].ToUpperInvariant();
+            if(parts.Length > 1)
             {
-                title = parts[0].ToUpperInvariant();
-                return;
+                modelNumber = String.Join(" ", parts.Skip(1));
             }
-            title = String.Join(" ", parts.Take(parts.Length - 1)).ToUpperInvariant();
-            modelNumber = parts[parts.Length - 1];
         }
 
         private static HomeHeroSlideVM ToHeroSlideVM(YachtHeroImage heroImage)
