@@ -1,0 +1,119 @@
+﻿@model TayanaYachts.Models.News
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+
+    <style>
+        .news-content {
+            white-space: pre-line;
+        }
+
+        .news-detail-images {
+            width: 660px;
+            height: 438px;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="banner" />
+</div>
+
+<div class="banner">
+    <ul>
+        <li><img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" /></li>
+    </ul>
+</div>
+
+<div class="conbg">
+    <div class="left">
+        <div class="left1">
+            <p>
+                <span>NEWS</span>
+            </p>
+            <ul>
+                <li>
+                    <a href="@Url.Action("Index","News")">News & Events</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="crumb">
+        <a href="@Url.Action("Index","Home")">Home</a> >>
+        <a href="#">News </a> >>
+        <a href="#">
+            <span class="on1">
+                News & Events
+            </span>
+        </a>
+    </div>
+
+    <div class="right">
+        <div class="right1">
+            <div class="title">
+                <span>News & Events</span>
+            </div>
+
+            <div class="box3">
+                <h4>@Model.Title</h4>
+                <div class="news-content">
+                    @Html.DisplayFor(model => model.Content)
+                </div>
+
+                @if (Model.ThumbnailImage != null || (Model.Images != null && Model.Images.Any()))
+                {
+                    <div class="news-detail-images">
+                        @if (Model.ThumbnailImage != null)
+                        {
+                            <p>
+                                <img src="@Url.Content(Model.ThumbnailImage.FilePath)"
+                                     alt="@Model.ThumbnailImage.OriginalFileName"
+                                     class="news-detail-images" />
+                            </p>
+                        }
+                        @foreach (var image in Model.Images.Where(i => Model.ThumbnailImage == null || i.Id != Model.ThumbnailImage.Id))
+                        {
+                            <p>
+                                <img src="@Url.Content(image.FilePath)"
+                                     alt="@image.OriginalFileName"
+                                     class="news-detail-images" />
+                            </p>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="downloads">
+                <p>
+                    <img src="@Url.Content("~/Content/images/downloads.gif")" alt="Download" />
+                </p>
+                @if (Model.Files != null && Model.Files.Any())
+                {
+                    <ul>
+                        @foreach (var file in Model.Files)
+                        {
+                            <li>
+                                <a href="@Url.Content(file.FilePath)" download="@file.OriginalFileName">
+                                    @Path.GetFileNameWithoutExtension(file.OriginalFileName)
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No File available.</p>
+                }
+            </div>
+
+            <div class="buttom001">
+                <a href="@Url.Action("Index","News")">
+                    <img src="@Url.Content("~/Content/images/back.gif")" alt="Go Back" width="55" height="28" />
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

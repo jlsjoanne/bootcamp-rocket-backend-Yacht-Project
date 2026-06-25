@@ -1,0 +1,177 @@
+﻿@model TayanaYachts.Models.ViewModels.YachtVM
+
+@{
+    ViewBag.PageHeader = "Yacht";
+}
+
+@using (Html.BeginForm("Create", "Yacht", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Create</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsNew, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsNew)
+                    @Html.ValidationMessageFor(model => model.IsNew, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsPublished, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsPublished)
+                    @Html.ValidationMessageFor(model => model.IsPublished, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SortOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.SortOrder, new
+           {
+               @class = "form-control",
+               type = "number",
+               min = "0",
+               max = "9999",
+               placeholder = "Leave empty to use 0"
+           })
+                @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Lower numbers appear first. Leave empty to use 0.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Overview, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Overview, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Overview, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Dimensions, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Dimensions, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Dimensions, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Specification, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Specification, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Specification, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HeroImageUpload, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file"
+                       name="HeroImageUpload"
+                       accept="image/*"
+                       class="form-control" />
+
+                @Html.ValidationMessageFor(model => model.HeroImageUpload, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Used for the homepage carousel.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DeckImgsUploads, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div id="deck-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="DeckImgsUploads"
+                               accept="image/*"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-deck-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.DeckImgsUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InteriorUploads, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div id="interior-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="InteriorUploads"
+                               accept="image/*"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-interior-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.InteriorUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DownloadFileUploads, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div id="downloadfile-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="DownloadFileUploads"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-downloadfile-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.DownloadFileUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section styles{
+    <link href="~/Content/summernote/summernote-lite.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/summernote/summernote-lite.min.js"></script>
+    <script>
+        window.yachtCustomizeConfig = {
+            uploadEditorImageUrl: '@Url.Action("UploadEditorImage", "Yacht")'
+        };
+    </script>
+    <script src="@Url.Content("~/Scripts/admin/yacht-customize.js")"></script>
+}

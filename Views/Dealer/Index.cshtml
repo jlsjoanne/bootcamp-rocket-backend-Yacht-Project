@@ -1,0 +1,90 @@
+﻿@model TayanaYachts.Models.ViewModels.DealerPageVM
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/DEALERS_new.jpg")" alt="Dealer" width="967" height="371" />
+</div>
+
+<div class="banner">
+    <ul>
+        <li><img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" /></li>
+    </ul>
+</div>
+
+<div class="conbg">
+    <div class="left">
+        <div class="left1">
+            <p><span>DEALERS</span></p>
+
+            @if (Model.Countries != null && Model.Countries.Any())
+            {
+                <ul>
+                    @foreach (var country in Model.Countries)
+                    {
+                        <li>
+                            <a href="@Url.Action("Index","Dealer", new { countryId = country.Id})">
+                                @country.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+
+    <div id="crumb">
+        <a href="@Url.Action("Index","Home")">Home</a> >>
+        <a href="@Url.Action("Index","Dealer")">Dealers</a> >>
+        <a href="@Url.Action("Index","Dealer", new {countryId = Model.SelectedCountry})">
+            <span class="on1">
+                @Model.SelectedCountry.Name
+            </span>
+        </a>
+    </div>
+
+    <div class="right">
+        <div class="right1">
+            <div class="title">
+                <span>
+                    @Model.SelectedCountry.Name
+                </span>
+            </div>
+
+            <div class="box2_list">
+                @if (Model.Dealers != null && Model.Dealers.Any())
+                {
+                    <ul>
+                        @foreach (var dealer in Model.Dealers)
+                        {
+                            <li>
+                                <div class="list02">
+                                    <ul>
+                                        <li class="list02li">
+                                            <div>
+                                                <p>
+                                                    <img src="@Url.Content(dealer.Image.FilePath)" border="0" />
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="list02li02">
+                                            <span>@dealer.Area.Name</span><br />
+                                            @dealer.Name<br />
+                                            @Html.Raw(dealer.Content)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No dealers available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

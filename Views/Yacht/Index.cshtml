@@ -1,0 +1,319 @@
+﻿@model TayanaYachts.Models.ViewModels.YachtPageVM
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+
+    <style>
+        .banner img {
+          width: 967px;
+          height: 371px;
+          object-fit: cover;
+          display: block;
+      }
+
+      .bannerimg_p img {
+          width: 99px;
+          height: 59px;
+          object-fit: cover;
+          display: block;
+      }
+
+      .banner-thumb.on {
+          background-image: url('@Url.Content("~/Content/images/changbg.gif")');
+          background-repeat: no-repeat;
+          background-position: left bottom;
+      }
+      
+      .bannermasks {
+          z-index: 100;
+          pointer-events: none;
+      }
+
+      #buttom01,
+      #buttom02 {
+          z-index: 120;
+      }
+
+      .bannerimg {
+          z-index: 121;
+      }
+
+      .right1 .box6 {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+      }
+
+      .right1 .box6 .deck-plan-list {
+          width: 100%;
+          max-width: 100%;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+      
+      .right1 .box6 .deck-plan-list li {
+          float: none;
+          width: 100%;
+          max-width: 100%;
+          margin-bottom: 16px;
+          overflow: hidden;
+          box-sizing: border-box;
+      }
+      
+      .right1 .box6 .deck-plan-image {
+          width: 100%;
+          max-width: 100%;
+          height: auto;
+          display: block;
+          box-sizing: border-box;
+      }
+    </style>
+}
+
+@{
+    var bannerImages = Model.CurrentYacht != null && Model.CurrentYacht.Interiors != null
+        ? Model.CurrentYacht.Interiors.ToList()
+        : new List<TayanaYachts.Models.YachtInterior>();
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/banner01_masks.png")" alt="banner mask" />
+</div>
+
+@if (bannerImages.Any())
+{
+    <div id="buttom01">
+        <a href="#" id="banner-prev">
+            <img src="@Url.Content("~/Content/images/buttom01.gif")" alt="Previous" />
+        </a>
+    </div>
+
+    <div class="bannerimg">
+        <ul>
+            @for (var i = 0; i < bannerImages.Count; i++)
+            {
+                var image = bannerImages[i];
+
+                <li>
+                    <a href="#" class="banner-thumb @(i == 0 ? "on" : "")" data-index="@i">
+                        <p class="bannerimg_p">
+                            <img src="@Url.Content(image.FilePath)"
+                                 alt="@image.OriginalFileName" />
+                        </p>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div id="buttom02">
+        <a href="#" id="banner-next">
+            <img src="@Url.Content("~/Content/images/buttom02.gif")" alt="Next" />
+        </a>
+    </div>
+}
+
+
+
+<div class="banner">
+    <ul class="slideshow">
+        @if (bannerImages.Any())
+        {
+            foreach (var image in bannerImages)
+            {
+                <li>
+                    <img src="@Url.Content(image.FilePath)"
+                         alt="@image.OriginalFileName" />
+                </li>
+            }
+        }
+        else
+        {
+            <li>
+                <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" />
+            </li>
+        }
+    </ul>
+</div>
+
+@if (Model.CurrentYacht == null)
+{
+    <div class="conbg">
+        <div class="right">
+            <div class="right1">
+                <div class="title">
+                    <span>Yachts</span>
+                </div>
+                <p>No yacht available.</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="conbg">
+        <div class="left">
+            <div class="left1">
+                <p>
+                    <span>YACHTS</span>
+                </p>
+                @if (Model.Yachts != null && Model.Yachts.Any())
+                {
+                    <ul>
+                        @foreach (var yacht in Model.Yachts)
+                        {
+                            <li>
+                                <a href="@Url.Action("Index","Yacht", new { id = yacht.Id})">
+                                    @yacht.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+
+        <div id="crumb">
+            <a href="@Url.Action("Index","Home")">Home</a> >>
+            <a href="@Url.Action("Index","Yacht")">Yachts</a> >>
+            <a href="#">
+                <span class="on1">
+                    @Model.CurrentYacht.Name
+                </span>
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="right1">
+                <div class="title">
+                    <span>@Model.CurrentYacht.Name</span>
+                </div>
+
+                <div class="menu_y">
+                    <ul>
+                        <li class="menu_y00">YACHTS</li>
+                        <li>
+                            <a href="@Url.Action("Index","Yacht", new { id = Model.CurrentYacht.Id})" class="menu_yli01">
+                                Interior
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Yacht", new { id = Model.CurrentYacht.Id, tab = "layout"})" class="menu_yli02">
+                                Layout & deck plan
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index","Yacht", new { id = Model.CurrentYacht.Id, tab = "specification"})" class="menu_yli03">
+                                Specification
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                @switch (Model.ActiveTab)
+                {
+                    case TayanaYachts.Models.ViewModels.YachtTab.Layout:
+                        <div class="box6">
+                            <p>Layout & deck plan</p>
+
+                            @if (Model.CurrentYacht.DeckImgs != null && Model.CurrentYacht.DeckImgs.Any())
+                            {
+                                <ul class="deck-plan-list">
+                                    @foreach (var image in Model.CurrentYacht.DeckImgs)
+                                    {
+                                        <li>
+                                            <img src="@Url.Content(image.FilePath)"
+                                                 alt="@image.OriginalFileName"
+                                                 class="deck-plan-image" />
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No layout image available.</p>
+                            }
+                        </div>
+                        <p class="topbuttom">
+                            <img src="@Url.Content("~/Content/images/top.gif")" alt="top" />
+                        </p>
+                        break;
+                    case TayanaYachts.Models.ViewModels.YachtTab.Specification:
+                        <div class="box5">
+                            <h4>DETAIL SPECIFICATION</h4>
+                            @Html.Raw(Model.CurrentYacht.Specification)
+                        </div>
+                        <p class="topbuttom">
+                            <img src="@Url.Content("~/Content/images/top.gif")" alt="top" />
+                        </p>
+                        break;
+                    case TayanaYachts.Models.ViewModels.YachtTab.Overview:
+                        <div class="box1">
+                            @Html.Raw(Model.CurrentYacht.Overview)
+                        </div>
+                        @Html.Raw(Model.CurrentYacht.Dimensions)
+                        <p class="topbuttom">
+                            <img src="@Url.Content("~/Content/images/top.gif")" alt="top" />
+                        </p>
+                        <div class="downloads">
+                            <p>
+                                <img src="@Url.Content("~/Content/images/downloads.gif")" alt="Download" />
+                            </p>
+                            @if (Model.CurrentYacht.Downloads != null && Model.CurrentYacht.Downloads.Any())
+                            {
+                                <ul>
+                                    @foreach (var download in Model.CurrentYacht.Downloads)
+                                    {
+                                        <li>
+                                            <a href="@Url.Content(download.FilePath)" download="@download.OriginalFileName">
+                                                @Path.GetFileNameWithoutExtension(download.OriginalFileName)
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No File available.</p>
+                            }
+                        </div>
+                        break;
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            var $slides = $('.banner .slideshow');
+            var $thumbs = $('.banner-thumb');
+
+            if ($slides.children('li').length > 1) {
+                $slides.cycle({
+                    fx: 'fade',
+                    timeout: 3000,
+                    speed: 1000,
+                    prev: '#banner-prev',
+                    next: '#banner-next',
+                    before: function (curr, next, opts) {
+                        $thumbs.removeClass('on');
+                        $thumbs.eq(opts.nextSlide).addClass('on');
+                    }
+                });
+
+                $thumbs.on('click', function (e) {
+                    e.preventDefault();
+                    var index = parseInt($(this).data('index'), 10);
+                    $slides.cycle(index);
+                });
+            }
+        });
+    </script>
+}

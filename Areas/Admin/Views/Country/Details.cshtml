@@ -1,0 +1,50 @@
+﻿@model TayanaYachts.Models.Country
+
+@{
+    ViewBag.PageHeader = "Country";
+}
+
+<div>
+    <h4>Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SortOrder)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SortOrder)
+        </dd>
+
+    </dl>
+</div>
+@if (Model.Areas.Count() != 0)
+{
+    <table class="table">
+        <tr>
+            <th>
+                Area Name
+            </th>
+        </tr>
+        @foreach (var item in Model.Areas)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+        }
+    </table>
+}
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

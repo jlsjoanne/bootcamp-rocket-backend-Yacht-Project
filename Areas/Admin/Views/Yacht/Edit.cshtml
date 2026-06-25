@@ -1,0 +1,307 @@
+﻿@model TayanaYachts.Models.ViewModels.YachtVM
+
+@{
+    ViewBag.PageHeader = "Yacht";
+}
+
+@using (Html.BeginForm("Edit", "Yacht", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edit</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", style = "width: 600px; max-width:100%; " } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsNew, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsNew)
+                    @Html.ValidationMessageFor(model => model.IsNew, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsPublished, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsPublished)
+                    @Html.ValidationMessageFor(model => model.IsPublished, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SortOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.SortOrder, new
+           {
+               @class = "form-control",
+               type = "number",
+               min = "0",
+               max = "9999",
+               placeholder = "Leave empty to keep current order"
+           })
+                @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Lower numbers appear first. Leave empty to keep current order.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Overview, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Overview, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Overview, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Dimensions, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Dimensions, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Dimensions, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Specification, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Specification, new { @class = "form-control", rows = "10" })
+                @Html.ValidationMessageFor(model => model.Specification, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExistingHeroImage, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.ExistingHeroImage != null)
+                {
+                    <div class="mb-3 existing-upload-item">
+                        <figure>
+                            <img src="@Url.Content(Model.ExistingHeroImage.FilePath)"
+                                 alt="@Model.ExistingHeroImage.OriginalFileName"
+                                 style="max-width: 240px;" />
+                            <figcaption>
+                                <a href="@Url.Content(Model.ExistingHeroImage.FilePath)" target="_blank" rel="noopener noreferrer">
+                                    @Model.ExistingHeroImage.OriginalFileName
+                                </a>
+                            </figcaption>
+                        </figure>
+
+                        <label class="ms-2">
+                            @Html.CheckBoxFor(model => model.DeleteHeroImage)
+                            Delete
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">No homepage hero image.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HeroImageUpload, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file"
+                       name="HeroImageUpload"
+                       accept="image/*"
+                       class="form-control" />
+
+                @Html.ValidationMessageFor(model => model.HeroImageUpload, "", new { @class = "text-danger" })
+                <small class="form-text text-muted">Uploading a new image will replace the current homepage hero image.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExistingDeckImgs, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.ExistingDeckImgs != null && Model.ExistingDeckImgs.Any())
+                {
+                    foreach (var deckImage in Model.ExistingDeckImgs)
+                    {
+                        <div class="mb-3 existing-upload-item">
+                            <figure>
+                                <img src="@Url.Content(deckImage.FilePath)"
+                                     alt="@deckImage.OriginalFileName"
+                                     style="max-width: 160px;" />
+                                <figcaption>
+                                    <a href="@Url.Content(deckImage.FilePath)" target="_blank" rel="noopener noreferrer">
+                                        @deckImage.OriginalFileName
+                                    </a>
+                                </figcaption>
+                            </figure>
+                            <label class="ms-2">
+                                <input type="checkbox"
+                                       name="DeleteDeckImgIds"
+                                       value="@deckImage.Id" />
+                                Delete
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">No existing Layout & deck plan Images.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label col-md-2">Add New Layout & Deck plan Images</label>
+            <div class="col-md-10">
+                <div id="deck-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="DeckImgsUploads"
+                               accept="image/*"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-deck-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.DeckImgsUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExistingInteriors, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.ExistingInteriors != null && Model.ExistingInteriors.Any())
+                {
+                    foreach (var interior in Model.ExistingInteriors)
+                    {
+                        <div class="mb-3 existing-upload-item">
+                            <figure>
+                                <img src="@Url.Content(interior.FilePath)"
+                                     alt="@interior.OriginalFileName"
+                                     style="max-width: 160px;" />
+                                <figcaption>
+                                    <a href="@Url.Content(interior.FilePath)" target="_blank" rel="noopener noreferrer">
+                                        @interior.OriginalFileName
+                                    </a>
+                                </figcaption>
+                            </figure>
+                            <label class="ms-2">
+                                <input type="checkbox"
+                                       name="DeleteInteriorIds"
+                                       value="@interior.Id" />
+                                Delete
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">No existing Interiors Images.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label col-md-2">Add New Interior Images</label>
+            <div class="col-md-10">
+                <div id="interior-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="InteriorUploads"
+                               accept="image/*"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-interior-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.InteriorUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExistingDownloadFile, htmlAttributes: new { @class = "form-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.ExistingDownloadFile != null && Model.ExistingDownloadFile.Any())
+                {
+                    foreach (var fileUploaded in Model.ExistingDownloadFile)
+                    {
+                        <div class="mb-3 existing-upload-item">
+                            <a href="@Url.Content(fileUploaded.FilePath)" target="_blank" rel="noopener noreferrer">
+                                @fileUploaded.OriginalFileName
+                            </a>
+
+                            <span class="badge text-bg-secondary">@fileUploaded.FileType</span>
+
+                            <label class="ms-2">
+                                <input type="checkbox"
+                                       name="DeleteFileIds"
+                                       value="@fileUploaded.Id" />
+                                Delete
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">No existing uploaded files.</p>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label col-md-2">Upload New Files</label>
+            <div class="col-md-10">
+                <div id="downloadfile-upload-list" class="pb-2">
+                    <div class="upload-row mb-2">
+                        <input type="file"
+                               name="DownloadFileUploads"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <button type="button" id="add-downloadfile-upload" class="btn btn-outline-secondary pt-2">
+                    Add File
+                </button>
+                @Html.ValidationMessageFor(model => model.DownloadFileUploads, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section styles{
+    <link href="~/Content/summernote/summernote-lite.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/summernote/summernote-lite.min.js"></script>
+    <script>
+        window.yachtCustomizeConfig = {
+            uploadEditorImageUrl: '@Url.Action("UploadEditorImage", "Yacht")'
+        };
+    </script>
+    <script src="@Url.Content("~/Scripts/admin/yacht-customize.js")"></script>
+}

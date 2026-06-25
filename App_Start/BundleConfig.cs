@@ -20,7 +20,13 @@ namespace TayanaYachts
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+                      "~/Scripts/bootstrap.bundle.js"));
+
+            bundles.Add(new Bundle("~/bundles/adminlte-css").Include(
+                "~/Content/adminlte/css/adminlte.css"));
+
+            bundles.Add(new Bundle("~/bundles/adminlet-js").Include(
+                "~/Content/adminlte/js/adminlte.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
