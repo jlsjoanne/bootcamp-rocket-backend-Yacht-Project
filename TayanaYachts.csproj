@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
-  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -46,24 +45,85 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>packages\BouncyCastle.Cryptography.2.6.2\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MailKit, Version=4.17.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>packages\MailKit.4.17.0\lib\net48\MailKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\lib\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MimeKit, Version=4.17.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>packages\MimeKit.4.17.0\lib\net48\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Formats.Asn1, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Formats.Asn1.8.0.1\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.3.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.3.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Razor.3.3.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.3.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.3.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.3.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -81,35 +141,8 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -121,22 +154,167 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AreaController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ContactController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DealerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MemberController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NewsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\YachtController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\DealerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\YachtController.cs" />
     <Compile Include="DAL\TayanaContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Methods\UploadedFileExtensions.cs" />
+    <Compile Include="Methods\UploadHelper.cs" />
+    <Compile Include="Methods\Utility.cs" />
+    <Compile Include="Migrations\202605130157570_InitialDb Migration.cs" />
+    <Compile Include="Migrations\202605130157570_InitialDb Migration.Designer.cs">
+      <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010142026_AddMemberTable.cs" />
+    <Compile Include="Migrations\202606010142026_AddMemberTable.Designer.cs">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.cs" />
+    <Compile Include="Migrations\202606010345263_UpdateMemberTable.Designer.cs">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606080333434_AddEditorImg.cs" />
+    <Compile Include="Migrations\202606080333434_AddEditorImg.Designer.cs">
+      <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090212541_UpdateDealer.cs" />
+    <Compile Include="Migrations\202606090212541_UpdateDealer.Designer.cs">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.cs" />
+    <Compile Include="Migrations\202606090320014_UpdateFileUpload.Designer.cs">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.cs" />
+    <Compile Include="Migrations\202606090344070_UpdateFileStringLength.Designer.cs">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.cs" />
+    <Compile Include="Migrations\202606090727156_DealerAddAreaId.Designer.cs">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.cs" />
+    <Compile Include="Migrations\202606091002023_UpdateForeignKeySetting.Designer.cs">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.cs" />
+    <Compile Include="Migrations\202606120826403_UpdateNewsContentType.Designer.cs">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.cs" />
+    <Compile Include="Migrations\202606120859074_UpdateUploadedFileId.Designer.cs">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs" />
+    <Compile Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.Designer.cs">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606160923032_NewsAddThumbnailImg.cs" />
+    <Compile Include="Migrations\202606160923032_NewsAddThumbnailImg.Designer.cs">
+      <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.cs" />
+    <Compile Include="Migrations\202606180953495_RenameYachtNameIndex.Designer.cs">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606190738551_UpdateYachtEditorImgs.cs" />
+    <Compile Include="Migrations\202606190738551_UpdateYachtEditorImgs.Designer.cs">
+      <DependentUpon>202606190738551_UpdateYachtEditorImgs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.cs" />
+    <Compile Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.Designer.cs">
+      <DependentUpon>202606190820375_MakeYachtEditorImageYachtIdNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606220055193_AddSummaryToNews.cs" />
+    <Compile Include="Migrations\202606220055193_AddSummaryToNews.Designer.cs">
+      <DependentUpon>202606220055193_AddSummaryToNews.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606220124295_FixNewsImageRelationships.cs" />
+    <Compile Include="Migrations\202606220124295_FixNewsImageRelationships.Designer.cs">
+      <DependentUpon>202606220124295_FixNewsImageRelationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606220634236_UpdateYachtInterior.cs" />
+    <Compile Include="Migrations\202606220634236_UpdateYachtInterior.Designer.cs">
+      <DependentUpon>202606220634236_UpdateYachtInterior.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606220901054_ContactAddIscompleted.cs" />
+    <Compile Include="Migrations\202606220901054_ContactAddIscompleted.Designer.cs">
+      <DependentUpon>202606220901054_ContactAddIscompleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606230811386_ContactAddIsDeleted.cs" />
+    <Compile Include="Migrations\202606230811386_ContactAddIsDeleted.Designer.cs">
+      <DependentUpon>202606230811386_ContactAddIsDeleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606240312338_AddSortOrderToDealernCountry.cs" />
+    <Compile Include="Migrations\202606240312338_AddSortOrderToDealernCountry.Designer.cs">
+      <DependentUpon>202606240312338_AddSortOrderToDealernCountry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606240920454_AddSortOrderToYacht.cs" />
+    <Compile Include="Migrations\202606240920454_AddSortOrderToYacht.Designer.cs">
+      <DependentUpon>202606240920454_AddSortOrderToYacht.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202606241646462_YachtAddHeroImage.cs" />
+    <Compile Include="Migrations\202606241646462_YachtAddHeroImage.Designer.cs">
+      <DependentUpon>202606241646462_YachtAddHeroImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Area.cs" />
+    <Compile Include="Models\Country.cs" />
+    <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\Dealer.cs" />
+    <Compile Include="Models\DealerImage.cs" />
+    <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\News.cs" />
+    <Compile Include="Models\NewsFile.cs" />
+    <Compile Include="Models\NewsImage.cs" />
+    <Compile Include="Models\UploadedFile.cs" />
+    <Compile Include="Models\InEditorImage.cs" />
+    <Compile Include="Models\ViewModels\ContactPageVM.cs" />
+    <Compile Include="Models\ViewModels\DealerPageVM.cs" />
+    <Compile Include="Models\ViewModels\DealerVM.cs" />
+    <Compile Include="Models\ViewModels\ExistingUploadFileVM.cs" />
+    <Compile Include="Models\ViewModels\HomePageVM.cs" />
+    <Compile Include="Models\ViewModels\LogInVM.cs" />
+    <Compile Include="Models\ViewModels\NewsVM.cs" />
+    <Compile Include="Models\ViewModels\YachtPageVM.cs" />
+    <Compile Include="Models\ViewModels\YachtVM.cs" />
+    <Compile Include="Models\Yacht.cs" />
+    <Compile Include="Models\YachtDownload.cs" />
+    <Compile Include="Models\YachtEditorImage.cs" />
+    <Compile Include="Models\YachtHeroImage.cs" />
+    <Compile Include="Models\YachtImage.cs" />
+    <Compile Include="Models\YachtInterior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\SmtpSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\adminlte\css\adminlte.css" />
+    <Content Include="Content\adminlte\css\adminlte.min.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css" />
+    <Content Include="Content\adminlte\js\adminlte.js" />
+    <Content Include="Content\adminlte\js\adminlte.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -153,27 +331,141 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\csshover.htc" />
+    <Content Include="Content\css\homestyle.css" />
+    <Content Include="Content\css\iepngfix.htc" />
+    <Content Include="Content\css\js.css" />
+    <Content Include="Content\css\reset.css" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Content\images\back.gif" />
+    <Content Include="Content\images\banner01_masks.png" />
+    <Content Include="Content\images\buttbg.gif" />
+    <Content Include="Content\images\buttom01.gif" />
+    <Content Include="Content\images\buttom02.gif" />
+    <Content Include="Content\images\buttom03.gif" />
+    <Content Include="Content\images\contact.jpg" />
+    <Content Include="Content\images\con_bg.gif" />
+    <Content Include="Content\images\DEALERS_new.jpg" />
+    <Content Include="Content\images\downloads.gif" />
+    <Content Include="Content\images\icon003.gif" />
+    <Content Include="Content\images\icon004.gif" />
+    <Content Include="Content\images\icon005.gif" />
+    <Content Include="Content\images\icon006.gif" />
+    <Content Include="Content\images\icon007.gif" />
+    <Content Include="Content\images\icon008.gif" />
+    <Content Include="Content\images\lefttop.gif" />
+    <Content Include="Content\images\menu_y1_03.jpg" />
+    <Content Include="Content\images\menu_y1_04.jpg" />
+    <Content Include="Content\images\menu_y1_05.jpg" />
+    <Content Include="Content\images\menu_y1_06.jpg" />
+    <Content Include="Content\images\menu_y2_04.jpg" />
+    <Content Include="Content\images\menu_y2_05.jpg" />
+    <Content Include="Content\images\menu_y2_06.jpg" />
+    <Content Include="Content\images\new01.png" />
+    <Content Include="Content\images\newbanner.jpg" />
+    <Content Include="Content\images\news.gif" />
+    <Content Include="Content\images\new_top01.png" />
+    <Content Include="Content\images\pit010.jpg" />
+    <Content Include="Content\images\top.gif" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\summernote\summernote-bs5.min.css" />
+    <Content Include="Content\summernote\summernote-lite.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\images\bg1.jpg" />
+    <Content Include="Content\images\changbg.gif" />
+    <Content Include="Content\images\changbg1.gif" />
+    <Content Include="Content\images\footer.jpg" />
+    <Content Include="Content\images\icon001.gif" />
+    <Content Include="Content\images\icon002.gif" />
+    <Content Include="Content\images\menu.gif" />
+    <Content Include="Content\images\menu1_03.gif" />
+    <Content Include="Content\images\menu1_04.gif" />
+    <Content Include="Content\images\menu1_05.gif" />
+    <Content Include="Content\images\menu1_06.gif" />
+    <Content Include="Content\images\menu1_07.gif" />
+    <Content Include="Content\images\menu2_03.gif" />
+    <Content Include="Content\images\menu2_04.gif" />
+    <Content Include="Content\images\menu2_05.gif" />
+    <Content Include="Content\images\menu2_06.gif" />
+    <Content Include="Content\images\menu2_07.gif" />
+    <Content Include="Content\images\mmmmeeeee.gif" />
+    <Content Include="Content\images\sub_bg.gif" />
+    <Content Include="Content\images\tog.jpg" />
+    <Content Include="Scripts\admin\yacht-customize.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminLTELayout.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Navbar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Footer.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Country\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Area\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Member\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Dealer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\News\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Yacht\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Contact\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Contact\Index.cshtml" />
     <None Include="connections.config" />
-    <None Include="Scripts\jquery-3.7.0.intellisense.js" />
-    <Content Include="Scripts\jquery-3.7.0.js" />
-    <Content Include="Scripts\jquery-3.7.0.min.js" />
-    <Content Include="Scripts\jquery-3.7.0.slim.js" />
-    <Content Include="Scripts\jquery-3.7.0.slim.min.js" />
+    <Content Include="Content\adminlte\css\adminlte.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.min.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.css.map" />
+    <Content Include="Content\adminlte\css\adminlte.rtl.min.css.map" />
+    <Content Include="Content\adminlte\js\adminlte.js.map" />
+    <Content Include="Content\adminlte\js\adminlte.min.js.map" />
+    <Content Include="Content\summernote\font\summernote.eot" />
+    <Content Include="Content\summernote\font\summernote.ttf" />
+    <Content Include="Content\summernote\font\summernote.woff" />
+    <Content Include="Content\summernote\font\summernote.woff2" />
+    <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.7.1.js" />
+    <Content Include="Scripts\jquery-3.7.1.min.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.cycle.all.2.74.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\summernote\summernote-bs5.min.js" />
+    <Content Include="Scripts\summernote\summernote-lite.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -185,13 +477,21 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\_TayanaLayout.cshtml" />
+    <Content Include="Views\Contact\Index.cshtml" />
+    <Content Include="Views\Company\Index.cshtml" />
+    <Content Include="Views\Company\Certificat.cshtml" />
+    <Content Include="Views\Dealer\Index.cshtml" />
+    <Content Include="Views\News\Index.cshtml" />
+    <Content Include="Views\News\Details.cshtml" />
+    <Content Include="Views\Yacht\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Files\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -217,8 +517,82 @@
     <Content Include="Scripts\bootstrap.esm.js.map" />
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
-    <Content Include="Scripts\jquery-3.7.0.slim.min.map" />
-    <Content Include="Scripts\jquery-3.7.0.min.map" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.7.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202605130157570_InitialDb Migration.resx">
+      <DependentUpon>202605130157570_InitialDb Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010142026_AddMemberTable.resx">
+      <DependentUpon>202606010142026_AddMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606010345263_UpdateMemberTable.resx">
+      <DependentUpon>202606010345263_UpdateMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606080333434_AddEditorImg.resx">
+      <DependentUpon>202606080333434_AddEditorImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090212541_UpdateDealer.resx">
+      <DependentUpon>202606090212541_UpdateDealer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090320014_UpdateFileUpload.resx">
+      <DependentUpon>202606090320014_UpdateFileUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090344070_UpdateFileStringLength.resx">
+      <DependentUpon>202606090344070_UpdateFileStringLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606090727156_DealerAddAreaId.resx">
+      <DependentUpon>202606090727156_DealerAddAreaId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606091002023_UpdateForeignKeySetting.resx">
+      <DependentUpon>202606091002023_UpdateForeignKeySetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120826403_UpdateNewsContentType.resx">
+      <DependentUpon>202606120826403_UpdateNewsContentType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120859074_UpdateUploadedFileId.resx">
+      <DependentUpon>202606120859074_UpdateUploadedFileId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606120928405_UpdateUploadedFileIdtoNotDbGenerated.resx">
+      <DependentUpon>202606120928405_UpdateUploadedFileIdtoNotDbGenerated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606160923032_NewsAddThumbnailImg.resx">
+      <DependentUpon>202606160923032_NewsAddThumbnailImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606180953495_RenameYachtNameIndex.resx">
+      <DependentUpon>202606180953495_RenameYachtNameIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606190738551_UpdateYachtEditorImgs.resx">
+      <DependentUpon>202606190738551_UpdateYachtEditorImgs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606190820375_MakeYachtEditorImageYachtIdNullable.resx">
+      <DependentUpon>202606190820375_MakeYachtEditorImageYachtIdNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606220055193_AddSummaryToNews.resx">
+      <DependentUpon>202606220055193_AddSummaryToNews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606220124295_FixNewsImageRelationships.resx">
+      <DependentUpon>202606220124295_FixNewsImageRelationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606220634236_UpdateYachtInterior.resx">
+      <DependentUpon>202606220634236_UpdateYachtInterior.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606220901054_ContactAddIscompleted.resx">
+      <DependentUpon>202606220901054_ContactAddIscompleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606230811386_ContactAddIsDeleted.resx">
+      <DependentUpon>202606230811386_ContactAddIsDeleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606240312338_AddSortOrderToDealernCountry.resx">
+      <DependentUpon>202606240312338_AddSortOrderToDealernCountry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606240920454_AddSortOrderToYacht.resx">
+      <DependentUpon>202606240920454_AddSortOrderToYacht.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606241646462_YachtAddHeroImage.resx">
+      <DependentUpon>202606241646462_YachtAddHeroImage.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -258,9 +632,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
 </Project>

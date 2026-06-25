@@ -1,0 +1,39 @@
+﻿@model TayanaYachts.Models.Country
+
+
+@{
+    ViewBag.PageHeader = "Country";
+}
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SortOrder)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SortOrder)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

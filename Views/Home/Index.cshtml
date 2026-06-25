@@ -1,33 +1,216 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model TayanaYachts.Models.ViewModels.HomePageVM
+
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" />
+
+    <style>
+        .news02p1img {
+            width: 97px;
+            height: 97px;
+            overflow: hidden;
+        }
+
+            .news02p1img img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: center center;
+            }
+    </style>
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+<div class="bannermasks">
+    @if (Model.HeroSlides == null || !Model.HeroSlides.Any())
+    {
+        <img src="@Url.Content("~/Content/images/banner01_masks.png")" alt="" />
+    }
+</div>
+
+<div id="abgne-block-20110111">
+    <div class="bd">
+        <div class="banner">
+            <ul>
+                @if (Model.HeroSlides != null && Model.HeroSlides.Any())
+                {
+                    for (var i = 0; i < Model.HeroSlides.Count; i++)
+                    {
+                        var slide = Model.HeroSlides[i];
+                        var activeClass = i == 0 ? "info on" : "info";
+
+                        <li class="@activeClass">
+                            <a href="@Url.Action("Index","Yacht", new { id = slide.YachtId})">
+                                <img src="@Url.Content(slide.HeroImagePath)" alt="@slide.HeroImageAlt" />
+                            </a>
+
+                            <div class="wordtitle">
+                                @slide.HeroTitle
+                                @if (!String.IsNullOrWhiteSpace(slide.HeroNumber))
+                                {
+                                    <span>@slide.HeroNumber</span>
+                                }
+                                <br />
+                                <p>SPECIFICATION SHEET</p>
+                            </div>
+
+                            @if (slide.IsNew)
+                            {
+                                <div class="new">
+                                    <img src="@Url.Content("~/Content/images/new01.png")" alt="new" />
+                                </div>
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="info on">
+                        <a href="@Url.Action("Index","Yacht")">
+                            <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts" />
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @if (Model.HeroSlides != null && Model.HeroSlides.Any())
+            {
+                <div class="banner title">
+                    <ul>
+                        @for (var i = 0; i < Model.HeroSlides.Count; i++)
+                        {
+                            var slide = Model.HeroSlides[i];
+                            var activeClass = i == 0 ? "on" : "";
+
+                            <li class="@activeClass">
+                                <div>
+                                    <p class="bannerimg_p">
+                                        <img src="@Url.Content(slide.HeroImagePath)" alt="@slide.HeroImageAlt" />
+                                    </p>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
     </div>
-</main>
+</div>
+
+<div class="news">
+    <div class="newstitle">
+        <p class="newstitlep1">
+            <img src="@Url.Content("~/Content/images/news.gif")" alt="news" />
+        </p>
+        <p class="newstitlep2">
+            <a href="@Url.Action("Index","News")">More>></a>
+        </p>
+    </div>
+
+    <ul>
+        @if (Model.LatestNews != null && Model.LatestNews.Any())
+        {
+            for (var i = 0; i < Model.LatestNews.Count; i++)
+            {
+                var news = Model.LatestNews[i];
+                var itemClass = i == 0 ? "news01" : "news02";
+
+                <li>
+                    <div class="@itemClass">
+                        @if (i == 0 || news.IsPinned)
+                        {
+                            <div class="newstop">
+                                <img src="@Url.Content("~/Content/images/new_top01.png")" alt="" />
+                            </div>
+                        }
+
+                        <div class="news02p1">
+                            <p class="news02p1img">
+                                @if (!String.IsNullOrWhiteSpace(news.ThumbnailPath))
+                                {
+                                    <img src="@Url.Content(news.ThumbnailPath)" alt="@news.ThumbnailAlt" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/images/pit010.jpg")" alt="@news.Title" />
+                                }
+                            </p>
+                        </div>
+
+                        <p class="news02p2">
+                            <span>@news.Title</span>
+                            <a href="@Url.Action("Details", "News", new { id = news.NewsId})">
+                                @news.Summary
+                            </a>
+                        </p>
+                    </div>
+                </li>
+            }
+        }
+        else
+        {
+            <li>
+                <div class="news02">
+                    <p class="news02p2">
+                        <span>No news available.</span>
+                        <a href="@Url.Action("Index", "News")">
+                            View all news
+                        </a>
+                    </p>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            var $block = $("#abgne-block-20110111");
+            var $items = $(".bd .banner > ul > li", $block);
+            var $tabs = $(".title ul li", $block);
+            var timer;
+            var speed = 4000;
+
+            if ($items.length <= 1) {
+                return;
+            }
+
+            $items.hide().eq(0).show().addClass("on");
+            $tabs.eq(0).addClass("on");
+
+            $tabs.hover(function () {
+                $(this).addClass("over").siblings(".over").removeClass("over");
+            }, function () {
+                $(this).removeClass("over");
+            }).click(function () {
+                var index = $(this).index();
+
+                $(this).addClass("on").siblings(".on").removeClass("on");
+
+                $items
+                    .removeClass("on")
+                    .hide()
+                    .eq(index)
+                    .fadeIn(1000)
+                    .addClass("on");
+            });
+
+            $block.hover(function () {
+                clearTimeout(timer);
+            }, function () {
+                timer = setTimeout(move, speed);
+            });
+
+            function move() {
+                var index = $tabs.filter(".on").index();
+                index = (index + 1) % $tabs.length;
+
+                $tabs.eq(index).click();
+                timer = setTimeout(move, speed);
+            }
+
+            timer = setTimeout(move, speed);
+        });
+    </script>
+}

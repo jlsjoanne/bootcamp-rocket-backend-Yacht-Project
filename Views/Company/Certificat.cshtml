@@ -1,0 +1,52 @@
+﻿
+
+@section styles{
+    <link href="@Url.Content("~/Content/css/homestyle.css")" rel="stylesheet" />
+}
+
+<div class="bannermasks">
+    <img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="newbanner" width="967" height="371">
+</div>
+
+<div class="banner">
+    <ul>
+        <li><img src="@Url.Content("~/Content/images/newbanner.jpg")" alt="Tayana Yachts"></li>
+    </ul>
+</div>
+
+<div class="conbg">
+    <div class="left">
+        <div class="left1">
+            <p><span>COMPANY</span></p>
+            <ul>
+                <li><a href="@Url.Action("Index","Company")">About Us</a></li>
+                <li><a href="@Url.Action("Certificat","Company")">Certificat</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="crumb">
+        <a href="@Url.Action("Index","Home")">Home</a>
+        &gt;&gt;
+        <a href="@Url.Action("Index","Company")">Company  </a>
+        &gt;&gt;
+        <a href="@Url.Action("Certificat","Company")">
+            <span class="on1">Certificat</span>
+        </a>
+    </div>
+
+    <div class="right">
+        <div class="right1">
+            <div class="title">
+                <span>Certificat</span>
+            </div>
+
+            <div class="box3">
+                Tayana Yacht has the approval of ISO9001: 2000 quality certification by Bureau Veritas Certification (Taiwan) Co., Ltd in 2002. In August, 2011, formally upgraded to ISO9001: 2008. We will continue to adhere to quality-oriented, transparent and committed to delivering improvement customer satisfaction and build even stronger trusting relationships with customers.
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+
+</div>
