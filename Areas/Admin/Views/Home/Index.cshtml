@@ -1,6 +1,72 @@
 ﻿
 @{
     ViewBag.PageHeader = "Home";
-    
+
 }
 
+<h4>Admin Management Platform</h4>
+
+<ul class="list-group list-unstyled">
+    <li class="list-grop-item">
+        <div><b>Yachts</b></div>
+        <div class="list-group">
+            <a href="@Url.Action("Index", "Yacht", new { area = "Admin" })" class="list-group-item list-group-item-action">
+                Yacht List
+            </a>
+            <a href="@Url.Action("Create", "Yacht", new { area = "Admin" })" class="list-group-item list-group-item-action">
+                Add Yacht
+            </a>
+        </div>
+    </li>
+    <li class="list-grop-item">
+        <div><b>News</b></div>
+        <div class="list-group">
+            <a href="@Url.Action("Index", "News", new { area = "Admin" })" class="list-group-item list-group-item-action">
+                News List
+            </a>
+            <a href="@Url.Action("Create", "News", new { area = "Admin" })" class="list-group-item list-group-item-action">
+                Add News
+            </a>
+        </div>
+    </li>
+    <li class="list-grop-item">
+        <div><b>Dealers</b></div>
+        <ul class="list-group list-unstyled mt-2">
+            <li>
+                <div>Dealer</div>
+                <div class="list-group">
+                    <a href="@Url.Action("Index","Dealer", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Dealer List
+                    </a>
+                    <a href="@Url.Action("Create","Dealer", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Add Dealer
+                    </a>
+                </div>
+            </li>
+            <li>
+                <div>Country</div>
+                <div class="list-group">
+                    <a href="@Url.Action("Index","Country", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Country List
+                    </a>
+                    <a href="@Url.Action("Create","Country", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Add Country
+                    </a>
+                </div>
+            </li>
+            <li>
+                <div>
+                    Area
+                </div>
+                <div class="list-group">
+                    <a href="@Url.Action("Index","Area", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Area List
+                    </a>
+                    <a href="@Url.Action("Create","Area", new { area = "Admin"})" class="list-group-item list-group-item-action">
+                        Add Area
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </li>
+</ul>

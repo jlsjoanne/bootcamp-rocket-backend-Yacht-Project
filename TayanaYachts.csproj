@@ -403,9 +403,6 @@
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminLTELayout.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Navbar.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Sidebar.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Footer.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Details.cshtml" />

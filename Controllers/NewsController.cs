@@ -21,7 +21,7 @@ namespace TayanaYachts.Controllers
         {
             var newsList = db.News
                 .Include(n => n.ThumbnailImage)
-                .Where(n => n.IsPublished)
+                .Where(n => n.IsPublished && n.PublishDate <= DateTime.Today)
                 .OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.PublishDate)
                 .ThenByDescending(n => n.Id);

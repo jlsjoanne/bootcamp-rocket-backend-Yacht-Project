@@ -5,6 +5,7 @@
     <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" />
 
     <style>
+        
         .news02p1img {
             width: 97px;
             height: 97px;
@@ -22,10 +23,7 @@
 
 
 <div class="bannermasks">
-    @if (Model.HeroSlides == null || !Model.HeroSlides.Any())
-    {
-        <img src="@Url.Content("~/Content/images/banner01_masks.png")" alt="" />
-    }
+    @*<img src="@Url.Content("~/Content/images/banner01_masks.png")" alt="" />*@
 </div>
 
 <div id="abgne-block-20110111">
@@ -75,7 +73,7 @@
 
             @if (Model.HeroSlides != null && Model.HeroSlides.Any())
             {
-                <div class="banner title">
+                <div class="bannerimg title">
                     <ul>
                         @for (var i = 0; i < Model.HeroSlides.Count; i++)
                         {
@@ -167,8 +165,8 @@
     <script type="text/javascript">
         $(function () {
             var $block = $("#abgne-block-20110111");
-            var $items = $(".bd .banner > ul > li", $block);
-            var $tabs = $(".title ul li", $block);
+            var $items = $(".bd > .banner > ul:first > li", $block);
+            var $tabs = $(".bd > .banner > .bannerimg > ul > li", $block);
             var timer;
             var speed = 4000;
 
