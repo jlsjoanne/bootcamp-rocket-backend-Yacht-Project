@@ -19,6 +19,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Area
         public ActionResult Index()
         {
+            // Include Country because the Index view displays each area's country name.
             var areas = db.Areas.Include(a => a.Country);
             return View(areas.ToList());
         }
@@ -41,6 +42,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Area/Create
         public ActionResult Create()
         {
+            // Populate the Country dropdown used by the Create view.
             ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name");
             return View();
         }
@@ -59,6 +61,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Rebuild the Country dropdown when validation fails and the form is redisplayed.
             ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
             return View(area);
         }
@@ -75,6 +78,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            // Populate the Country dropdown and select the area's current country.
             ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
             return View(area);
         }
@@ -92,6 +96,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            // Rebuild the Country dropdown when validation fails and the form is redisplayed.
             ViewBag.CountryId = new SelectList(db.Countries, "Id", "Name", area.CountryId);
             return View(area);
         }

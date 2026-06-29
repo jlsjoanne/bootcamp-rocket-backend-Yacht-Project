@@ -17,6 +17,8 @@ namespace TayanaYachts.Controllers
         // GET: Dealer
         public ActionResult Index(int? countryId)
         {
+            // Show only countries that have at least one dealer under one of their areas,
+            // so the left navigation does not link to empty dealer pages.
             var countries = db.Countries
                 .Where(c => c.Areas.Any(a => a.Dealers.Any()))
                 .OrderBy(c => c.SortOrder)
@@ -25,6 +27,8 @@ namespace TayanaYachts.Controllers
 
             if (!countries.Any())
             {
+                // Return an empty page model when no dealer data exists instead of
+                // running the default-country lookup below.
                 var noDealer = new DealerPageVM
                 {
                     Countries = countries,
@@ -34,6 +38,8 @@ namespace TayanaYachts.Controllers
                 return View(noDealer);
             }
 
+            // Use the requested country when it is valid for the dealer list; otherwise
+            // fall back to the first country in the ordered navigation list.
             var selectedCountry = countryId.HasValue ? countries.SingleOrDefault(c => c.Id == countryId.Value) : null;
 
             if(selectedCountry == null)
@@ -41,6 +47,8 @@ namespace TayanaYachts.Controllers
                 selectedCountry = countries.First();
             }
 
+            // Eager-load image and area/country data because the public view renders each
+            // dealer image, area name, and selected country details after the query completes.
             var dealers = db.Dealers
                 .Include(d => d.Image)
                 .Include(d => d.Area.Country)
@@ -49,6 +57,8 @@ namespace TayanaYachts.Controllers
                 .ThenBy(d => d.Name)
                 .ToList();
 
+            // DealerPageVM carries all page sections: country navigation, selected country
+            // heading/breadcrumb data, and the dealer list for that country.
             return View(new DealerPageVM
             {
                 Countries = countries,

@@ -16,28 +16,37 @@ namespace TayanaYachts.Controllers
         private readonly TayanaContext db = new TayanaContext();
         public ActionResult Index()
         {
+            // Build homepage carousel slides from the separate YachtHeroImage table.
+            // Only hero images whose yacht is published should appear on the public homepage.
             var heroSlides = db.YachtHeroImages
                 .Include(h => h.Yacht)
                 .Where(h => h.Yacht.IsPublished)
+                // Match the public yacht navigation order: newest models first, then
+                // admin display order, then newest database records.
                 .OrderByDescending(h => h.Yacht.IsNew)
                 .ThenBy(h => h.Yacht.SortOrder)
                 .ThenByDescending(h => h.Yacht.Id)
+                // Keep the carousel short so the homepage remains focused and fast to render.
                 .Take(6)
-                .ToList()
+                // Convert after materializing so formatting helpers run in memory instead
+                // of inside the Entity Framework SQL projection.
                 .Select(ToHeroSlideVM)
                 .ToList();
 
+            // Homepage news mirrors the public News list rules: published, already reached
+            // its publish date, pinned first, then newest by date/id.
             var latestNews = db.News
                 .Include(n => n.ThumbnailImage)
                 .Where(n => n.IsPublished && n.PublishDate <= DateTime.Today)
                 .OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.PublishDate)
                 .ThenByDescending(n => n.Id)
+                // The homepage design renders only the first three news cards.
                 .Take(3)
-                .ToList()
                 .Select(ToNewsItemVM)
                 .ToList();
 
+            // HomePageVM keeps the view simple by separating carousel data from news-card data.
             var vm = new HomePageVM
             {
                 HeroSlides = heroSlides,
@@ -59,6 +68,8 @@ namespace TayanaYachts.Controllers
 
         private static void SplitYachtName(string yachtName, out string title, out string modelNumber)
         {
+            // The homepage hero design displays the first word as the large title and
+            // the remaining words/model number in a smaller span.
             title = "";
             modelNumber = "";
 
@@ -78,6 +89,8 @@ namespace TayanaYachts.Controllers
 
         private static HomeHeroSlideVM ToHeroSlideVM(YachtHeroImage heroImage)
         {
+            // Flatten the YachtHeroImage + Yacht relationship into exactly the fields the
+            // homepage carousel needs: link target, display title, image, and "new" badge.
             var yacht = heroImage.Yacht;
 
             string heroTitle;
@@ -98,6 +111,8 @@ namespace TayanaYachts.Controllers
 
         private static HomeNewsItemVM ToNewsItemVM(News news)
         {
+            // Flatten News and its optional thumbnail into the lightweight card model used
+            // by the homepage news block. The view supplies a fallback image when needed.
             return new HomeNewsItemVM
             {
                 NewsId = news.Id,

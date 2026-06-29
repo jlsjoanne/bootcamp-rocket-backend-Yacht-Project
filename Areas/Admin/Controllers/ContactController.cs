@@ -19,6 +19,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Contact
         public ActionResult Index()
         {
+            // Hide soft-deleted contacts and load related data displayed by the Index view.
             var contacts = db.Contacts.Where(c => c.IsDeleted == false).Include(c => c.Country).Include(c => c.Yacht);
             return View(contacts.ToList());
         }
@@ -31,6 +32,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Contact contact = db.Contacts
+                // Details displays the selected contact's country and yacht names.
                 .Include(c => c.Country)
                 .Include(c => c.Yacht)
                 .SingleOrDefault(c => c.Id == id.Value);
@@ -45,6 +47,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult MarkAsComplete(Guid id)
         {
+            // Mark the contact request as completed from the admin list or details page.
             var contact = db.Contacts.Find(id);
 
             if(contact == null)
@@ -62,6 +65,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult MarkAsIncomplete(Guid id)
         {
+            // Reopen a completed contact request from the admin list or details page.
             var contact = db.Contacts.Find(id);
             
             if(contact == null)
@@ -75,10 +79,25 @@ namespace TayanaYachts.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(Guid? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Contact contact = db.Contacts.Find(id);
+            if(contact == null)
+            {
+                return HttpNotFound();
+            }
+            return View(contact);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(Guid id)
+        {
+            // Soft delete keeps the submitted contact in the database while hiding it from admin lists.
             var contact = db.Contacts.Find(id);
             
             if(contact == null)

@@ -210,9 +210,12 @@
     <script>
         (function () {
 
+            // Start after the server-rendered first upload row so dynamic image inputs
+            // continue the ImageUploads[index] sequence expected by the controller.
             var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']").length;
 
             function createImageUploadRow(index) {
+                // Build a new image upload row with its own thumbnail radio option.
                 var row = document.createElement("div");
                 row.className = "upload-row mb-2";
 
@@ -227,6 +230,8 @@
 
                 var thumbnailRadio = document.createElement("input");
                 thumbnailRadio.type = "radio";
+                // ThumbnailSelection carries both the source type and index. The controller
+                // can distinguish existing images from newly uploaded images by this prefix.
                 thumbnailRadio.name = "ThumbnailSelection";
                 thumbnailRadio.value = "upload:" + index;
                 thumbnailRadio.id = "thumbnail-upload-" + index;
@@ -246,6 +251,8 @@
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
+                    // Removing a new row prevents both the file input and upload thumbnail
+                    // selection from being posted.
                     row.parentNode.removeChild(row);
                 });
 
@@ -258,6 +265,8 @@
             }
 
             function createFileUploadRow() {
+                // New downloadable files post as a repeated FileUploads collection, so no
+                // per-row index is needed here.
                 var row = document.createElement("div");
                 row.className = "upload-row mb-2";
 
@@ -272,6 +281,7 @@
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
+                    // Remove unsaved file rows from the posted form data.
                     row.parentNode.removeChild(row);
                 });
 
@@ -282,6 +292,9 @@
             }
 
             function syncDeletedImageThumbnailState(deleteCheckbox) {
+                // Each existing image delete checkbox stores the id of its thumbnail radio.
+                // When an image is marked for deletion, it cannot remain selectable as the
+                // thumbnail in the same form submission.
                 var radioId = deleteCheckbox.getAttribute("data-thumbnail-radio-id");
                 var radio = document.getElementById(radioId);
 
@@ -290,25 +303,32 @@
                 }
 
                 if (deleteCheckbox.checked) {
+                    // Clear and disable the radio so a deleted existing image is not posted
+                    // as ThumbnailSelection.
                     radio.checked = false;
                     radio.disabled = true;
                 } else {
+                    // Re-enable the radio if the admin unchecks Delete before saving.
                     radio.disabled = false;
                 }
             }
 
             document.getElementById("add-image-upload").addEventListener("click", function () {
+                // Append a new indexed upload row and keep the next index unique.
                 var list = document.getElementById("image-upload-list");
                 list.appendChild(createImageUploadRow(imageUploadIndex));
                 imageUploadIndex++;
             });
 
             document.getElementById("add-file-upload").addEventListener("click", function () {
+                // Add another regular file input for downloadable attachments.
                 var list = document.getElementById("file-upload-list");
                 list.appendChild(createFileUploadRow());
             });
 
             document.querySelectorAll(".existing-image-delete").forEach(function (deleteCheckbox) {
+                // Apply the disabled state on page load, then keep it in sync as the admin
+                // checks or unchecks existing image delete boxes.
                 syncDeletedImageThumbnailState(deleteCheckbox);
 
                 deleteCheckbox.addEventListener("change", function () {

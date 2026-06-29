@@ -299,6 +299,8 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/summernote/summernote-lite.min.js"></script>
     <script>
+        // Pass the MVC upload endpoint into the shared Yacht editor script.
+        // The JavaScript file stays reusable while Razor generates the correct admin URL.
         window.yachtCustomizeConfig = {
             uploadEditorImageUrl: '@Url.Action("UploadEditorImage", "Yacht")'
         };

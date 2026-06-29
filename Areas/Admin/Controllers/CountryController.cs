@@ -55,6 +55,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                // The Create view uses 0 to let the controller append the country after the current ordered list.
                 if(country.SortOrder <= 0)
                 {
                     country.SortOrder = GetNextSortOrder();

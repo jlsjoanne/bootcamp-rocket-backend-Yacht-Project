@@ -10,6 +10,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         // GET: Admin/Home
+        // Admin Management Homepage
         public ActionResult Index()
         {
             return View();

@@ -23,8 +23,10 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Dealer
         public ActionResult Index()
         {
+            // Include the country/area navigation properties because the Index view displays both names.
             var dealers = db.Dealers
                 .Include(d => d.Area.Country)
+                // Match the public dealer grouping: country order first, then dealer order within each country.
                 .OrderBy(d => d.Area.Country.SortOrder)
                 .ThenBy(d => d.Area.Country.Name)
                 .ThenBy(d => d.SortOrder)
@@ -40,6 +42,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Dealer dealer = db.Dealers
+                // Details renders country, area, and uploaded image data from navigation properties.
                 .Include(d => d.Area.Country)
                 .Include(d => d.Image)
                 .SingleOrDefault(d => d.Id == id);
@@ -53,6 +56,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Dealer/Create
         public ActionResult Create()
         {
+            // Dealer uses a view model so the form can carry upload input and cascading dropdown lists.
             var dealerVM = new DealerVM
             {
                 CountryList = GetCountrySelectList(),
@@ -68,7 +72,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(DealerVM dealerVM)
         {
-            // check Image File
+            // A new dealer must have an uploaded image; the view model keeps this separate from DealerImage.
             if (dealerVM.ImageFile == null || dealerVM.ImageFile.ContentLength == 0)
             {
                 ModelState.AddModelError("ImageFile", "Dealer Image is Required.");
@@ -81,6 +85,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                // Rebuild select lists because posted view models do not include their original list items.
                 dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
                 dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
 
@@ -93,12 +98,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 try
                 {
-                    // Check if input SortOrder
+                    // Leave SortOrder blank to append the dealer after existing dealers in the selected country.
                     var sortOrder = dealerVM.SortOrder ?? GetNextDealerSortOrder(dealerVM.CountryId);
 
                     dealerImage = DealerImgUpload(dealerVM.ImageFile);
 
-                    // DealerVM to Dealer class
+                    // Map the view model to the persisted entity and normalize editor-generated empty markup.
                     var dealer = new Dealer
                     {
                         Name = dealerVM.Name,
@@ -120,6 +125,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     transaction.Rollback();
 
+                    // If the database save fails after the file upload, remove the orphaned image file.
                     if( dealerImage != null)
                     {
                         DeleteImageFile(dealerImage);
@@ -127,6 +133,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     ModelState.AddModelError("", "Unable to save dealer. Please try again");
 
+                    // Rebuild dropdowns before returning the custom view model to the form.
                     dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
                     dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
                     return View(dealerVM);
@@ -142,6 +149,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Dealer dealer = db.Dealers
+                // Load related data needed to preselect dropdowns and show the current image.
                 .Include(d => d.Area.Country)
                 .Include(d => d.Image)
                 .SingleOrDefault(d => d.Id == id);
@@ -149,6 +157,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            // Convert Dealer to DealerVM so the edit form can display existing values plus upload/dropdown fields.
             var dealerVM = new DealerVM
             {
                 Id = dealer.Id,
@@ -171,7 +180,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(DealerVM dealerVM)
         {
-            // Check if update new image
+            // Image replacement is optional on edit; validate only when a new file was posted.
             var hasNewImage = dealerVM.ImageFile != null && dealerVM.ImageFile.ContentLength > 0;
 
             if(hasNewImage && !IsImageValid(dealerVM.ImageFile))
@@ -181,6 +190,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if(!ModelState.IsValid)
             {
+                // Reload the existing image path so the edit view can keep showing the current image.
                 var existingDealer = db.Dealers
                     .Include(d => d.Image)
                     .SingleOrDefault(d => d.Id == dealerVM.Id);
@@ -191,6 +201,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 }
 
                 dealerVM.FilePath = existingDealer.Image.FilePath;
+                // Rebuild dropdowns before redisplaying the custom view model after validation failure.
                 dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
                 dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
                 return View(dealerVM);
@@ -221,6 +232,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                 if (hasNewImage)
                 {
+                    // Keep the old file path until the database update succeeds, then delete the old file.
                     oldImage = new DealerImage { FilePath = dealer.Image.FilePath };
                     newImage = DealerImgUpload(dealerVM.ImageFile);
 
@@ -235,6 +247,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
             catch
             {
+                // A failed update should not leave the newly uploaded replacement file on disk.
                 if(newImage != null)
                 {
                     DeleteImageFile(newImage);
@@ -242,6 +255,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                 ModelState.AddModelError("", "Unable to save dealer. Please try again.");
 
+                // Restore display data required by the edit view after a failed save attempt.
                 dealerVM.FilePath = dealer.Image.FilePath;
                 dealerVM.CountryList = GetCountrySelectList(dealerVM.CountryId);
                 dealerVM.AreaList = GetAreaSelectList(dealerVM.CountryId, dealerVM.AreaId);
@@ -251,6 +265,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (oldImage != null)
             {
+                // Delete the previous image only after the dealer record points at the new image.
                 DeleteImageFile(oldImage);
             }
 
@@ -277,6 +292,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            // Load the image record so the physical file can be removed with the dealer.
             Dealer dealer = db.Dealers.Include(d => d.Image).SingleOrDefault(d => d.Id == id);
 
             if (dealer == null)
@@ -302,7 +318,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         // private methods
 
-        // Dropdown list
+        // Build country dropdown options in the same order used elsewhere in admin.
         private IEnumerable<SelectListItem> GetCountrySelectList(int? selectedCountryId = null)
         {
             return db.Countries
@@ -323,11 +339,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (countryId.HasValue)
             {
+                // Only show areas that belong to the selected country for the cascading dropdown.
                 areaList = areaList.Where(a => a.CountryId == countryId);
             }
             else
             {
-                // if country not selected yet => no area records
+                // Hide areas until a country has been selected.
                 areaList = areaList.Where(a => false);
             }
 
@@ -343,7 +360,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         }
 
         // public method
-        // Used in View => When user select country, get area under that country
+        // AJAX endpoint used by Create/Edit when the selected country changes.
         public JsonResult GetAreaByCountry(int countryId)
         {
             var areas = db.Areas
@@ -362,7 +379,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         // private method
         // For Image File
-        // Check if Image file is Valid
+        // Validate uploaded images before saving them to disk.
         private bool IsImageValid(HttpPostedFileBase file)
         {
             if (file == null || file.ContentLength == 0)
@@ -391,7 +408,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             var imgMaxSize = 15 * 1024 * 1024;
 
-            // verify if file match image limitation
+            // Require both MIME type and file extension to match the allowed image formats.
             if (!allowedContentType.Contains(file.ContentType))
             {
                 return false;
@@ -413,7 +430,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         }
 
-        // Image Upload
+        // Save the uploaded image with a generated file name and return its database metadata.
         private DealerImage DealerImgUpload(HttpPostedFileBase file)
         {
             var originalFileName = Path.GetFileName(file.FileName);
@@ -442,7 +459,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         }
 
-        // Delete Old Image File
+        // Remove an image file from disk when a dealer image is replaced or deleted.
         private void DeleteImageFile(DealerImage image)
         {
             if (image == null || string.IsNullOrEmpty(image.FilePath))
@@ -458,7 +475,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             }
         }
 
-        // Remove editor wrapping p tag
+        // Summernote often wraps all content in one paragraph; store the inner HTML for front-end layout.
+        // remove the outer <p> tag that wrap all content
         private string RemoveWrappingPTag(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -492,7 +510,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             return innerContent.Trim();
         }
 
-        // if user doesn't enter order => automatically get next order as SortOrder
+        //  When SortOrder is left blank, new dealer's SortOrder is the maxSortOrder in the same country's deler plus 10
         private int GetNextDealerSortOrder(int? countryId)
         {
             var maxSortOrder = db.Dealers
