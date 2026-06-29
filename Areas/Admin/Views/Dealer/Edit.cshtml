@@ -110,8 +110,7 @@
     <script>
         $(function () {
 
-            // Summernote setup
-
+            // Initialize Summernote on the dealer content textarea.
             var $content = $('#Content');
 
             $content.summernote({
@@ -130,6 +129,7 @@
                 ],
                 callbacks: {
                     onPaste: function (e) {
+                        // Paste plain text only, then convert line breaks to HTML breaks.
                         e.preventDefault();
                         var bufferText = ((e.originalEvent || e).clipboardData || window.ClipboardData).getData('text/plain');
 
@@ -141,25 +141,28 @@
                 }
             });
 
+            // Copy Summernote HTML back to the textarea before MVC model binding runs.
             $content.closest('form').on('submit', function () {
                 $content.val($content.summernote('code'));
             });
 
-            // Country, Area Dropdown
-
+            // Reload the Area dropdown when the selected Country changes.
             $("#CountryId").change(function () {
                 var countryId = $(this).val();
                 var areaDropdown = $("#AreaId");
 
+                // Clear stale area options before loading areas for the newly selected country.
                 areaDropdown.empty();
                 areaDropdown.append($("<option></option>").val("").text("-- Select Area --"));
 
                 if (countryId) {
+                    // Ask the controller for areas that belong to the selected country.
                     $.ajax({
                         url: '@Url.Action("GetAreaByCountry", "Dealer")',
                         type: 'GET',
                         data: { countryId: countryId },
                         success: function (areas) {
+                            // Add each returned area as an option in the Area dropdown.
                             $.each(areas, function (index, area) {
                                 areaDropdown.append(
                                     $("<option></option>").val(area.id).text(area.name)

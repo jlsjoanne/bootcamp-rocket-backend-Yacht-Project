@@ -17,12 +17,14 @@ namespace TayanaYachts.Services
 
         public EmailService()
         {
+            // Load SMTP and sender settings once when the service is created.
             _settings = LoadSettingFromWebConfig();
         }
 
         public async Task SendContactFormEmailAsync(Contact contact)
         {
-            // Email 1: confirmation email to user
+            // Email 1: confirmation email to the visitor, using the related Country and Yacht
+            // names loaded by ContactController before this service is called.
             string confirmationText = $@"
 Hi {contact.Name},
 Thank you for contacting us.
@@ -41,6 +43,7 @@ We will get back as soon as possible.";
 
             // Email 2: notification email to host/admin
 
+            // Email 2: internal notification so staff can follow up from the saved inquiry.
             string notificationText = $@"New Contact from Submission:
 Name: {contact.Name}
 Email: {contact.Email}
@@ -57,6 +60,7 @@ Comment: {contact.Comment}";
 
         private async Task SendEmailAsync(string toEmail, string subject, string plainTextBody, string replyToEmail = null)
         {
+            // Build a plain-text message; contact form emails do not need HTML rendering here.
             var email = new MimeMessage();
 
             email.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderAddress));
@@ -65,6 +69,8 @@ Comment: {contact.Comment}";
 
             if( !String.IsNullOrWhiteSpace(replyToEmail))
             {
+                // For admin notifications, reply directly to the visitor instead of the
+                // configured sender mailbox.
                 email.ReplyTo.Add(MailboxAddress.Parse(replyToEmail));
             }
 
@@ -75,6 +81,7 @@ Comment: {contact.Comment}";
 
             using(var smtp = new SmtpClient())
             {
+                // Use StartTLS when enabled in config; otherwise connect without TLS.
                 var secureSocketOption = _settings.UseSsl
                     ? SecureSocketOptions.StartTls
                     : SecureSocketOptions.None;
@@ -83,6 +90,7 @@ Comment: {contact.Comment}";
 
                 if( !String.IsNullOrWhiteSpace(_settings.Username))
                 {
+                    // Some SMTP hosts require authentication, while local relays may not.
                     await smtp.AuthenticateAsync(_settings.Username, _settings.Password);
                 }
 
@@ -93,6 +101,7 @@ Comment: {contact.Comment}";
 
         private static SmtpSettings LoadSettingFromWebConfig()
         {
+            // Centralize AppSettings reads so the rest of the service works with typed values.
             return new SmtpSettings
             {
                 Host = ConfigurationManager.AppSettings["SmtpHost"],

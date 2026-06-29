@@ -437,6 +437,7 @@
     <Content Include="Areas\Admin\Views\Yacht\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Contact\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Contact\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Contact\Delete.cshtml" />
     <None Include="connections.config" />
     <Content Include="Content\adminlte\css\adminlte.css.map" />
     <Content Include="Content\adminlte\css\adminlte.min.css.map" />

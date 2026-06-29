@@ -11,6 +11,7 @@ namespace TayanaYachts.Methods
     {
         public static ExistingUploadFileVM ToExistingUploadFileVM(this UploadedFile file)
         {
+            // Convert persisted upload metadata into the lightweight shape used by edit views.
             return new ExistingUploadFileVM
             {
                 Id = file.Id,

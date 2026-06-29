@@ -66,12 +66,7 @@
                     }
                 }
                 |
-                @using (Html.BeginForm("Delete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("id", item.Id)
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                }
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
             </td>
         </tr>
     }

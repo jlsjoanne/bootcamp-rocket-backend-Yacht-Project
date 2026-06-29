@@ -128,9 +128,13 @@
     <script>
         (function () {
 
+            // Start after the server-rendered first upload row so each dynamic image input
+            // gets a unique ImageUploads[index] name for MVC model binding.
             var imageUploadIndex = document.querySelectorAll("#image-upload-list input[type='file']").length;
 
             function createImageUploadRow(index) {
+                // Build a new image upload row in JavaScript so admins can attach multiple
+                // images without a full page reload.
                 var row = document.createElement("div");
                 row.className = "upload-row mb-2";
 
@@ -145,6 +149,8 @@
 
                 var thumbnailRadio = document.createElement("input");
                 thumbnailRadio.type = "radio";
+                // The selected radio posts the upload index that the controller uses to
+                // choose which newly uploaded image becomes the News thumbnail.
                 thumbnailRadio.name = "ThumbnailImageUploadIndex";
                 thumbnailRadio.value = index;
                 thumbnailRadio.id = "thumbnail-image-" + index;
@@ -164,6 +170,8 @@
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
+                    // Removing the row removes both the file input and its thumbnail option
+                    // before the form is submitted.
                     row.parentNode.removeChild(row);
                 });
 
@@ -176,6 +184,8 @@
             }
 
             function createFileUploadRow() {
+                // File uploads do not need indexed names because the controller receives
+                // them as a repeated FileUploads collection.
                 var row = document.createElement("div");
                 row.className = "upload-row mb-2";
 
@@ -190,6 +200,7 @@
                 removeButton.innerText = "Remove";
 
                 removeButton.addEventListener("click", function () {
+                    // Remove unsaved file rows from the posted form data.
                     row.parentNode.removeChild(row);
                 });
 
@@ -200,12 +211,15 @@
             }
 
             document.getElementById("add-image-upload").addEventListener("click", function () {
+                // Append a new indexed image input and increment only after the index is used,
+                // so each uploaded image can be matched to its thumbnail radio value.
                 var list = document.getElementById("image-upload-list");
                 list.appendChild(createImageUploadRow(imageUploadIndex));
                 imageUploadIndex++;
             });
 
             document.getElementById("add-file-upload").addEventListener("click", function () {
+                // Add another regular file input for downloadable attachments.
                 var list = document.getElementById("file-upload-list");
                 list.appendChild(createFileUploadRow());
             });

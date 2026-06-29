@@ -9,6 +9,7 @@ namespace TayanaYachts.Services
 {
     public interface IEmailService
     {
+        // Send both contact-form emails: visitor confirmation and internal notification.
         Task SendContactFormEmailAsync(Contact contact);
     }
 }

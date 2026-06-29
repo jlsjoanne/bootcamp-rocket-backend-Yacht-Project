@@ -26,12 +26,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Index(string searchString, string currentFilter, int? page)
         {
 
+            // Start from page 1 when a new search term is submitted.
             if (searchString != null)
             {
                 page = 1;
             }
             else
             {
+                // Keep the previous search term while moving between paged results.
                 searchString = currentFilter;
             }
 
@@ -42,12 +44,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (!String.IsNullOrWhiteSpace(searchString))
             {
+                // Search the main text fields shown in the admin news list.
                 news = news.Where(n =>
                     n.Title.Contains(searchString) ||
                     (n.Summary != null && n.Summary.Contains(searchString)) ||
                     (n.Content != null && n.Content.Contains(searchString)));
             }
 
+            // Pinned news appears first, then newer publish dates.
             news = news.OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.PublishDate);
 
@@ -65,6 +69,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             News news = db.News
+                // Details displays uploaded images and files, including thumbnail labeling.
                 .Include(n => n.Images)
                 .Include(n => n.Files)
                 .SingleOrDefault(n => n.Id == id);
@@ -88,13 +93,17 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(NewsVM newsVM)
         {
+            // Normalize posted upload arrays so validation and saving can handle empty file inputs.
             var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0]);
+            // filter out null or empty file for fileUploads array
             var fileUploads = (newsVM.FileUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
 
+            // For non empty image file in upload array, validate image file
             foreach (var image in imageUploads.Where(i => i != null && i.ContentLength > 0))
             {
+                // Validate each uploaded image before anything is saved to disk.
                 if (!UploadHelper.IsFileValid(image, 1))
                 {
                     ModelState.AddModelError("ImageUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
@@ -103,12 +112,14 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             foreach (var file in fileUploads)
             {
+                // Validate general attachments using IsFileValid to make sure only approved file type can be saved.
                 if (!UploadHelper.IsFileValid(file, 0))
                 {
                     ModelState.AddModelError("FileUploads", "One or more uploaded files are not allowed.");
                 }
             }
 
+            // A new news item must select one uploaded image as its thumbnail.
             if (!newsVM.ThumbnailImageUploadIndex.HasValue)
             {
                 ModelState.AddModelError("ThumbnailImageUploadIndex", "Please select one uploaded image as the thumbnail.");
@@ -117,6 +128,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 var index = newsVM.ThumbnailImageUploadIndex.Value;
 
+                // Guard against a thumbnail index that does not point to an actual uploaded image.
                 if (index < 0 || index >= imageUploads.Length || imageUploads[index] == null || imageUploads[index].ContentLength == 0)
                 {
                     ModelState.AddModelError("ThumbnailImageUploadIndex", "The selected thumbnail must have an uploaded image.");
@@ -128,6 +140,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return View(newsVM);
             }
 
+            // this variable is for recording which file is saved in transaction
             var savedUploads = new List<UploadedFile>();
             string step = "starting";
 
@@ -136,6 +149,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 try
                 {
                     step = "mapping NewsVM to News";
+                    // Convert the form-only view model into the persisted News entity.
                     var news = ToNews(newsVM);
                     NewsImage thumbnailImage = null;
 
@@ -149,10 +163,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
                             continue;
                         }
 
+                        // Save the physical image file and attach its metadata to the News entity.
                         var savedImage = UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url);
                         savedUploads.Add(savedImage);
                         news.Images.Add(savedImage);
 
+                        // Remember which saved image should become the thumbnail after the first database save.
                         if (i == newsVM.ThumbnailImageUploadIndex.Value)
                         {
                             thumbnailImage = savedImage;
@@ -162,6 +178,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     step = "saving upload files";
                     foreach (var file in fileUploads)
                     {
+                        // Save attachment files under ~/Files and attach their metadata to the News entity.
                         var savedFile = UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
                         savedUploads.Add(savedFile);
                         news.Files.Add(savedFile);
@@ -176,6 +193,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     if (thumbnailImage != null)
                     {
                         step = "saving thumbnail image reference";
+                        // Save the News and its uploaded NewsImage rows first so EF can persist the
+                        // NewsImage-NewsId relationship to the new News row.
+                        // After the image exists as a child record, save again to store
+                        // News.ThumbnailImageId back to that image. This avoids EF circular FK ordering
+                        // errors and prevents the thumbnail selection from being left unsaved.
                         news.ThumbnailImageId = thumbnailImage.Id;
                         db.SaveChanges();
                     }
@@ -188,6 +210,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     transaction.Rollback();
 
+                    // Remove files already written to disk because the database transaction failed.
                     foreach (var upload in savedUploads)
                     {
                         UploadHelper.DeleteUploadedFile(upload, Server);
@@ -214,6 +237,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     transaction.Rollback();
 
+                    // Remove files already written to disk because the database transaction failed.
                     foreach (var upload in savedUploads)
                     {
                         UploadHelper.DeleteUploadedFile(upload, Server);
@@ -255,13 +279,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Edit(NewsVM newsVM)
         {
             // Check upload new Images and Files
+            // Normalize posted upload arrays so optional new uploads can be validated safely.
             var imageUploads = (newsVM.ImageUploads ?? new HttpPostedFileBase[0]);
+            // filter out null or empty file for fileUploads array
             var fileUploads = (newsVM.FileUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
 
             foreach (var image in imageUploads.Where(i => i != null && i.ContentLength > 0))
             {
+                // Validate new images before saving replacements or additions.
                 if (!UploadHelper.IsFileValid(image, 1))
                 {
                     ModelState.AddModelError("ImageUploads", "Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
@@ -270,6 +297,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             foreach (var file in fileUploads)
             {
+                // Validate new attachment files before saving them to disk.
                 if (!UploadHelper.IsFileValid(file, 0))
                 {
                     ModelState.AddModelError("FileUploads", "One or more uploaded files are not allowed.");
@@ -279,6 +307,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             // Get News from DB
 
             var news = db.News
+                // Load existing uploads so edit validation can compare deletes and thumbnail choices.
                 .Include(n => n.Images)
                 .Include(n => n.Files)
                 .SingleOrDefault(n => n.Id == newsVM.Id);
@@ -308,6 +337,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                 if (thumbnailValue.StartsWith("existing:"))
                 {
+                    // Existing thumbnails are posted as existing:{imageId}.
                     var idText = thumbnailValue.Substring("existing:".Length);
                     Guid parsedId;
 
@@ -322,6 +352,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         {
                             ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail image is invalid.");
                         }
+                        // A deleted existing image cannot also be kept as the thumbnail.
                         if (deleteImageIds.Contains(parsedId))
                         {
                             ModelState.AddModelError("ThumbnailSelection", "The selected thumbnail image cannot be deleted.");
@@ -330,6 +361,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 }
                 else if (thumbnailValue.StartsWith("upload:"))
                 {
+                    // New upload thumbnails are posted as upload:{imageUploadIndex}.
                     var indexText = thumbnailValue.Substring("upload:".Length);
                     int index;
                     if (!int.TryParse(indexText, out index))
@@ -359,6 +391,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                // Rebuild existing upload lists while preserving the posted news field values.
                 var reloadNewsVM = ToNewsVM(news);
                 reloadNewsVM.Title = newsVM.Title;
                 reloadNewsVM.Summary = newsVM.Summary;
@@ -372,25 +405,29 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             // Update News data
 
-
+            // store added image and files
             var newSavedUploads = new List<UploadedFile>();
+            // store waiting to delete images and files
             var deletedExistingUploads = new List<UploadedFile>();
 
             using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
+                    // Apply scalar News fields from the edit form before changing uploads.
                     UpdateNewsFromVM(news, newsVM);
                     NewsImage newThumbnailImage = null;
 
                     foreach (var image in news.Images.Where(i => deleteImageIds.Contains(i.Id)).ToList())
                     {
+                        // Remove selected image records inside the transaction; delete physical files after commit.
                         deletedExistingUploads.Add(image);
                         db.NewsImages.Remove(image);
                     }
 
                     foreach (var file in news.Files.Where(i => deleteFileIds.Contains(i.Id)).ToList())
                     {
+                        // Remove selected file records inside the transaction; delete physical files after commit.
                         deletedExistingUploads.Add(file);
                         db.NewsFiles.Remove(file);
                     }
@@ -405,11 +442,13 @@ namespace TayanaYachts.Areas.Admin.Controllers
                             continue;
                         }
 
+                        // Save each newly uploaded image and attach it to this News entity.
                         var savedImage = UploadHelper.SaveUploadedFile<NewsImage>(image, "~/Images", Server, Url);
                         newSavedUploads.Add(savedImage);
                         news.Images.Add(savedImage);
 
                         // Check Thumbnail
+                        // Remember the new uploaded image selected as thumbnail until after the first save.
                         if (selectedUploadThumbnailIndex.HasValue && i == selectedUploadThumbnailIndex.Value)
                         {
                             newThumbnailImage = savedImage;
@@ -418,6 +457,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     foreach (var file in fileUploads)
                     {
+                        // Save each newly uploaded attachment and attach it to this News entity.
                         var savedFile = UploadHelper.SaveUploadedFile<NewsFile>(file, "~/Files", Server, Url);
                         newSavedUploads.Add(savedFile);
                         news.Files.Add(savedFile);
@@ -435,6 +475,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     if (newThumbnailImage != null)
                     {
+                        // Save the newly uploaded NewsImage first so EF can persist its NewsId
+                        // relationship to this News row.
+                        // After the image exists in the database, save again to store
+                        // News.ThumbnailImageId back to that image. Without this second save, the new
+                        // thumbnail selection would not be written.
                         news.ThumbnailImageId = newThumbnailImage.Id;
                         db.SaveChanges();
                     }
@@ -446,6 +491,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     transaction.Rollback();
                     Trace.TraceError("Edit news failed: " + ex);
 
+                    // Remove new files written during this failed edit attempt.
                     foreach (var upload in newSavedUploads)
                     {
                         UploadHelper.DeleteUploadedFile(upload, Server);
@@ -453,6 +499,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     ModelState.AddModelError("", ex.GetBaseException().Message);
 
+                    // Reload persisted uploads and restore the posted scalar values for redisplay.
                     var reloadNews = db.News
                         .Include(n => n.Images)
                         .Include(n => n.Files)
@@ -477,6 +524,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             try
             {
+                // Delete old physical files only after the database changes commit successfully.
                 foreach (var upload in deletedExistingUploads)
                 {
                     UploadHelper.DeleteUploadedFile(upload, Server);
@@ -512,6 +560,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var news = db.News
+                // Load uploads so their physical files can be cleaned up after the database delete commits.
                 .Include(n => n.Images)
                 .Include(n => n.Files)
                 .SingleOrDefault(n => n.Id == id);
@@ -528,6 +577,11 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Clear both sides of the thumbnail relationship before deleting this News row.
+                    // News.ThumbnailImageId points to one of the NewsImage child records, while each
+                    // NewsImage also points back to this News through NewsImage.NewsId.
+                    // Saving this null thumbnail reference first breaks that circular FK dependency,
+                    // so EF can delete the News row and its related uploads without ordering conflicts.
                     news.ThumbnailImageId = null;
                     news.ThumbnailImage = null;
                     db.SaveChanges();
@@ -549,6 +603,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             try
             {
+                // Delete physical upload files only after the database delete commits.
                 foreach (var image in imagesToDelete)
                 {
                     UploadHelper.DeleteUploadedFile(image, Server);
@@ -575,8 +630,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
             base.Dispose(disposing);
         }
 
+        // Map create-form fields to a new News entity; uploads are attached separately.
         private static News ToNews(NewsVM newsVM)
-        {
+        { 
             return new News
             {
                 Title = newsVM.Title,
@@ -588,6 +644,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             };
         }
 
+        // Update only scalar News fields; upload changes are handled by the edit action.
         private static void UpdateNewsFromVM(News news, NewsVM newsVM)
         {
             news.Title = newsVM.Title;
@@ -598,6 +655,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             news.IsPublished = newsVM.IsPublished;
         }
 
+        // Build the edit view model with existing uploads converted for display and selection.
         private static NewsVM ToNewsVM(News news)
         {
             return new NewsVM

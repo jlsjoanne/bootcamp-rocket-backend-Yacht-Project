@@ -53,6 +53,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Store a salted password hash instead of the plain password submitted by the Create view.
                 member.PasswordSalt = Utility.CreateSalt();
                 member.Password = Utility.GenerateHashWithSalt(member.Password, member.PasswordSalt);
 
@@ -89,6 +90,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                // The Edit view posts newPassword only when the admin wants to change the member password.
                 if (!string.IsNullOrWhiteSpace(newPassword))
                 {
                     member.Password = Utility.GenerateHashWithSalt(newPassword, member.PasswordSalt);

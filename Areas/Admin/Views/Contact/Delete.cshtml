@@ -1,14 +1,17 @@
 ﻿@model TayanaYachts.Models.Contact
 
 @{
-    ViewBag.PageHeader = "Contact";
+    ViewBag.PageHeader = "Delete";
 }
 
-<h2>Details</h2>
-
+<h3>Are you sure you want to delete this?</h3>
 <div>
     <hr />
     <dl class="dl-horizontal">
+        <dd>
+            @Html.DisplayFor(model => model.Yacht.Name)
+        </dd>
+
         <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -34,7 +37,7 @@
         </dd>
 
         <dt>
-            Country Name
+            @Html.DisplayNameFor(model => model.Country.Name)
         </dt>
 
         <dd>
@@ -42,12 +45,8 @@
         </dd>
 
         <dt>
-            Yacht
+            @Html.DisplayNameFor(model => model.Yacht.Name)
         </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Yacht.Name)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Comment)
@@ -66,28 +65,13 @@
         </dd>
 
     </dl>
-</div>
-<div>
-    @if (!Model.IsCompleted)
-    {
-        using (Html.BeginForm("MarkAsComplete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("id", Model.Id)
-            <button type="submit" class="btn btn-sm btn-success">Mark as Complete</button>
-        }
-        @: |
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
     }
-    else
-    {
-        using (Html.BeginForm("MarkAsIncomplete", "Contact", FormMethod.Post, new { style = "display:inline;" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("id", Model.Id)
-            <button type="submit" class="btn btn-sm btn-outline-secondary">Mark as Incomplete</button>
-        }
-        @: |
-    }
-    @Html.ActionLink("Back to List", "Index") |
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
 </div>

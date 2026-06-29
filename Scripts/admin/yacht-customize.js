@@ -1,14 +1,19 @@
 ﻿(function () {
+    // Read view-specific values emitted by Razor before this shared script loads.
     var config = window.yachtCustomizeConfig || {};
 
+    // Dimension editor images are normalized to the legacy Tayana dimensions layout size.
     var DIMENSION_IMAGE_WIDTH = 278;
     var DIMENSION_IMAGE_HEIGHT = 345;
 
     function formatDefaultSummernoteImage($image) {
+        // Overview images should scale with Bootstrap content width.
         $image.addClass("img-fluid");
     }
 
     function formatDimensionSummernoteImage($image) {
+        // Dimension images live inside a fixed-size table cell, so remove responsive
+        // sizing and force a predictable visual box.
         var $cell = $image.closest(".dimension-image-cell");
 
         $image
@@ -29,6 +34,7 @@
             });
 
         if ($cell.length) {
+            // Keep only one image in the placeholder cell and remove helper text after upload.
             $cell.find("p").remove();
             $cell.find("img").not($image).remove();
 
@@ -44,10 +50,13 @@
     }
 
     function uploadSummernoteImage(file, $editor, formatImage) {
+        // Upload Summernote images immediately so the editor can insert a real URL into
+        // the HTML content before the full Yacht form is submitted.
         var formData = new FormData();
 
         formData.append("file", file);
 
+        // Include the MVC anti-forgery token because the upload action is a POST endpoint.
         var token = $('input[name="__RequestVerificationToken"]').val();
 
         if (token) {
@@ -55,6 +64,7 @@
         }
 
         if (!config.uploadEditorImageUrl) {
+            // The view must provide the URL because this static file cannot call Url.Action.
             alert("Image upload URL is missing.");
             return;
         }
@@ -68,6 +78,8 @@
 
             success: function (response) {
                 if (response && response.url) {
+                    // Insert the uploaded image URL into the active editor, then apply the
+                    // editor-specific formatting callback when one is supplied.
                     $editor.summernote("insertImage", response.url, function ($image) {
                         if (typeof formatImage === "function") {
                             formatImage($image);
@@ -86,6 +98,7 @@
     }
 
     function createUploadRow(inputName, accept) {
+        // Build the same upload row shape used by the Razor markup for dynamically added files.
         var row = document.createElement("div");
         row.className = "upload-row mb-2";
 
@@ -95,6 +108,7 @@
         input.className = "form-control";
 
         if (accept) {
+            // Image upload groups pass image/*; download files leave this unrestricted.
             input.accept = accept;
         }
 
@@ -104,6 +118,7 @@
         removeButton.innerText = "Remove";
 
         removeButton.addEventListener("click", function () {
+            // Removing a row before submit prevents that empty/new input from being posted.
             row.parentNode.removeChild(row);
         });
 
@@ -114,6 +129,8 @@
     }
 
     function bindAddUploadButton(buttonId, listId, inputName, accept) {
+        // Bind an Add File button to its upload list. Missing elements are ignored so
+        // the same script can run on both Create and Edit pages.
         var button = document.getElementById(buttonId);
         var list = document.getElementById(listId);
 
@@ -122,15 +139,18 @@
         }
 
         button.addEventListener("click", function () {
+            // Append another input using the field name expected by YachtVM model binding.
             list.appendChild(createUploadRow(inputName, accept));
         });
     }
 
     function escapeHtml(text) {
+        // Convert prompt text to safe HTML before inserting it into Summernote content.
         return $("<div>").text(text).html();
     }
 
     function DimensionTemplateButton(context) {
+        // Custom Summernote button for building the dimensions table used by yacht pages.
         var ui = $.summernote.ui;
 
         return ui.button({
@@ -138,6 +158,8 @@
             tooltip: "Insert Dimension Layout",
 
             click: function () {
+                // Prompt-driven template keeps the admin from hand-writing the repeated
+                // table structure used by the public dimensions section.
                 var title = prompt("Enter section title:", "46 DIMENSIONS");
 
                 if (title === null) {
@@ -166,6 +188,7 @@
                 var rowsHtml = "";
 
                 for (var i = 1; i <= rowCount; i++) {
+                    // Each row becomes one label/value pair in the nested spec table.
                     var label = prompt("Row " + i + " label:", "");
                     var value = prompt("Row " + i + " value:", "");
 
@@ -184,6 +207,7 @@
                 var imageCellHtml = "";
 
                 if (includeImage) {
+                    // The placeholder class is used later to size the uploaded image.
                     imageCellHtml =
                         '<td class="dimension-image-cell">' +
                         "<p>Click here, then use the picture button to upload image</p>" +
@@ -213,6 +237,7 @@
     }
 
     function insertSpecSection(context) {
+        // Custom Summernote button for adding a titled bullet-list section to Specification.
         var ui = $.summernote.ui;
 
         return ui.button({
@@ -243,6 +268,7 @@
     }
 
     function buildSpecSectionHtml(sectionTitle, itemsText) {
+        // Convert one-item-per-line prompt input into safe list markup.
         var safeTitle = escapeHtml(sectionTitle.trim());
 
         var itemsHtml = itemsText
@@ -262,14 +288,17 @@
     }
 
     $(function () {
+        // Wire up dynamic upload rows for the three multipart upload collections on YachtVM.
         bindAddUploadButton("add-deck-upload", "deck-upload-list", "DeckImgsUploads", "image/*");
         bindAddUploadButton("add-interior-upload", "interior-upload-list", "InteriorUploads", "image/*");
         bindAddUploadButton("add-downloadfile-upload", "downloadfile-upload-list", "DownloadFileUploads", null);
 
+        // Cache the three rich-text fields because each one gets a different toolbar/profile.
         var $overview = $("#Overview");
         var $dimensions = $("#Dimensions");
         var $specification = $("#Specification");
 
+        // Overview supports general rich text plus responsive inline images.
         $overview.summernote({
             height: 300,
             tooltip: false,
@@ -290,6 +319,7 @@
                 },
 
                 onPaste: function (e) {
+                    // Paste plain text only to avoid importing external HTML/CSS into page content.
                     e.preventDefault();
 
                     var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
@@ -300,6 +330,8 @@
             }
         });
 
+        // Dimensions uses a constrained editor profile because the public layout expects
+        // a specific table/image structure.
         $dimensions.summernote({
             height: 420,
             minHeight: 300,
@@ -312,6 +344,7 @@
             ],
 
             buttons: {
+                // Register the custom dimensions template button in the toolbar.
                 dimensionTemplate: DimensionTemplateButton
             },
 
@@ -326,6 +359,7 @@
                 ]
             },
 
+            // Prevent dropped files from bypassing the upload handler and formatting rules.
             disableDragAndDrop: true,
 
             callbacks: {
@@ -337,6 +371,7 @@
             }
         });
 
+        // Specification uses a custom helper to create repeated titled list sections.
         $specification.summernote({
             height: 600,
             dialogsInBody: true,
@@ -350,6 +385,7 @@
             ],
 
             buttons: {
+                // Register the custom specification-section button in the toolbar.
                 insertSpecSection: insertSpecSection
             }
         });

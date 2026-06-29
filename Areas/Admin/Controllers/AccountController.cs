@@ -16,11 +16,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
     {
 
         private TayanaContext db = new TayanaContext();
+        
+        
         // GET: Admin/Account
+        // 後台管理員帳號登入
         public ActionResult Login()
         {
             return View();
         }
+
+        // 後台管理員帳號登入
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -54,6 +59,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
             return View(login);
         }
 
+        // 後台管理員帳號登出
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

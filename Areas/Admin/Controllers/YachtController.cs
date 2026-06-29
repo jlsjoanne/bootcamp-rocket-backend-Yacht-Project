@@ -26,7 +26,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // GET: Admin/Yacht
         public ActionResult Index(string searchString, string currentFilter, int? page)
         {
-            // Add Search and Paging
+            // Non-scaffolded list behavior: keep the search term while paging and reset
+            // to page 1 when the user submits a new search from the Index view.
             if (searchString != null)
             {
                 page = 1;
@@ -42,11 +43,13 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if (!String.IsNullOrWhiteSpace(searchString))
             {
+                // Search both the display name and HTML overview content used on yacht pages.
                 yachts = yachts.Where(y => 
                     y.Name.Contains(searchString) ||
                     (y.Overview != null && y.Overview.Contains(searchString)));
             }
 
+            // Put latest models first, then use the admin-defined display order for ties.
             yachts = yachts.OrderByDescending(y => y.IsNew)
                 .ThenBy(y => y.SortOrder)
                 .ThenByDescending(y => y.Id);
@@ -76,6 +79,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             var heroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
 
+            // Hero image is stored separately from the Yacht upload collections, so pass
+            // a lightweight upload VM through ViewBag for the details page preview.
             ViewBag.HeroImage = heroImage?.ToExistingUploadFileVM();
 
             return View(yacht);
@@ -94,6 +99,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(YachtVM yachtVM)
         {
+            // The create view posts repeatable file inputs with the same names; filter out
+            // empty slots from rows the admin added but did not choose a file for.
             var deckImageUploads = (yachtVM.DeckImgsUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
@@ -150,6 +157,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     var yacht = ToYacht(yachtVM);
 
+                    // Save each upload to disk first, then attach the saved metadata object
+                    // to the correct Yacht collection so EF writes the FK relationship.
                     foreach(var deckImage in deckImageUploads)
                     {
                         var savedUpload = UploadHelper.SaveUploadedFile<YachtImage>(deckImage, "~/Images", Server, Url);
@@ -174,6 +183,9 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     db.Yachts.Add(yacht);
                     db.SaveChanges();
 
+                    // Summernote uploads are created before the Yacht form is submitted.
+                    // After the Yacht has an Id, bind images still referenced by editor HTML
+                    // and mark unreferenced editor uploads for post-commit file cleanup.
                     var editorContent =
                         (yachtVM.Overview ?? "") +
                         (yachtVM.Dimensions ?? "") +
@@ -184,6 +196,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     if (hasHeroImageUpload)
                     {
+                        // Homepage hero image uses its own table, not Yacht.DeckImgs, because
+                        // it is displayed by homepage carousel logic rather than yacht detail sections.
                         var savedHeroImage = UploadHelper.SaveUploadedFile<YachtHeroImage>(heroImageUpload, "~/Images", Server, Url);
                         savedUploads.Add(savedHeroImage);
                         
@@ -199,6 +213,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 {
                     transaction.Rollback();
 
+                    // Database rollback cannot undo files already written to disk.
                     foreach(var savedUpload in savedUploads)
                     {
                         UploadHelper.DeleteUploadedFile(savedUpload, Server);
@@ -213,6 +228,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             try
             {
+                // Delete orphaned editor files only after the database transaction commits,
+                // so a failed save does not remove files still referenced by persisted content.
                 foreach (var editorImage in deletedEditorImages)
                 {
                     UploadHelper.DeleteUploadedFile(editorImage, Server);
@@ -245,6 +262,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             var existingHeroImage = db.YachtHeroImages.SingleOrDefault(h => h.YachtId == yacht.Id);
 
+            // Convert EF upload collections into view models the edit page can render as
+            // existing files with delete checkboxes.
             var yachtVM = ToYachtVM(yacht,existingHeroImage);
 
             return View(yachtVM);
@@ -258,7 +277,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         public ActionResult Edit(YachtVM yachtVM)
         {
 
-            // set deck, interior, download file lists
+            // The edit view posts new upload rows separately from existing upload delete
+            // checkbox ids, so normalize the new upload arrays before validation.
             var deckImageUploads = (yachtVM.DeckImgsUploads ?? new HttpPostedFileBase[0])
                 .Where(f => f != null && f.ContentLength > 0)
                 .ToList();
@@ -325,6 +345,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
             if(!ModelState.IsValid)
             {
+                // Rebuild existing upload lists before returning the view; otherwise the
+                // validation response would lose file previews and delete checkboxes.
                 var reloadYachtVM = ReloadYachtVM(yachtVM, yacht, existingHeroImage);
                 return View(reloadYachtVM);
             }
@@ -340,7 +362,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                     // Update Yacht data
                     UpdateYachtFromYachtVM(yacht, yachtVM);
 
-                    // Update Hero Image
+                    // Update Hero Image. A new upload replaces the existing hero image, and
+                    // the delete checkbox removes it without requiring a replacement.
                     if((yachtVM.DeleteHeroImage || hasHeroImageUpload) && existingHeroImage != null)
                     {
                         deletedExistingUploads.Add(existingHeroImage);
@@ -356,7 +379,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         db.YachtHeroImages.Add(newHeroImage);
                     }
 
-                    // Delete deck, interior, download file from db and add to deletedExistingUploads list
+                    // Remove checked existing uploads from the database transaction, but keep
+                    // their physical files until the transaction commits successfully.
                     foreach(var deckId in deleteDeckImageIds)
                     {
                         var deckImages = yacht.DeckImgs.SingleOrDefault(d => d.Id == deckId);
@@ -387,7 +411,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         }   
                     }
 
-                    // Add new upload files to db and relative folder
+                    // Add new upload files to disk and attach their metadata to the Yacht
+                    // collections so EF persists the child upload rows.
                     foreach(var newDeckImage in deckImageUploads)
                     {
                         var newSaveUpload = UploadHelper.SaveUploadedFile<YachtImage>(newDeckImage, "~/Images", Server, Url);
@@ -414,6 +439,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                         (yachtVM.Dimensions ?? "") +
                         (yachtVM.Specification ?? "");
 
+                    // Sync Summernote image ownership to the current HTML content before
+                    // committing, and postpone physical deletion until after commit.
                     deletedEditorImages = HandleEditorImages(yacht.Id, editorContent);
 
                     db.SaveChanges();
@@ -451,6 +478,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 }
             }
 
+            // Physical files are deleted after commit so the filesystem follows the
+            // database result instead of getting ahead of a rolled-back transaction.
             try
             {
                 foreach(var deletedExistingUpload in deletedExistingUploads)
@@ -463,6 +492,7 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 Trace.TraceError("Post-commit delete existing file cleanup failed:" + ex);
             }
 
+            // physical in editor image deletion until after commit.
             try
             {
                 foreach(var deletedEditorImage in deletedEditorImages)
@@ -518,6 +548,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Capture all related upload records before removing the Yacht so their
+                    // physical files can be deleted after the database commit.
                     foreach (var deckimage in yacht.DeckImgs)
                     {
                         deleteUploads.Add(deckimage);
@@ -540,6 +572,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
                     if(heroImage != null)
                     {
+                        // Hero image is not part of the Yacht upload collections, so remove
+                        // it explicitly and include its file in post-commit cleanup.
                         deleteUploads.Add(heroImage);
                         db.YachtHeroImages.Remove(heroImage);
                     }
@@ -655,6 +689,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult UploadEditorImage(HttpPostedFileBase file)
         {
+            // Summernote uploads images before the Yacht form is saved. Store them with a
+            // null YachtId first; HandleEditorImages attaches referenced ones on submit.
             if(!UploadHelper.IsFileValid(file, 1))
             {
                 return JsonUploadError("Only JPG, PNG, GIF, or WEBP images under 15 MB are allowed.");
@@ -677,16 +713,25 @@ namespace TayanaYachts.Areas.Admin.Controllers
         // Handle Editor Image Upload after click submit
         private List<YachtEditorImage> HandleEditorImages(int yachtId, string editorContent)
         {
+            // Summernote uploads editor images before the Yacht form is submitted, so new
+            // YachtEditorImage rows may still have a null YachtId at this point.
+            // Compare the submitted HTML against the persisted editor-image records to:
+            // 1. remove images that used to belong to this yacht but are no longer referenced;
+            // 2. attach newly uploaded, still-unowned images that are referenced by this yacht.
             HashSet<string> referencedUrls = ExtractEditorImageUrls(editorContent);
             List<YachtEditorImage> currentEditorImages = db.YachtEditorImages.Where(i => i.YachtId == yachtId).ToList();
             var deletedImages = new List<YachtEditorImage>();
 
+            // Remove database rows for images deleted from the editor content, but return
+            // those records so their physical files can be deleted only after commit.
             foreach(var image in currentEditorImages.Where(i => !referencedUrls.Contains(i.FilePath)).ToList())
             {
                 deletedImages.Add(image);
                 db.YachtEditorImages.Remove(image);
             }
 
+            // Claim each image URL still present in the editor. The null YachtId check
+            // picks up images uploaded during this editing session before the form save.
             foreach(string imageUrl in referencedUrls)
             {
                 YachtEditorImage editorImage = db.YachtEditorImages
@@ -703,6 +748,8 @@ namespace TayanaYachts.Areas.Admin.Controllers
 
         private HashSet<String> ExtractEditorImageUrls(string editorContent)
         {
+            // Use a set because the same image may appear more than once in the editor HTML,
+            // but each uploaded file record should only be reconciled once.
             HashSet<string> imageUrls = new HashSet<String>();
 
             if (String.IsNullOrWhiteSpace(editorContent))
@@ -710,8 +757,12 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 return imageUrls;
             }
 
+            // Scan the saved rich-text HTML for image tags instead of trusting form fields;
+            // the editor content is the source of truth for which uploaded images remain in use.
             foreach (Match match in Regex.Matches(editorContent, "<img[^>]+src=[\"'](?<src>[^\"']+)[\"']", RegexOptions.IgnoreCase))
             {
+                // Normalize editor img src values so query strings, fragments, and URL
+                // encoding do not prevent matching them to uploaded file records.
                 string source = HttpUtility.UrlDecode(match.Groups["src"].Value);
                 if (String.IsNullOrWhiteSpace(source))
                 {
@@ -721,12 +772,16 @@ namespace TayanaYachts.Areas.Admin.Controllers
                 int queryIndex = source.IndexOfAny(new[] { '?', '#' });
                 if(queryIndex >= 0)
                 {
+                    // Browser/editor cache-busting query strings and anchors are not stored
+                    // in UploadedFile.FilePath, so strip them before comparing paths.
                     source = source.Substring(0, queryIndex);
                 }
 
                 string fileName = Path.GetFileName(source);
                 if( !String.IsNullOrWhiteSpace(fileName) && source.IndexOf("/Images/",StringComparison.OrdinalIgnoreCase) >= 0)
                 {
+                    // Rebuild the app-relative Images path used by UploadHelper so the value
+                    // matches YachtEditorImage.FilePath regardless of absolute/relative src form.
                     imageUrls.Add(Url.Content("~/Images/" + fileName));
                 }
             }

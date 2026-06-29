@@ -23,6 +23,7 @@ namespace TayanaYachts.Controllers
         public ActionResult Index()
         {
 
+            // Build the page model with empty form data plus the dropdown options needed by the view.
             return View(BuildeContactPageVM());
         }
 
@@ -32,15 +33,20 @@ namespace TayanaYachts.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Rebuild dropdown lists before returning the view; posted view models only carry
+                // selected ids, not the SelectListItem collections needed to render the form again.
                 return View(BuildeContactPageVM(contactVM.Form));
             }
 
             if (!IsRecaptchaValid())
             {
                 ModelState.AddModelError("Recaptcha", "Please complete the verification.");
+                // Keep the user's submitted values while restoring dropdown data after reCAPTCHA fails.
                 return View(BuildeContactPageVM(contactVM.Form));
             }
 
+            // Persist the public contact request as a Contact entity separate from the page VM.
+            // Admin flags start false so the back office can track completion and soft deletion later.
             var contact = new Contact
             {
                 Id = Guid.NewGuid(),
@@ -57,19 +63,22 @@ namespace TayanaYachts.Controllers
             db.Contacts.Add(contact);
             db.SaveChanges();
 
-            // Add send email feature
-
-            // explicit loading:  load related data later, after you already have the entity
+            // Explicitly load related display data after saving because the email body uses
+            // Country.Name and Yacht.Name, while the posted form only provided their ids.
             db.Entry(contact).Reference(c => c.Country).Load();
             db.Entry(contact).Reference(c => c.Yacht).Load();
 
             try
             {
+                // Email sending is attempted after the contact is stored so a mail failure
+                // does not lose the submitted inquiry.
                 var emailService = new EmailService();
                 await emailService.SendContactFormEmailAsync(contact);
             }
             catch(Exception ex)
             {
+                // Keep the user-facing submit flow successful even if SMTP is unavailable;
+                // the saved Contact record remains available for admin follow-up.
                 Trace.TraceError($"Failed to send contact form email for ContactId={contact.Id}. {ex}");
             }
 
@@ -88,6 +97,8 @@ namespace TayanaYachts.Controllers
 
         private ContactPageVM BuildeContactPageVM(ContactInputVM form = null)
         {
+            // This view model combines the user's form input with lookup data required
+            // by the Contact page dropdowns.
             var contactPageVM = new ContactPageVM
             {
                 Form = form ?? new ContactInputVM(),
@@ -100,6 +111,7 @@ namespace TayanaYachts.Controllers
                     })
                     .ToList(),
                 Yachts = db.Yachts
+                    // Only public/published yachts should be selectable from the website contact form.
                     .Where(y => y.IsPublished)
                     .OrderByDescending(y => y.Id)
                     .Select(y => new SelectListItem
@@ -114,6 +126,7 @@ namespace TayanaYachts.Controllers
 
         private bool IsRecaptchaValid()
         {
+            // Google posts this token from the rendered g-recaptcha widget.
             var response = Request.Form["g-recaptcha-response"];
 
             if (string.IsNullOrWhiteSpace(response))
@@ -121,6 +134,8 @@ namespace TayanaYachts.Controllers
                 return false;
             }
 
+            // Keep the secret server-side in Web.config and verify the browser token
+            // directly with Google's siteverify endpoint.
             var secretKey = ConfigurationManager.AppSettings["RecaptchaSecretKey"];
 
             using(var client = new HttpClient())
@@ -136,6 +151,7 @@ namespace TayanaYachts.Controllers
                 var result = client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
 
+                // Deserialize only the fields this controller needs from Google's response.
                 var serializer = new JavaScriptSerializer();
                 var recaptchaResult = serializer.Deserialize<RecaptchaVerifyResponse>(json);
 
